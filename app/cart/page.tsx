@@ -2,9 +2,9 @@
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useStore } from "@/store"
-import Header from "@/components/Header"
-import Footer from "@/components/Footer"
+import { useStore } from "@/lib/store"
+import { Header } from '@/components/header'
+import { Footer } from '@/components/footer'
 
 export default function CartPage() {
   const router = useRouter()
