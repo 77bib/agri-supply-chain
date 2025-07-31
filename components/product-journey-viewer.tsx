@@ -1,5 +1,5 @@
 "use client"
-
+import React from "react"
 import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -191,19 +191,22 @@ export function ProductJourneyViewer({ batchId = "BATCH-001" }: { batchId?: stri
                   : "bg-gray-100"
               }`}
             >
-              {updatedJourneySteps[currentStep].status === "completed" ? (
-                <CheckCircle className="h-6 w-6 text-green-800" />
-              ) : (\
-                <updatedJourneySteps[currentStep].icon\
-                  className={`h-6 w-6 ${
-                    updatedJourneySteps[currentStep].status === "completed"
-                      ? "text-green-800"
-                      : updatedJourneySteps[currentStep].status === "current"
-                      ? "text-blue-800"
-                      : "text-gray-500"
-                  }`}
-                />
-              )}
+                   {updatedJourneySteps[currentStep].status === "completed" ? (
+       <CheckCircle className="h-6 w-6 text-green-800" />
+     ) : (
+       React.createElement(
+         updatedJourneySteps[currentStep].icon,
+         {
+           className: `h-6 w-6 ${
+             updatedJourneySteps[currentStep].status === "completed"
+               ? "text-green-800"
+               : updatedJourneySteps[currentStep].status === "current"
+               ? "text-blue-800"
+               : "text-gray-500"
+           }`
+         }
+       )
+     )}
             </div>
             <div>
               <h3 className="font-semibold text-lg">{updatedJourneySteps[currentStep].title}</h3>

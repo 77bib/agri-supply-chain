@@ -6,6 +6,7 @@ import { useStore } from "@/lib/store"
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 
+
 export default function CartPage() {
   const router = useRouter()
   const { cart, updateCartQuantity, removeFromCart, clearCart, currentUser } = useStore()
