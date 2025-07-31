@@ -12,13 +12,16 @@ import { LogIn, ArrowLeft } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { useStore } from "@/lib/store"
-import { dummyClients } from "@/lib/dummy-data"
+import { HydrationBoundary } from "@/components/hydration-boundary"
 import Link from "next/link"
 
 export default function LoginPage() {
   const router = useRouter()
-  const { clients, setClients, setCurrentUser } = useStore()
-  const [email, setEmail] = useState("")
+  const { addClient, setCurrentUser } = useStore()
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
 
@@ -27,25 +30,56 @@ export default function LoginPage() {
     setIsLoading(true)
     setError("")
 
-    // Initialize clients if empty
-    const clientList = clients.length > 0 ? clients : dummyClients
-    if (clients.length === 0) {
-      setClients(dummyClients)
-    }
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      })
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+      const result = await response.json()
 
-    const user = clientList.find((client) => client.email.toLowerCase() === email.toLowerCase())
+      if (!response.ok) {
+        throw new Error(result.message || "فشل تسجيل الدخول")
+      }
 
-    if (user) {
+      // البيانات موجودة في result.data
+      const userData = result.data
+
+      // إنشاء كائن المستخدم للـ store المحلي
+      const user = {
+        id: userData._id || userData.id,
+        name: userData.name,
+        email: userData.email,
+        phone: "",
+        address: "",
+        registrationDate: userData.createdAt ? new Date(userData.createdAt).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+        status: "active" as const,
+        totalOrders: 0,
+        totalSpent: 0,
+      }
+
+      // إضافة المستخدم إلى قائمة العملاء إذا لم يكن موجوداً
+      addClient(user)
       setCurrentUser(user)
-      router.push("/products")
-    } else {
-      setError("Account not found. Please check your email or create a new account.")
-    }
 
-    setIsLoading(false)
+      // الانتقال إلى صفحة المنتجات
+      router.push("/products")
+
+    } catch (err: any) {
+      setError(err.message || "حدث خطأ أثناء تسجيل الدخول")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
   return (
@@ -57,7 +91,7 @@ export default function LoginPage() {
           {/* Back Link */}
           <Link href="/" className="flex items-center text-gray-500 hover:text-gray-700 mb-6">
             <ArrowLeft className="h-4 w-4 mr-1" />
-            Back to Home
+            العودة للرئيسية
           </Link>
 
           <Card>
@@ -67,44 +101,56 @@ export default function LoginPage() {
                   <LogIn className="h-8 w-8 text-blue-600" />
                 </div>
               </div>
-              <CardTitle className="text-2xl">Welcome Back</CardTitle>
-              <CardDescription>Sign in to your AgriChain account to continue shopping</CardDescription>
+              <CardTitle className="text-2xl">مرحباً بعودتك</CardTitle>
+              <CardDescription>سجل دخولك إلى حساب AgriChain للاستمرار في التسوق</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email address"
-                  />
-                </div>
+              <HydrationBoundary>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <Label htmlFor="email">البريد الإلكتروني</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      placeholder="أدخل بريدك الإلكتروني"
+                    />
+                  </div>
 
-                {error && <div className="text-sm text-red-600 bg-red-50 p-3 rounded-lg">{error}</div>}
+                  <div>
+                    <Label htmlFor="password">كلمة المرور</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      required
+                      value={formData.password}
+                      onChange={(e) => handleInputChange("password", e.target.value)}
+                      placeholder="أدخل كلمة المرور"
+                    />
+                  </div>
 
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Signing In..." : "Sign In"}
-                </Button>
-              </form>
+                  {error && <div className="text-sm text-red-600 bg-red-50 p-3 rounded-lg">{error}</div>}
+
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
+                  </Button>
+                </form>
+              </HydrationBoundary>
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
-                  Don't have an account?{" "}
+                  ليس لديك حساب؟{" "}
                   <Link href="/register" className="text-green-600 hover:text-green-700 font-medium">
-                    Create one here
+                    أنشئ واحداً هنا
                   </Link>
                 </p>
               </div>
 
               <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                <p className="text-xs text-blue-800 font-medium mb-2">Demo Accounts:</p>
-                <p className="text-xs text-blue-700">john.smith@email.com</p>
-                <p className="text-xs text-blue-700">sarah.johnson@email.com</p>
-                <p className="text-xs text-blue-700">mike.davis@email.com</p>
+                <p className="text-xs text-blue-800 font-medium mb-2">حسابات تجريبية:</p>
+                <p className="text-xs text-blue-700">يمكنك إنشاء حساب جديد للتجربة</p>
               </div>
             </CardContent>
           </Card>

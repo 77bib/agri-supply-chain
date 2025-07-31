@@ -110,6 +110,10 @@ interface StoreState {
   // Current user
   currentUser: Client | null
   setCurrentUser: (user: Client | null) => void
+
+  // Hydration state
+  _hasHydrated: boolean
+  setHasHydrated: (state: boolean) => void
 }
 
 export const useStore = create<StoreState>()(
@@ -205,9 +209,17 @@ export const useStore = create<StoreState>()(
       // Current user
       currentUser: null,
       setCurrentUser: (user) => set({ currentUser: user }),
+
+      // Hydration state
+      _hasHydrated: false,
+      setHasHydrated: (state) => set({ _hasHydrated: state }),
     }),
     {
       name: "agrichain-store",
+      skipHydration: true,
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true)
+      },
     },
   ),
 )
