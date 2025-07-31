@@ -12,7 +12,7 @@ export function Footer() {
               <span className="text-xl font-bold">AgriChain</span>
             </div>
             <p className="text-gray-400">
-              Revolutionizing agri-food supply chain with smart technology and complete traceability.
+              Revolutionizing agri-food supply jjjjjjjj chain with smart technology and complete traceability.
             </p>
           </div>
           <div>
