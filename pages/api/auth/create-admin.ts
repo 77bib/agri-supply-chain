@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '../../../lib/mongodb';
-import User, { IUser } from '../../../models/User';
-import { validateSignupData } from '../../../lib/validations';
+import User from '../../../models/User';
 import { hashPassword } from '../../../lib/auth';
 import { generateToken } from '../../../lib/jwt';
 
@@ -9,7 +8,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // التحقق من طريقة الطلب
   if (req.method !== 'POST') {
     return res.status(405).json({
       success: false,
@@ -18,21 +16,26 @@ export default async function handler(
   }
 
   try {
-    // الاتصال بقاعدة البيانات
     await dbConnect();
 
-    // التحقق من صحة البيانات المرسلة
-    const validation = validateSignupData(req.body);
-    
-    if (!validation.success) {
+    const { name, email, password, adminSecret } = req.body;
+
+    // التحقق من البيانات المطلوبة
+    if (!name || !email || !password || !adminSecret) {
       return res.status(400).json({
         success: false,
-        message: 'بيانات غير صحيحة',
-        errors: validation.errors
+        message: 'جميع الحقول مطلوبة'
       });
     }
 
-    const { name, email, password } = validation.data;
+    // التحقق من admin secret (يمكن تغييره في .env)
+    const ADMIN_SECRET = process.env.ADMIN_SECRET || 'admin-secret-2024';
+    if (adminSecret !== ADMIN_SECRET) {
+      return res.status(403).json({
+        success: false,
+        message: 'رمز admin غير صحيح'
+      });
+    }
 
     // التحقق من وجود المستخدم مسبقاً
     const existingUser = await User.findOne({ email: email.toLowerCase() });
@@ -47,42 +50,42 @@ export default async function handler(
     // تشفير كلمة المرور
     const hashedPassword = await hashPassword(password);
 
-    // إنشاء المستخدم الجديد
-    const newUser = await User.create({
+    // إنشاء المستخدم الـ admin
+    const newAdmin = await User.create({
       name: name.trim(),
       email: email.toLowerCase().trim(),
-      password: hashedPassword
+      password: hashedPassword,
+      role: 'admin'
     });
 
     // إنشاء JWT token
     const token = generateToken({
-      userId: newUser._id.toString(),
-      email: newUser.email,
-      name: newUser.name
+      userId: newAdmin._id.toString(),
+      email: newAdmin.email,
+      name: newAdmin.name
     });
 
     // إرجاع بيانات المستخدم بدون كلمة المرور
     const userResponse = {
-      _id: newUser._id,
-      name: newUser.name,
-      email: newUser.email,
-      createdAt: newUser.createdAt,
-      updatedAt: newUser.updatedAt
+      _id: newAdmin._id,
+      name: newAdmin.name,
+      email: newAdmin.email,
+      role: newAdmin.role,
+      createdAt: newAdmin.createdAt,
+      updatedAt: newAdmin.updatedAt
     };
 
     res.status(201).json({
       success: true,
-      message: 'تم إنشاء الحساب بنجاح',
+      message: 'تم إنشاء حساب الـ admin بنجاح',
       data: userResponse,
       token: token
     });
 
   } catch (error) {
-    console.error('خطأ في التسجيل:', error);
+    console.error('خطأ في إنشاء الـ admin:', error);
 
-    // التحقق من أخطاء MongoDB
     if (error instanceof Error) {
-      // خطأ في تكرار البريد الإلكتروني
       if (error.message.includes('duplicate key error') || error.message.includes('E11000')) {
         return res.status(409).json({
           success: false,
@@ -90,7 +93,6 @@ export default async function handler(
         });
       }
 
-      // خطأ في التحقق من البيانات
       if (error.name === 'ValidationError') {
         const validationErrors = Object.values((error as any).errors).map((err: any) => err.message);
         return res.status(400).json({

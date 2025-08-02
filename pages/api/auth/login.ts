@@ -3,6 +3,7 @@ import dbConnect from '../../../lib/mongodb';
 import User from '../../../models/User';
 import { validateLoginData } from '../../../lib/validations';
 import { verifyPassword } from '../../../lib/auth';
+import { generateToken } from '../../../lib/jwt';
 
 export default async function handler(
   req: NextApiRequest,
@@ -53,11 +54,19 @@ export default async function handler(
       });
     }
 
+    // إنشاء JWT token
+    const token = generateToken({
+      userId: user._id.toString(),
+      email: user.email,
+      name: user.name
+    });
+
     // إرجاع بيانات المستخدم بدون كلمة المرور
     const userResponse = {
       _id: user._id,
       name: user.name,
       email: user.email,
+      role: user.role,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt
     };
@@ -65,7 +74,8 @@ export default async function handler(
     res.status(200).json({
       success: true,
       message: 'تم تسجيل الدخول بنجاح',
-      data: userResponse
+      data: userResponse,
+      token: token
     });
 
   } catch (error) {

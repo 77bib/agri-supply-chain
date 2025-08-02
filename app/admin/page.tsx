@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -25,8 +26,13 @@ import {
   MapPin,
   Thermometer,
   ShoppingCart,
+  Users,
+  Mail,
+  Calendar,
+  RefreshCw,
 } from "lucide-react"
 import AdminLayout from "@/components/admin-layout"
+import { usersAPI, User } from "@/lib/api-service"
 
 // Dummy data for dashboard
 const kpiData = {
@@ -113,6 +119,28 @@ const recentOrders = [
 ]
 
 export default function AdminDashboard() {
+  const [clients, setClients] = useState<User[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Fetch clients from API
+  const fetchClients = async () => {
+    try {
+      setLoading(true)
+      const response = await usersAPI.getAll()
+      if (response.success && response.data) {
+        setClients(response.data)
+      }
+    } catch (error) {
+      console.error("Error fetching clients:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchClients()
+  }, [])
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "optimal":
@@ -160,6 +188,49 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Clients</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{clients.length}</div>
+              <p className="text-xs text-muted-foreground">
+                <span className="text-green-600">{clients.filter(c => c.role === 'user').length}</span> regular users
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Admin Users</CardTitle>
+              <Users className="h-4 w-4 text-purple-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-purple-600">{clients.filter(c => c.role === 'admin').length}</div>
+              <p className="text-xs text-muted-foreground">
+                <span className="text-purple-600">Administrators</span> in system
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Recent Registrations</CardTitle>
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {clients.filter(c => {
+                  const registrationDate = new Date(c.createdAt)
+                  const oneWeekAgo = new Date()
+                  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+                  return registrationDate > oneWeekAgo
+                }).length}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                <span className="text-blue-600">New users</span> this week
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Orders Today</CardTitle>
               <ShoppingCart className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
@@ -167,42 +238,6 @@ export default function AdminDashboard() {
               <div className="text-2xl font-bold">{kpiData.ordersToday}</div>
               <p className="text-xs text-muted-foreground">
                 <span className="text-green-600">+{kpiData.ordersChange}%</span> from yesterday
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Stock Level</CardTitle>
-              <Package className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{kpiData.stockLevel}%</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-red-600">{kpiData.stockChange}%</span> from last week
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Delays</CardTitle>
-              <Truck className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{kpiData.delays}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">{kpiData.delaysChange}%</span> from last month
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Wastage Rate</CardTitle>
-              <TrendingDown className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{kpiData.wastage}%</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">{kpiData.wastageChange}%</span> improvement
               </p>
             </CardContent>
           </Card>
@@ -375,6 +410,62 @@ export default function AdminDashboard() {
                 </div>
               ))}
             </div>
+          </CardContent>
+        </Card>
+
+        {/* All Clients Section */}
+        <Card>
+          <CardHeader>
+            <div className="flex justify-between items-center">
+              <div>
+                <CardTitle>All Clients</CardTitle>
+                <CardDescription>All registered users in the system</CardDescription>
+              </div>
+              <Button variant="outline" onClick={fetchClients} disabled={loading}>
+                <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="text-center py-8">
+                <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+                <p className="text-muted-foreground">Loading clients...</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {clients.map((client) => (
+                  <Card key={client._id} className="p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center space-x-2">
+                        <Users className="h-5 w-5 text-blue-600" />
+                        <div>
+                          <h3 className="font-semibold text-sm">{client.name}</h3>
+                          <p className="text-xs text-gray-500">ID: {client._id.slice(-8)}</p>
+                        </div>
+                      </div>
+                      <Badge 
+                        variant={client.role === 'admin' ? 'default' : 'secondary'}
+                        className={client.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}
+                      >
+                        {client.role}
+                      </Badge>
+                    </div>
+                    <div className="space-y-2 text-xs">
+                      <div className="flex items-center space-x-2">
+                        <Mail className="h-3 w-3 text-gray-500" />
+                        <span className="truncate">{client.email}</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Calendar className="h-3 w-3 text-gray-500" />
+                        <span>Joined {new Date(client.createdAt).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

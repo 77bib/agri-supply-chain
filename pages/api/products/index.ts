@@ -1,9 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '../../../lib/mongodb';
 import Product, { IProduct } from '../../../models/Product';
+import { withAuth, AuthenticatedRequest } from '../../../lib/auth-middleware';
 
-export default async function handler(
-  req: NextApiRequest,
+async function handler(
+  req: AuthenticatedRequest,
   res: NextApiResponse
 ) {
   const { method } = req;
@@ -23,7 +24,8 @@ export default async function handler(
   switch (method) {
     case 'GET':
       try {
-        const products = await Product.find({}).sort({ createdAt: -1 });
+        // جلب المنتجات الخاصة بالمستخدم فقط
+        const products = await Product.find({ userId: req.user!.userId }).sort({ createdAt: -1 });
         
         res.status(200).json({
           success: true,
@@ -42,7 +44,7 @@ export default async function handler(
 
     case 'POST':
       try {
-        const { name, description, category, price, quantity, supplier } = req.body;
+        const { name, description, category, price, quantity, supplier, image } = req.body;
 
         // التحقق من الحقول المطلوبة
         if (!name || !category || !price || !quantity || !supplier) {
@@ -69,14 +71,16 @@ export default async function handler(
           });
         }
 
-        // إنشاء منتج جديد
+        // إنشاء منتج جديد مرتبط بالمستخدم
         const product = await Product.create({
           name: name.trim(),
           description: description?.trim(),
           category: category.trim(),
           price,
           quantity,
-          supplier: supplier.trim()
+          supplier: supplier.trim(),
+          image: image?.trim(),
+          userId: req.user!.userId
         });
 
         res.status(201).json({
@@ -113,4 +117,7 @@ export default async function handler(
       });
       break;
   }
-} 
+}
+
+// تصدير الـ handler مع middleware المصادقة
+export default withAuth(handler); 

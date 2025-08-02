@@ -4,6 +4,7 @@ export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
+  role: 'user' | 'admin';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,6 +32,11 @@ const UserSchema: Schema = new Schema({
     type: String,
     required: [true, 'كلمة المرور مطلوبة'],
     minlength: [6, 'كلمة المرور يجب أن تكون على الأقل 6 أحرف']
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
   }
 }, {
   timestamps: true

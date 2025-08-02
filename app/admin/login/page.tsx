@@ -11,6 +11,8 @@ import { Label } from "@/components/ui/label"
 import { Leaf, LogIn, Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
 import { useStore } from "@/lib/store"
+import { authAPI } from "@/lib/api-service"
+import { toast } from "@/components/ui/use-toast"
 
 export default function AdminLoginPage() {
   const [credentials, setCredentials] = useState({ email: "", password: "" })
@@ -25,20 +27,52 @@ export default function AdminLoginPage() {
     setIsLoading(true)
     setError("")
 
-    // Simulate authentication
-    setTimeout(() => {
-      if (credentials.email === "admin@agrichain.com" && credentials.password === "admin123") {
-        setIsAdmin(true)
-        router.push("/admin")
+    try {
+      const response = await authAPI.login(credentials.email, credentials.password)
+      
+      if (response.success && response.data) {
+        // Store the token in localStorage
+        localStorage.setItem('auth-token', response.token)
+        
+        // Check if user is admin
+        if (response.data.role === 'admin') {
+          setIsAdmin(true)
+          toast({
+            title: "Success",
+            description: "Welcome back, Admin!",
+          })
+          router.push("/admin")
+        } else {
+          setError("Access denied. Admin privileges required.")
+          toast({
+            title: "Access Denied",
+            description: "You need admin privileges to access this area.",
+            variant: "destructive",
+          })
+        }
       } else {
-        setError("Invalid email or password")
+        setError(response.message || "Invalid email or password")
+        toast({
+          title: "Login Failed",
+          description: response.message || "Invalid email or password",
+          variant: "destructive",
+        })
       }
+    } catch (error) {
+      console.error("Login error:", error)
+      setError("An error occurred during login")
+      toast({
+        title: "Error",
+        description: "An error occurred during login",
+        variant: "destructive",
+      })
+    } finally {
       setIsLoading(false)
-    }, 1000)
+    }
   }
 
   const handleDemoLogin = () => {
-    setCredentials({ email: "admin@agrichain.com", password: "admin123" })
+    setCredentials({ email: "superadmin@agri.com", password: "Admin123456" })
   }
 
   return (
@@ -112,12 +146,12 @@ export default function AdminLoginPage() {
 
             <div className="mt-6 text-center">
               <div className="text-sm text-gray-600 mb-4">
-                <p>Demo credentials:</p>
-                <p>Email: admin@agrichain.com</p>
-                <p>Password: admin123</p>
+                <p>Admin credentials:</p>
+                <p>Email: superadmin@agri.com</p>
+                <p>Password: Admin123456</p>
               </div>
               <Button variant="outline" onClick={handleDemoLogin} className="w-full bg-transparent">
-                Use Demo Credentials
+                Use Admin Credentials
               </Button>
             </div>
           </CardContent>

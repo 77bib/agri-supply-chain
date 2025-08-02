@@ -8,6 +8,8 @@ export interface IProduct extends Document {
   price: number;
   quantity: number;
   supplier: string;
+  image?: string; // رابط URL للصورة
+  userId: mongoose.Types.ObjectId; // إضافة حقل userId
   createdAt: Date;
 }
 
@@ -43,6 +45,19 @@ const ProductSchema: Schema = new Schema({
     required: [true, 'اسم المورد مطلوب'],
     trim: true
   },
+  image: {
+    type: String,
+    trim: true,
+    match: [
+      /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i,
+      'يرجى إدخال رابط صورة صحيح'
+    ]
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'معرف المستخدم مطلوب']
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -53,5 +68,8 @@ const ProductSchema: Schema = new Schema({
 
 // إنشاء فهرس للبحث
 ProductSchema.index({ name: 'text', description: 'text', category: 'text' });
+
+// إنشاء فهرس لـ userId للبحث السريع
+ProductSchema.index({ userId: 1 });
 
 export default mongoose.models.Product || mongoose.model<IProduct>('Product', ProductSchema);
