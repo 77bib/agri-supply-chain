@@ -335,8 +335,8 @@ export default function AdminProductsPage() {
                   </div>
                   <DialogFooter>
                     <Button type="button" variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
-                      Cancel
-                    </Button>
+                    Cancel
+                  </Button>
                     <Button type="submit">Create Product</Button>
                   </DialogFooter>
                 </form>
@@ -389,35 +389,35 @@ export default function AdminProductsPage() {
           </Card>
         </div>
 
-        {/* Filters */}
-        <Card>
+            {/* Filters */}
+            <Card>
           <CardHeader>
             <CardTitle>Filters & Search</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-4 gap-4">
-              <div className="relative">
+                    <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Search products..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                      <Input
+                        placeholder="Search products..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
-                />
-              </div>
+                      />
+                    </div>
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger>
                   <SelectValue placeholder="Category" />
-                </SelectTrigger>
-                <SelectContent>
+                      </SelectTrigger>
+                      <SelectContent>
                   <SelectItem value="all">All Categories</SelectItem>
-                  {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                        {categories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger>
                   <SelectValue placeholder="Sort by" />
@@ -438,9 +438,9 @@ export default function AdminProductsPage() {
                   <SelectItem value="asc">Ascending</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-          </CardContent>
-        </Card>
+                </div>
+              </CardContent>
+            </Card>
 
         {/* Products Table */}
         <Card>
@@ -487,13 +487,13 @@ export default function AdminProductsPage() {
                         </Button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button 
-                              size="sm" 
-                              variant="outline" 
+                        <Button
+                          size="sm"
+                          variant="outline"
                               onClick={() => setDeletingProduct(product)}
-                            >
+                        >
                               <Trash2 className="h-4 w-4" />
-                            </Button>
+                        </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
@@ -523,10 +523,10 @@ export default function AdminProductsPage() {
                     <p className="text-muted-foreground">No products found</p>
                   </div>
                 )}
-              </div>
+                  </div>
             )}
-          </CardContent>
-        </Card>
+                </CardContent>
+              </Card>
 
         {/* Pagination */}
         {totalPages > 1 && (
@@ -548,9 +548,9 @@ export default function AdminProductsPage() {
             >
               Next
             </Button>
-          </div>
+                          </div>
         )}
-      </div>
+            </div>
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -568,9 +568,9 @@ export default function AdminProductsPage() {
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   placeholder="Enter product name"
                   required
-                />
-              </div>
-              <div>
+                      />
+                    </div>
+                        <div>
                 <label className="text-sm font-medium">Category *</label>
                 <Select value={formData.category} onValueChange={(value) => setFormData({...formData, category: value})}>
                   <SelectTrigger>
@@ -584,11 +584,11 @@ export default function AdminProductsPage() {
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
-            <div>
+                </div>
+                  </div>
+                  <div>
               <label className="text-sm font-medium">Description</label>
-              <Textarea
+                    <Textarea
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
                 placeholder="Enter product description"
@@ -596,7 +596,7 @@ export default function AdminProductsPage() {
               />
             </div>
             <div className="grid grid-cols-3 gap-4">
-              <div>
+                      <div>
                 <label className="text-sm font-medium">Price *</label>
                 <Input
                   type="number"
@@ -607,8 +607,8 @@ export default function AdminProductsPage() {
                   placeholder="0.00"
                   required
                 />
-              </div>
-              <div>
+                      </div>
+                      <div>
                 <label className="text-sm font-medium">Quantity *</label>
                 <Input
                   type="number"
@@ -618,8 +618,8 @@ export default function AdminProductsPage() {
                   placeholder="0"
                   required
                 />
-              </div>
-              <div>
+                      </div>
+                      <div>
                 <label className="text-sm font-medium">Supplier *</label>
                 <Input
                   value={formData.supplier}
@@ -627,9 +627,9 @@ export default function AdminProductsPage() {
                   placeholder="Enter supplier name"
                   required
                 />
-              </div>
-            </div>
-            <div>
+                </div>
+                            </div>
+                            <div>
               <label className="text-sm font-medium">Image URL</label>
               <Input
                 value={formData.image}

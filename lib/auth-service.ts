@@ -82,9 +82,15 @@ export function logoutUser() {
   localStorage.removeItem('auth-token');
   
   // إعادة تعيين حالة المستخدم في المتجر
-  const { setCurrentUser, setIsAdmin } = useStore.getState();
+  const { setCurrentUser, setIsAdmin, clearCart } = useStore.getState();
   setCurrentUser(null);
   setIsAdmin(false);
+  clearCart(); // تنظيف السلة أيضاً
+  
+  // إعادة التوجيه إلى الصفحة الرئيسية
+  if (typeof window !== 'undefined') {
+    window.location.href = '/';
+  }
 }
 
 // دالة التحقق من حالة تسجيل الدخول عند تحميل التطبيق

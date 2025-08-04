@@ -7,11 +7,11 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { 
-  Search, 
+import {
+  Search,
   Filter, 
   Eye, 
-  Edit, 
+  Edit,
   ShoppingCart, 
   DollarSign, 
   TrendingUp,
@@ -193,7 +193,7 @@ export default function AdminOrdersPage() {
             <Button variant="outline" onClick={fetchOrders} disabled={loading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
               Refresh
-            </Button>
+                  </Button>
           </div>
         </div>
 
@@ -243,22 +243,22 @@ export default function AdminOrdersPage() {
           </Card>
         </div>
 
-        {/* Filters */}
-        <Card>
+            {/* Filters */}
+            <Card>
           <CardHeader>
             <CardTitle>Filters & Search</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-5 gap-4">
-              <div className="relative">
+                    <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
+                      <Input
                   placeholder="Search orders..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
-                />
-              </div>
+                      />
+                    </div>
               <Select value={selectedStatus} onValueChange={setSelectedStatus}>
                 <SelectTrigger>
                   <SelectValue placeholder="Status" />
@@ -291,8 +291,8 @@ export default function AdminOrdersPage() {
               <Select value={selectedProductId} onValueChange={setSelectedProductId}>
                 <SelectTrigger>
                   <SelectValue placeholder="Product" />
-                </SelectTrigger>
-                <SelectContent>
+                      </SelectTrigger>
+                      <SelectContent>
                   <SelectItem value="all">All Products</SelectItem>
                   {uniqueProducts.map((productId) => {
                     const order = orders.find(o => o.productId?._id === productId)
@@ -302,28 +302,28 @@ export default function AdminOrdersPage() {
                       </SelectItem>
                     )
                   })}
-                </SelectContent>
-              </Select>
+                      </SelectContent>
+                    </Select>
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger>
                   <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
+                      </SelectTrigger>
+                      <SelectContent>
                   <SelectItem value="createdAt">Date Created</SelectItem>
                   <SelectItem value="totalPrice">Order Value</SelectItem>
                   <SelectItem value="status">Status</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
+                      </SelectContent>
+                    </Select>
+                </div>
+              </CardContent>
+            </Card>
 
-        {/* Orders Table */}
-        <Card>
-          <CardHeader>
+            {/* Orders Table */}
+              <Card>
+                <CardHeader>
             <CardTitle>Orders</CardTitle>
             <CardDescription>Manage customer orders and their status</CardDescription>
-          </CardHeader>
+                </CardHeader>
           <CardContent>
             {loading ? (
               <div className="text-center py-8">
@@ -341,8 +341,8 @@ export default function AdminOrdersPage() {
                         ) : (
                           <Package className="h-8 w-8 text-gray-400" />
                         )}
-                      </div>
-                      <div>
+                    </div>
+                    <div>
                         <h3 className="font-semibold">{order.productId?.name || 'Product Not Found'}</h3>
                         <p className="text-sm text-muted-foreground">
                           Customer: {order.userId?.name || 'Unknown'} ({order.userId?.email || 'No email'})
@@ -351,7 +351,7 @@ export default function AdminOrdersPage() {
                           <Badge variant="outline">{order.productId?.category || 'Unknown'}</Badge>
                           <Badge variant="outline">{order.productId?.supplier || 'Unknown'}</Badge>
                           <Badge variant="outline">Qty: {order.quantity}</Badge>
-                        </div>
+                  </div>
                       </div>
                     </div>
                     <div className="flex items-center space-x-4">
@@ -359,11 +359,11 @@ export default function AdminOrdersPage() {
                         <div className="font-semibold">${order.totalPrice.toFixed(2)}</div>
                         <div className="text-sm text-muted-foreground">
                           {new Date(order.createdAt).toLocaleDateString()}
-                        </div>
+                    </div>
                         <div className="flex items-center space-x-1 mt-1">
                           {getStatusIcon(order.status)}
                           {getStatusBadge(order.status)}
-                        </div>
+                  </div>
                       </div>
                       <div className="flex space-x-2">
                         <Button 
@@ -382,12 +382,12 @@ export default function AdminOrdersPage() {
                   <div className="text-center py-8">
                     <ShoppingCart className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                     <p className="text-muted-foreground">No orders found</p>
-                  </div>
-                )}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                    </div>
+                  )}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
 
         {/* Pagination */}
         {totalPages > 1 && (
@@ -409,9 +409,9 @@ export default function AdminOrdersPage() {
             >
               Next
             </Button>
-          </div>
-        )}
-      </div>
+                        </div>
+                        )}
+                      </div>
 
       {/* Status Update Dialog */}
       <Dialog open={isStatusDialogOpen} onOpenChange={setIsStatusDialogOpen}>
@@ -428,8 +428,8 @@ export default function AdminOrdersPage() {
               <div className="flex items-center space-x-2 mt-1">
                 {selectedOrder && getStatusIcon(selectedOrder.status)}
                 {selectedOrder && getStatusBadge(selectedOrder.status)}
-              </div>
-            </div>
+                      </div>
+                    </div>
             <div>
               <label className="text-sm font-medium">New Status</label>
               <Select value={newStatus} onValueChange={setNewStatus}>
@@ -457,7 +457,7 @@ export default function AdminOrdersPage() {
                 </div>
               </div>
             )}
-          </div>
+      </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setIsStatusDialogOpen(false)}>
               Cancel

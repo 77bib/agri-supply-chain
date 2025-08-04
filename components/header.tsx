@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Leaf, ShoppingCart, User, LogIn, LogOut, Menu, X } from "lucide-react"
+import { Leaf, ShoppingCart, User, LogIn, LogOut, Menu, X, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -76,6 +76,9 @@ export function Header() {
                     <DropdownMenuItem asChild>
                       <Link href="/cart">My Cart</Link>
                     </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/admin">Admin Panel</Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="h-4 w-4 mr-2" />
                       Logout
@@ -101,14 +104,12 @@ export function Header() {
             </HydrationBoundary>
 
             <HydrationBoundary>
-              {isAdmin && (
-                <Link href="/admin">
-                  <Button variant="outline">
-                    <User className="h-4 w-4 mr-2" />
-                    Admin
-                  </Button>
-                </Link>
-              )}
+              <Link href="/admin">
+                <Button variant="outline">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Admin
+                </Button>
+              </Link>
             </HydrationBoundary>
           </div>
 
@@ -159,6 +160,9 @@ export function Header() {
                       <Link href="/cart" className="block w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded">
                         My Cart
                       </Link>
+                      <Link href="/admin" className="block w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded">
+                        Admin Panel
+                      </Link>
                       <button
                         onClick={() => {
                           handleLogout()
@@ -189,14 +193,12 @@ export function Header() {
               </HydrationBoundary>
 
               <HydrationBoundary>
-                {isAdmin && (
-                  <Link href="/admin" className="block w-full" onClick={() => setIsOpen(false)}>
-                    <Button variant="outline" className="w-full">
-                      <User className="h-4 w-4 mr-2" />
-                      Admin Dashboard
-                    </Button>
-                  </Link>
-                )}
+                <Link href="/admin" className="block w-full" onClick={() => setIsOpen(false)}>
+                  <Button variant="outline" className="w-full">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Admin Dashboard
+                  </Button>
+                </Link>
               </HydrationBoundary>
             </div>
           </div>
