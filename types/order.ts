@@ -5,6 +5,35 @@ export interface IOrder {
   quantity: number;
   status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
   totalPrice: number;
+  
+  // معلومات الشحن
+  shippingInfo: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    address: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+  };
+  
+  // معلومات الدفع (مشفرة)
+  paymentInfo: {
+    cardHolder: string;
+    cardLastFour: string;
+    expiryMonth: string;
+    expiryYear: string;
+    paymentMethod: string;
+  };
+  
+  // معلومات إضافية
+  subtotal: number;
+  shippingCost: number;
+  tax: number;
+  total: number;
+  
   createdAt: string;
   updatedAt: string;
 }
@@ -22,12 +51,35 @@ export interface IOrderWithDetails extends IOrder {
     _id: string;
     name: string;
     email: string;
+    phone?: string;
   };
 }
 
 export interface CreateOrderRequest {
   productId: string;
   quantity: number;
+  shippingInfo: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    address: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+  };
+  paymentInfo: {
+    cardNumber: string;
+    cardHolder: string;
+    expiryMonth: string;
+    expiryYear: string;
+    cvv: string;
+  };
+  subtotal: number;
+  shippingCost: number;
+  tax: number;
+  total: number;
 }
 
 export interface UpdateOrderStatusRequest {

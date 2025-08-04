@@ -61,8 +61,8 @@ async function handleGetOrders(
 
     // جلب الطلبات مع معلومات المنتج والمستخدم
     const orders = await Order.find(query)
-      .populate('productId', 'name price image')
-      .populate('userId', 'name email')
+      .populate('productId', 'name price image category supplier')
+      .populate('userId', 'name email phone')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(Number(limit));
@@ -96,7 +96,16 @@ async function handleCreateOrder(
   res: NextApiResponse
 ) {
   try {
-    const { productId, quantity } = req.body;
+    const { 
+      productId, 
+      quantity, 
+      shippingInfo, 
+      paymentInfo,
+      subtotal,
+      shippingCost,
+      tax,
+      total
+    } = req.body;
 
     // التحقق من الحقول المطلوبة
     if (!productId || !quantity) {
@@ -104,6 +113,24 @@ async function handleCreateOrder(
         success: false,
         message: 'معرف المنتج والكمية مطلوبان',
         requiredFields: ['productId', 'quantity']
+      });
+    }
+
+    // التحقق من معلومات الشحن
+    if (!shippingInfo) {
+      return res.status(400).json({
+        success: false,
+        message: 'معلومات الشحن مطلوبة',
+        requiredFields: ['shippingInfo']
+      });
+    }
+
+    // التحقق من معلومات الدفع
+    if (!paymentInfo) {
+      return res.status(400).json({
+        success: false,
+        message: 'معلومات الدفع مطلوبة',
+        requiredFields: ['paymentInfo']
       });
     }
 
@@ -132,12 +159,27 @@ async function handleCreateOrder(
       });
     }
 
-    // إنشاء الطلب
+    // معالجة معلومات الدفع (إخفاء رقم البطاقة)
+    const processedPaymentInfo = {
+      cardHolder: paymentInfo.cardHolder,
+      cardLastFour: paymentInfo.cardNumber.slice(-4), // آخر 4 أرقام فقط
+      expiryMonth: paymentInfo.expiryMonth,
+      expiryYear: paymentInfo.expiryYear,
+      paymentMethod: 'credit_card'
+    };
+
+    // إنشاء الطلب مع جميع المعلومات
     const order = await Order.create({
       productId,
       userId: req.user!.userId,
       quantity,
-      totalPrice: product.price * quantity
+      totalPrice: product.price * quantity,
+      shippingInfo,
+      paymentInfo: processedPaymentInfo,
+      subtotal: subtotal || (product.price * quantity),
+      shippingCost: shippingCost || 10,
+      tax: tax || ((product.price * quantity) * 0.15),
+      total: total || (product.price * quantity + 10 + ((product.price * quantity) * 0.15))
     });
 
     // تحديث كمية المنتج
@@ -145,10 +187,10 @@ async function handleCreateOrder(
       $inc: { quantity: -quantity }
     });
 
-    // جلب الطلب مع معلومات المنتج
+    // جلب الطلب مع معلومات المنتج والمستخدم
     const populatedOrder = await Order.findById(order._id)
-      .populate('productId', 'name price image')
-      .populate('userId', 'name email');
+      .populate('productId', 'name price image category supplier')
+      .populate('userId', 'name email phone');
 
     res.status(201).json({
       success: true,

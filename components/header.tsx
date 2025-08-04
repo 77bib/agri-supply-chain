@@ -74,7 +74,13 @@ export function Header() {
                       <Link href="/dashboard">My Dashboard</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/cart">My Cart</Link>
+                      <Link href="/cart">Cart</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/customer-cart">My Cart</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/saved-info">Saved Information</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/admin">Admin Panel</Link>
@@ -158,7 +164,13 @@ export function Header() {
                         My Dashboard
                       </Link>
                       <Link href="/cart" className="block w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded">
+                        Cart
+                      </Link>
+                      <Link href="/customer-cart" className="block w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded">
                         My Cart
+                      </Link>
+                      <Link href="/saved-info" className="block w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded">
+                        Saved Information
                       </Link>
                       <Link href="/admin" className="block w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded">
                         Admin Panel

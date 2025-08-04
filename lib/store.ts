@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
+import { saveCart, saveCartToLocalStorage } from "./cart-service"
 
 // Types
 export interface Product {
@@ -80,6 +81,7 @@ interface StoreState {
 
   // Cart
   cart: CartItem[]
+  setCart: (cart: CartItem[]) => void
   addToCart: (product: Product, quantity: number) => void
   removeFromCart: (productId: string) => void
   updateCartQuantity: (productId: string, quantity: number) => void
@@ -141,27 +143,94 @@ export const useStore = create<StoreState>()(
 
       // Cart
       cart: [],
+      setCart: (cart) => {
+        set({ cart })
+        // حفظ تلقائي عند تغيير السلة
+        if (typeof window !== 'undefined') {
+          const token = localStorage.getItem('auth-token')
+          if (token) {
+            // حفظ في قاعدة البيانات
+            saveCart(cart).catch(error => {
+              console.error('Failed to auto-save cart:', error)
+            })
+            // حفظ في localStorage كنسخة احتياطية
+            saveCartToLocalStorage(cart)
+          }
+        }
+      },
       addToCart: (product, quantity) =>
         set((state) => {
           const existingItem = state.cart.find((item) => item.product.id === product.id)
+          let newCart
           if (existingItem) {
-            return {
-              cart: state.cart.map((item) =>
-                item.product.id === product.id ? { ...item, quantity: item.quantity + quantity } : item,
-              ),
+            newCart = state.cart.map((item) =>
+              item.product.id === product.id ? { ...item, quantity: item.quantity + quantity } : item,
+            )
+          } else {
+            newCart = [...state.cart, { product, quantity }]
+          }
+          
+          // حفظ تلقائي
+          if (typeof window !== 'undefined') {
+            const token = localStorage.getItem('auth-token')
+            if (token) {
+              saveCart(newCart).catch(error => {
+                console.error('Failed to auto-save cart:', error)
+              })
+              saveCartToLocalStorage(newCart)
             }
           }
-          return { cart: [...state.cart, { product, quantity }] }
+          
+          return { cart: newCart }
         }),
       removeFromCart: (productId) =>
-        set((state) => ({
-          cart: state.cart.filter((item) => item.product.id !== productId),
-        })),
+        set((state) => {
+          const newCart = state.cart.filter((item) => item.product.id !== productId)
+          
+          // حفظ تلقائي
+          if (typeof window !== 'undefined') {
+            const token = localStorage.getItem('auth-token')
+            if (token) {
+              saveCart(newCart).catch(error => {
+                console.error('Failed to auto-save cart:', error)
+              })
+              saveCartToLocalStorage(newCart)
+            }
+          }
+          
+          return { cart: newCart }
+        }),
       updateCartQuantity: (productId, quantity) =>
-        set((state) => ({
-          cart: state.cart.map((item) => (item.product.id === productId ? { ...item, quantity } : item)),
-        })),
-      clearCart: () => set({ cart: [] }),
+        set((state) => {
+          const newCart = state.cart.map((item) => (item.product.id === productId ? { ...item, quantity } : item))
+          
+          // حفظ تلقائي
+          if (typeof window !== 'undefined') {
+            const token = localStorage.getItem('auth-token')
+            if (token) {
+              saveCart(newCart).catch(error => {
+                console.error('Failed to auto-save cart:', error)
+              })
+              saveCartToLocalStorage(newCart)
+            }
+          }
+          
+          return { cart: newCart }
+        }),
+      clearCart: () => {
+        set({ cart: [] })
+        
+        // حفظ تلقائي
+        if (typeof window !== 'undefined') {
+          const token = localStorage.getItem('auth-token')
+          if (token) {
+            saveCart([]).catch(error => {
+              console.error('Failed to auto-save cart:', error)
+            })
+            saveCartToLocalStorage([])
+          }
+        }
+      },
 
       // Orders
       orders: [],

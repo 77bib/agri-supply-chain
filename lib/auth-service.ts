@@ -1,4 +1,5 @@
 import { useStore } from './store';
+import { saveCart, saveCartToLocalStorage, loadCart, loadCartFromLocalStorage, mergeCarts } from './cart-service';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
@@ -77,19 +78,38 @@ export async function verifyToken(token: string): Promise<{ success: boolean; da
 }
 
 // دالة تسجيل الخروج
-export function logoutUser() {
-  // حذف التوكن من localStorage
-  localStorage.removeItem('auth-token');
-  
-  // إعادة تعيين حالة المستخدم في المتجر
-  const { setCurrentUser, setIsAdmin, clearCart } = useStore.getState();
-  setCurrentUser(null);
-  setIsAdmin(false);
-  clearCart(); // تنظيف السلة أيضاً
-  
-  // إعادة التوجيه إلى الصفحة الرئيسية
-  if (typeof window !== 'undefined') {
-    window.location.href = '/';
+export async function logoutUser() {
+  try {
+    const { cart } = useStore.getState();
+    
+    // حفظ عربة التسوق قبل الخروج إذا كان المستخدم مسجل دخول
+    const token = localStorage.getItem('auth-token');
+    if (token && cart.length > 0) {
+      try {
+        await saveCart(cart);
+        console.log('Cart saved successfully before logout');
+      } catch (error) {
+        console.error('Failed to save cart before logout:', error);
+        // حفظ في localStorage كنسخة احتياطية
+        saveCartToLocalStorage(cart);
+      }
+    }
+  } catch (error) {
+    console.error('Error during logout:', error);
+  } finally {
+    // حذف التوكن من localStorage
+    localStorage.removeItem('auth-token');
+    
+    // إعادة تعيين حالة المستخدم في المتجر
+    const { setCurrentUser, setIsAdmin, clearCart } = useStore.getState();
+    setCurrentUser(null);
+    setIsAdmin(false);
+    clearCart(); // تنظيف السلة أيضاً
+    
+    // إعادة التوجيه إلى الصفحة الرئيسية
+    if (typeof window !== 'undefined') {
+      window.location.href = '/';
+    }
   }
 }
 
@@ -136,8 +156,8 @@ export async function checkAuthStatus() {
 }
 
 // دالة حفظ بيانات المستخدم في المتجر
-export function saveUserToStore(user: any, isAdmin: boolean = false) {
-  const { setCurrentUser, setIsAdmin, addClient } = useStore.getState();
+export async function saveUserToStore(user: any, isAdmin: boolean = false) {
+  const { setCurrentUser, setIsAdmin, addClient, cart, setCart } = useStore.getState();
   
   // إضافة المستخدم إلى قائمة العملاء إذا لم يكن admin
   if (!isAdmin) {
@@ -146,4 +166,28 @@ export function saveUserToStore(user: any, isAdmin: boolean = false) {
   
   setCurrentUser(user);
   setIsAdmin(isAdmin);
+
+  // استرجاع عربة التسوق المحفوظة
+  try {
+    const savedCartResponse = await loadCart();
+    if (savedCartResponse.success && savedCartResponse.data.cart.length > 0) {
+      // دمج عربة التسوق المحفوظة مع الحالية
+      const mergedCart = mergeCarts(savedCartResponse.data.cart, cart);
+      setCart(mergedCart);
+      console.log('Saved cart restored successfully');
+    }
+  } catch (error) {
+    console.error('Failed to load saved cart:', error);
+    // محاولة استرجاع من localStorage كنسخة احتياطية
+    try {
+      const localCart = loadCartFromLocalStorage();
+      if (localCart.length > 0) {
+        const mergedCart = mergeCarts(localCart, cart);
+        setCart(mergedCart);
+        console.log('Cart restored from localStorage');
+      }
+    } catch (localError) {
+      console.error('Failed to load cart from localStorage:', localError);
+    }
+  }
 } 

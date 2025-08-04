@@ -5,6 +5,8 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { StoreProvider } from "@/components/store-provider"
 import { Toaster } from "@/components/ui/toaster"
+import { CartAutoSave } from "@/components/cart-auto-save"
+import { CartRestoreNotification } from "@/components/cart-restore-notification"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -29,6 +31,8 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <StoreProvider>
+            <CartAutoSave />
+            <CartRestoreNotification />
             {children}
             <Toaster />
           </StoreProvider>

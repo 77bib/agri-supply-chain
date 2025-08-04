@@ -42,10 +42,40 @@ interface Order {
     _id: string
     name: string
     email: string
+    phone?: string
   }
   quantity: number
   status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'
   totalPrice: number
+  
+  // معلومات الشحن
+  shippingInfo?: {
+    firstName: string
+    lastName: string
+    email: string
+    phone: string
+    address: string
+    city: string
+    state: string
+    zipCode: string
+    country: string
+  }
+  
+  // معلومات الدفع (مشفرة)
+  paymentInfo?: {
+    cardHolder: string
+    cardLastFour: string
+    expiryMonth: string
+    expiryYear: string
+    paymentMethod: string
+  }
+  
+  // معلومات إضافية
+  subtotal?: number
+  shippingCost?: number
+  tax?: number
+  total?: number
+  
   createdAt: string
   updatedAt: string
 }
@@ -369,6 +399,13 @@ export default function AdminOrdersPage() {
                         <Button 
                           size="sm" 
                           variant="outline" 
+                          onClick={() => setSelectedOrder(order)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
                           onClick={() => openStatusDialog(order)}
                         >
                           <Edit className="h-4 w-4" />
@@ -412,6 +449,136 @@ export default function AdminOrdersPage() {
                         </div>
                         )}
                       </div>
+
+      {/* Order Details Dialog */}
+      <Dialog open={!!selectedOrder && !isStatusDialogOpen} onOpenChange={(open) => !open && setSelectedOrder(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Order Details</DialogTitle>
+            <DialogDescription>
+              Complete order information for order #{selectedOrder?._id.slice(-8)}
+            </DialogDescription>
+          </DialogHeader>
+          {selectedOrder && (
+            <div className="space-y-6">
+              {/* Order Summary */}
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-medium text-sm mb-3">Order Summary</h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Product:</span> {selectedOrder.productId?.name || 'Product Not Found'}
+                  </div>
+                  <div>
+                    <span className="font-medium">Quantity:</span> {selectedOrder.quantity}
+                  </div>
+                  <div>
+                    <span className="font-medium">Status:</span> 
+                    <span className="ml-2">{getStatusBadge(selectedOrder.status)}</span>
+                  </div>
+                  <div>
+                    <span className="font-medium">Date:</span> {new Date(selectedOrder.createdAt).toLocaleDateString()}
+                  </div>
+                  <div>
+                    <span className="font-medium">Subtotal:</span> ${selectedOrder.subtotal?.toFixed(2) || selectedOrder.totalPrice.toFixed(2)}
+                  </div>
+                  <div>
+                    <span className="font-medium">Shipping:</span> ${selectedOrder.shippingCost?.toFixed(2) || '0.00'}
+                  </div>
+                  <div>
+                    <span className="font-medium">Tax:</span> ${selectedOrder.tax?.toFixed(2) || '0.00'}
+                  </div>
+                  <div>
+                    <span className="font-medium">Total:</span> ${selectedOrder.total?.toFixed(2) || selectedOrder.totalPrice.toFixed(2)}
+                  </div>
+                </div>
+              </div>
+
+              {/* Customer Information */}
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h4 className="font-medium text-sm mb-3">Customer Information</h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Name:</span> {selectedOrder.userId?.name || 'Unknown'}
+                  </div>
+                  <div>
+                    <span className="font-medium">Email:</span> {selectedOrder.userId?.email || 'No email'}
+                  </div>
+                  <div>
+                    <span className="font-medium">Phone:</span> {selectedOrder.userId?.phone || 'No phone'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Shipping Information */}
+              {selectedOrder.shippingInfo && (
+                <div className="bg-green-50 p-4 rounded-lg">
+                  <h4 className="font-medium text-sm mb-3">Shipping Information</h4>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="font-medium">Name:</span> {selectedOrder.shippingInfo.firstName} {selectedOrder.shippingInfo.lastName}
+                    </div>
+                    <div>
+                      <span className="font-medium">Email:</span> {selectedOrder.shippingInfo.email}
+                    </div>
+                    <div>
+                      <span className="font-medium">Phone:</span> {selectedOrder.shippingInfo.phone}
+                    </div>
+                    <div>
+                      <span className="font-medium">Country:</span> {selectedOrder.shippingInfo.country}
+                    </div>
+                    <div className="col-span-2">
+                      <span className="font-medium">Address:</span> {selectedOrder.shippingInfo.address}
+                    </div>
+                    <div>
+                      <span className="font-medium">City:</span> {selectedOrder.shippingInfo.city}
+                    </div>
+                    <div>
+                      <span className="font-medium">State:</span> {selectedOrder.shippingInfo.state}
+                    </div>
+                    <div>
+                      <span className="font-medium">ZIP Code:</span> {selectedOrder.shippingInfo.zipCode}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Payment Information */}
+              {selectedOrder.paymentInfo && (
+                <div className="bg-yellow-50 p-4 rounded-lg">
+                  <h4 className="font-medium text-sm mb-3">Payment Information</h4>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="font-medium">Card Holder:</span> {selectedOrder.paymentInfo.cardHolder}
+                    </div>
+                    <div>
+                      <span className="font-medium">Card Number:</span> **** **** **** {selectedOrder.paymentInfo.cardLastFour}
+                    </div>
+                    <div>
+                      <span className="font-medium">Expiry:</span> {selectedOrder.paymentInfo.expiryMonth}/{selectedOrder.paymentInfo.expiryYear}
+                    </div>
+                    <div>
+                      <span className="font-medium">Payment Method:</span> {selectedOrder.paymentInfo.paymentMethod}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setSelectedOrder(null)}>
+              Close
+            </Button>
+            <Button 
+              onClick={() => {
+                setSelectedOrder(null)
+                openStatusDialog(selectedOrder!)
+              }}
+            >
+              Update Status
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Status Update Dialog */}
       <Dialog open={isStatusDialogOpen} onOpenChange={setIsStatusDialogOpen}>
