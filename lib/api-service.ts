@@ -128,6 +128,10 @@ export const usersAPI = {
   getAll: async () => {
     return makeRequest<User[]>('/users');
   },
+  
+  getById: async (id: string) => {
+    return makeRequest<any>(`/users/${id}`);
+  },
 };
 
 // Export the base makeRequest function for custom API calls

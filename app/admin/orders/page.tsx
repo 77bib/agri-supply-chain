@@ -450,121 +450,304 @@ export default function AdminOrdersPage() {
                         )}
                       </div>
 
-      {/* Order Details Dialog */}
+      {/* Enhanced Order Details Dialog */}
       <Dialog open={!!selectedOrder && !isStatusDialogOpen} onOpenChange={(open) => !open && setSelectedOrder(null)}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Order Details</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <ShoppingCart className="h-5 w-5 text-blue-600" />
+              Order Details - #{selectedOrder?._id.slice(-8)}
+            </DialogTitle>
             <DialogDescription>
-              Complete order information for order #{selectedOrder?._id.slice(-8)}
+              Complete order information and customer details
             </DialogDescription>
           </DialogHeader>
           {selectedOrder && (
             <div className="space-y-6">
-              {/* Order Summary */}
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-medium text-sm mb-3">Order Summary</h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="font-medium">Product:</span> {selectedOrder.productId?.name || 'Product Not Found'}
+              {/* Order Header */}
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border">
+                <div className="flex items-center space-x-4">
+                  <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                    {selectedOrder.productId?.image ? (
+                      <img src={selectedOrder.productId.image} alt={selectedOrder.productId?.name || 'Product'} className="w-full h-full object-cover rounded-lg" />
+                    ) : (
+                      <Package className="h-8 w-8 text-gray-400" />
+                    )}
                   </div>
                   <div>
-                    <span className="font-medium">Quantity:</span> {selectedOrder.quantity}
+                    <h3 className="text-lg font-semibold">{selectedOrder.productId?.name || 'Product Not Found'}</h3>
+                    <p className="text-sm text-muted-foreground">Order #{selectedOrder._id.slice(-8)}</p>
+                    <div className="flex items-center space-x-2 mt-1">
+                      {getStatusIcon(selectedOrder.status)}
+                      {getStatusBadge(selectedOrder.status)}
+                    </div>
                   </div>
-                  <div>
-                    <span className="font-medium">Status:</span> 
-                    <span className="ml-2">{getStatusBadge(selectedOrder.status)}</span>
-                  </div>
-                  <div>
-                    <span className="font-medium">Date:</span> {new Date(selectedOrder.createdAt).toLocaleDateString()}
-                  </div>
-                  <div>
-                    <span className="font-medium">Subtotal:</span> ${selectedOrder.subtotal?.toFixed(2) || selectedOrder.totalPrice.toFixed(2)}
-                  </div>
-                  <div>
-                    <span className="font-medium">Shipping:</span> ${selectedOrder.shippingCost?.toFixed(2) || '0.00'}
-                  </div>
-                  <div>
-                    <span className="font-medium">Tax:</span> ${selectedOrder.tax?.toFixed(2) || '0.00'}
-                  </div>
-                  <div>
-                    <span className="font-medium">Total:</span> ${selectedOrder.total?.toFixed(2) || selectedOrder.totalPrice.toFixed(2)}
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-green-600">${selectedOrder.totalPrice.toFixed(2)}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {new Date(selectedOrder.createdAt).toLocaleDateString()} at {new Date(selectedOrder.createdAt).toLocaleTimeString()}
                   </div>
                 </div>
               </div>
 
+              {/* Product Details */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Package className="h-5 w-5 text-blue-600" />
+                    Product Information
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="font-medium">Product Name:</span>
+                        <span>{selectedOrder.productId?.name || 'Product Not Found'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Category:</span>
+                        <Badge variant="outline">{selectedOrder.productId?.category || 'Unknown'}</Badge>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Supplier:</span>
+                        <span>{selectedOrder.productId?.supplier || 'Unknown'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Unit Price:</span>
+                        <span>${(selectedOrder.totalPrice / selectedOrder.quantity).toFixed(2)}</span>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="font-medium">Quantity:</span>
+                        <Badge variant="secondary">{selectedOrder.quantity} items</Badge>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Subtotal:</span>
+                        <span>${selectedOrder.subtotal?.toFixed(2) || selectedOrder.totalPrice.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Shipping Cost:</span>
+                        <span>${selectedOrder.shippingCost?.toFixed(2) || '0.00'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Tax:</span>
+                        <span>${selectedOrder.tax?.toFixed(2) || '0.00'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Customer Information */}
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-medium text-sm mb-3">Customer Information</h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="font-medium">Name:</span> {selectedOrder.userId?.name || 'Unknown'}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5 text-green-600" />
+                    Customer Information
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="font-medium">Customer Name:</span>
+                        <span className="font-semibold">{selectedOrder.userId?.name || 'Unknown'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Email Address:</span>
+                        <span className="text-blue-600">{selectedOrder.userId?.email || 'No email'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Phone Number:</span>
+                        <span>{selectedOrder.userId?.phone || 'No phone'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Customer ID:</span>
+                        <span className="font-mono text-xs">{selectedOrder.userId?._id || 'Unknown'}</span>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="font-medium">Order Date:</span>
+                        <span>{new Date(selectedOrder.createdAt).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Order Time:</span>
+                        <span>{new Date(selectedOrder.createdAt).toLocaleTimeString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Last Updated:</span>
+                        <span>{new Date(selectedOrder.updatedAt).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Order ID:</span>
+                        <span className="font-mono text-xs">{selectedOrder._id}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <span className="font-medium">Email:</span> {selectedOrder.userId?.email || 'No email'}
-                  </div>
-                  <div>
-                    <span className="font-medium">Phone:</span> {selectedOrder.userId?.phone || 'No phone'}
-                  </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
 
               {/* Shipping Information */}
               {selectedOrder.shippingInfo && (
-                <div className="bg-green-50 p-4 rounded-lg">
-                  <h4 className="font-medium text-sm mb-3">Shipping Information</h4>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span className="font-medium">Name:</span> {selectedOrder.shippingInfo.firstName} {selectedOrder.shippingInfo.lastName}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Truck className="h-5 w-5 text-purple-600" />
+                      Shipping Information
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span className="font-medium">Full Name:</span>
+                          <span className="font-semibold">{selectedOrder.shippingInfo.firstName} {selectedOrder.shippingInfo.lastName}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Email:</span>
+                          <span className="text-blue-600">{selectedOrder.shippingInfo.email}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Phone:</span>
+                          <span>{selectedOrder.shippingInfo.phone}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Country:</span>
+                          <Badge variant="outline">{selectedOrder.shippingInfo.country}</Badge>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span className="font-medium">City:</span>
+                          <span>{selectedOrder.shippingInfo.city}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">State/Province:</span>
+                          <span>{selectedOrder.shippingInfo.state}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">ZIP/Postal Code:</span>
+                          <span>{selectedOrder.shippingInfo.zipCode}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Address:</span>
+                          <span className="text-right max-w-xs">{selectedOrder.shippingInfo.address}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <span className="font-medium">Email:</span> {selectedOrder.shippingInfo.email}
-                    </div>
-                    <div>
-                      <span className="font-medium">Phone:</span> {selectedOrder.shippingInfo.phone}
-                    </div>
-                    <div>
-                      <span className="font-medium">Country:</span> {selectedOrder.shippingInfo.country}
-                    </div>
-                    <div className="col-span-2">
-                      <span className="font-medium">Address:</span> {selectedOrder.shippingInfo.address}
-                    </div>
-                    <div>
-                      <span className="font-medium">City:</span> {selectedOrder.shippingInfo.city}
-                    </div>
-                    <div>
-                      <span className="font-medium">State:</span> {selectedOrder.shippingInfo.state}
-                    </div>
-                    <div>
-                      <span className="font-medium">ZIP Code:</span> {selectedOrder.shippingInfo.zipCode}
-                    </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               )}
 
               {/* Payment Information */}
               {selectedOrder.paymentInfo && (
-                <div className="bg-yellow-50 p-4 rounded-lg">
-                  <h4 className="font-medium text-sm mb-3">Payment Information</h4>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span className="font-medium">Card Holder:</span> {selectedOrder.paymentInfo.cardHolder}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <DollarSign className="h-5 w-5 text-green-600" />
+                      Payment Information
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span className="font-medium">Card Holder:</span>
+                          <span className="font-semibold">{selectedOrder.paymentInfo.cardHolder}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Card Number:</span>
+                          <span className="font-mono">**** **** **** {selectedOrder.paymentInfo.cardLastFour}</span>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span className="font-medium">Expiry Date:</span>
+                          <span>{selectedOrder.paymentInfo.expiryMonth}/{selectedOrder.paymentInfo.expiryYear}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Payment Method:</span>
+                          <Badge variant="outline">{selectedOrder.paymentInfo.paymentMethod}</Badge>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <span className="font-medium">Card Number:</span> **** **** **** {selectedOrder.paymentInfo.cardLastFour}
-                    </div>
-                    <div>
-                      <span className="font-medium">Expiry:</span> {selectedOrder.paymentInfo.expiryMonth}/{selectedOrder.paymentInfo.expiryYear}
-                    </div>
-                    <div>
-                      <span className="font-medium">Payment Method:</span> {selectedOrder.paymentInfo.paymentMethod}
-                    </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               )}
+
+              {/* Order Timeline */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-orange-600" />
+                    Order Timeline
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <div className="flex-1">
+                        <div className="font-medium">Order Created</div>
+                        <div className="text-sm text-muted-foreground">
+                          {new Date(selectedOrder.createdAt).toLocaleString()}
+                        </div>
+                      </div>
+                    </div>
+                    {selectedOrder.status !== 'pending' && (
+                      <div className="flex items-center space-x-3">
+                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                        <div className="flex-1">
+                          <div className="font-medium">Order Confirmed</div>
+                          <div className="text-sm text-muted-foreground">
+                            Order was confirmed and is being processed
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {['shipped', 'delivered'].includes(selectedOrder.status) && (
+                      <div className="flex items-center space-x-3">
+                        <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                        <div className="flex-1">
+                          <div className="font-medium">Order Shipped</div>
+                          <div className="text-sm text-muted-foreground">
+                            Order has been shipped to customer
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {selectedOrder.status === 'delivered' && (
+                      <div className="flex items-center space-x-3">
+                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <div className="flex-1">
+                          <div className="font-medium">Order Delivered</div>
+                          <div className="text-sm text-muted-foreground">
+                            Order has been successfully delivered
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {selectedOrder.status === 'cancelled' && (
+                      <div className="flex items-center space-x-3">
+                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <div className="flex-1">
+                          <div className="font-medium">Order Cancelled</div>
+                          <div className="text-sm text-muted-foreground">
+                            Order has been cancelled
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           )}
-          <DialogFooter>
+          <DialogFooter className="flex space-x-2">
             <Button type="button" variant="outline" onClick={() => setSelectedOrder(null)}>
               Close
             </Button>
@@ -573,7 +756,9 @@ export default function AdminOrdersPage() {
                 setSelectedOrder(null)
                 openStatusDialog(selectedOrder!)
               }}
+              className="bg-blue-600 hover:bg-blue-700"
             >
+              <Edit className="h-4 w-4 mr-2" />
               Update Status
             </Button>
           </DialogFooter>
