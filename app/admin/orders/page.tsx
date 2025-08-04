@@ -30,7 +30,7 @@ import { toast } from "sonner"
 
 interface Order {
   _id: string
-  productId: {
+  productId?: {
     _id: string
     name: string
     price: number
@@ -38,7 +38,7 @@ interface Order {
     category: string
     supplier: string
   }
-  userId: {
+  userId?: {
     _id: string
     name: string
     email: string
@@ -177,8 +177,8 @@ export default function AdminOrdersPage() {
   }
 
   // Get unique users and products for filters
-  const uniqueUsers = Array.from(new Set(orders.map(order => order.userId._id)))
-  const uniqueProducts = Array.from(new Set(orders.map(order => order.productId._id)))
+  const uniqueUsers = Array.from(new Set(orders.map(order => order.userId?._id).filter(Boolean)))
+  const uniqueProducts = Array.from(new Set(orders.map(order => order.productId?._id).filter(Boolean)))
 
   return (
     <AdminLayout>
@@ -279,10 +279,10 @@ export default function AdminOrdersPage() {
                 <SelectContent>
                   <SelectItem value="all">All Customers</SelectItem>
                   {uniqueUsers.map((userId) => {
-                    const order = orders.find(o => o.userId._id === userId)
+                    const order = orders.find(o => o.userId?._id === userId)
                     return (
                       <SelectItem key={userId} value={userId}>
-                        {order?.userId.name || userId.slice(-8)}
+                        {order?.userId?.name || userId.slice(-8)}
                       </SelectItem>
                     )
                   })}
@@ -295,10 +295,10 @@ export default function AdminOrdersPage() {
                 <SelectContent>
                   <SelectItem value="all">All Products</SelectItem>
                   {uniqueProducts.map((productId) => {
-                    const order = orders.find(o => o.productId._id === productId)
+                    const order = orders.find(o => o.productId?._id === productId)
                     return (
                       <SelectItem key={productId} value={productId}>
-                        {order?.productId.name || productId.slice(-8)}
+                        {order?.productId?.name || productId.slice(-8)}
                       </SelectItem>
                     )
                   })}
@@ -336,20 +336,20 @@ export default function AdminOrdersPage() {
                   <div key={order._id} className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center space-x-4">
                       <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-                        {order.productId.image ? (
-                          <img src={order.productId.image} alt={order.productId.name} className="w-full h-full object-cover rounded-lg" />
+                        {order.productId?.image ? (
+                          <img src={order.productId.image} alt={order.productId?.name || 'Product'} className="w-full h-full object-cover rounded-lg" />
                         ) : (
                           <Package className="h-8 w-8 text-gray-400" />
                         )}
                       </div>
                       <div>
-                        <h3 className="font-semibold">{order.productId.name}</h3>
+                        <h3 className="font-semibold">{order.productId?.name || 'Product Not Found'}</h3>
                         <p className="text-sm text-muted-foreground">
-                          Customer: {order.userId.name} ({order.userId.email})
+                          Customer: {order.userId?.name || 'Unknown'} ({order.userId?.email || 'No email'})
                         </p>
                         <div className="flex items-center space-x-2 mt-1">
-                          <Badge variant="outline">{order.productId.category}</Badge>
-                          <Badge variant="outline">{order.productId.supplier}</Badge>
+                          <Badge variant="outline">{order.productId?.category || 'Unknown'}</Badge>
+                          <Badge variant="outline">{order.productId?.supplier || 'Unknown'}</Badge>
                           <Badge variant="outline">Qty: {order.quantity}</Badge>
                         </div>
                       </div>
@@ -449,8 +449,8 @@ export default function AdminOrdersPage() {
               <div className="bg-gray-50 p-3 rounded-lg">
                 <h4 className="font-medium text-sm mb-2">Order Details</h4>
                 <div className="text-sm space-y-1">
-                  <div>Product: {selectedOrder.productId.name}</div>
-                  <div>Customer: {selectedOrder.userId.name}</div>
+                  <div>Product: {selectedOrder.productId?.name || 'Product Not Found'}</div>
+                  <div>Customer: {selectedOrder.userId?.name || 'Unknown'}</div>
                   <div>Quantity: {selectedOrder.quantity}</div>
                   <div>Total: ${selectedOrder.totalPrice.toFixed(2)}</div>
                   <div>Date: {new Date(selectedOrder.createdAt).toLocaleDateString()}</div>

@@ -1,26 +1,28 @@
 "use client"
 
-import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { Eye, EyeOff, Leaf } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Leaf, LogIn, Eye, EyeOff } from "lucide-react"
-import Link from "next/link"
 import { useStore } from "@/lib/store"
-import { authAPI } from "@/lib/api-service"
-import { toast } from "@/components/ui/use-toast"
+import { useToast } from "@/hooks/use-toast"
+import { loginUser, saveUserToStore } from "@/lib/auth-service"
 
 export default function AdminLoginPage() {
-  const [credentials, setCredentials] = useState({ email: "", password: "" })
-  const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter()
+  const { setIsAdmin } = useStore()
+  const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
-  const { setIsAdmin } = useStore()
-  const router = useRouter()
+  const [showPassword, setShowPassword] = useState(false)
+  const [credentials, setCredentials] = useState({
+    email: "",
+    password: ""
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -28,15 +30,30 @@ export default function AdminLoginPage() {
     setError("")
 
     try {
-      const response = await authAPI.login(credentials.email, credentials.password)
+      const response = await loginUser(credentials.email, credentials.password)
       
       if (response.success && response.data) {
-        // Store the token in localStorage
+        // حفظ التوكن في localStorage
         localStorage.setItem('auth-token', response.token)
         
-        // Check if user is admin
+        // التحقق من أن المستخدم admin
         if (response.data.role === 'admin') {
-          setIsAdmin(true)
+          // تحويل بيانات المستخدم إلى تنسيق المتجر
+          const user = {
+            id: response.data._id,
+            name: response.data.name,
+            email: response.data.email,
+            phone: "",
+            address: "",
+            registrationDate: response.data.createdAt ? new Date(response.data.createdAt).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+            status: "active" as const,
+            totalOrders: 0,
+            totalSpent: 0,
+          }
+
+          // حفظ بيانات المستخدم في المتجر
+          saveUserToStore(user, true)
+
           toast({
             title: "Success",
             description: "Welcome back, Admin!",
@@ -127,41 +144,38 @@ export default function AdminLoginPage() {
                 </div>
               </div>
 
-              {error && <div className="text-red-600 text-sm">{error}</div>}
+              {error && (
+                <div className="text-sm text-red-600 bg-red-50 p-3 rounded-lg">
+                  {error}
+                </div>
+              )}
 
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <span className="animate-spin mr-2">◌</span>
-                    Signing in...
-                  </>
-                ) : (
-                  <>
-                    <LogIn className="h-4 w-4 mr-2" />
-                    Sign In
-                  </>
-                )}
+                {isLoading ? "Signing in..." : "Sign In"}
               </Button>
+
+              <div className="text-center">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleDemoLogin}
+                  className="text-sm"
+                >
+                  Use Demo Credentials
+                </Button>
+              </div>
             </form>
 
             <div className="mt-6 text-center">
-              <div className="text-sm text-gray-600 mb-4">
-                <p>Admin credentials:</p>
-                <p>Email: superadmin@agri.com</p>
-                <p>Password: Admin123456</p>
-              </div>
-              <Button variant="outline" onClick={handleDemoLogin} className="w-full bg-transparent">
-                Use Admin Credentials
-              </Button>
+              <p className="text-sm text-gray-600">
+                Back to{" "}
+                <Link href="/" className="text-green-600 hover:text-green-700 font-medium">
+                  Main Site
+                </Link>
+              </p>
             </div>
           </CardContent>
         </Card>
-
-        <div className="mt-6 text-center">
-          <Link href="/" className="text-sm text-green-600 hover:underline">
-            ← Back to Homepage
-          </Link>
-        </div>
       </div>
     </div>
   )

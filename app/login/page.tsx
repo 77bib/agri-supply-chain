@@ -1,29 +1,27 @@
 "use client"
 
-import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import Link from "next/link"
+import { ArrowLeft, LogIn } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { LogIn, ArrowLeft } from "lucide-react"
 import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
-import { useStore } from "@/lib/store"
 import { HydrationBoundary } from "@/components/hydration-boundary"
-import Link from "next/link"
+import { useStore } from "@/lib/store"
+import { loginUser, saveUserToStore } from "@/lib/auth-service"
 
 export default function LoginPage() {
   const router = useRouter()
   const { addClient, setCurrentUser } = useStore()
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   })
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,46 +29,31 @@ export default function LoginPage() {
     setError("")
 
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
-      })
+      const response = await loginUser(formData.email, formData.password)
 
-      const result = await response.json()
+      if (response.success && response.data) {
+        // حفظ التوكن في localStorage
+        localStorage.setItem('auth-token', response.token)
 
-      if (!response.ok) {
-        throw new Error(result.message || "فشل تسجيل الدخول")
+        // تحويل بيانات المستخدم إلى تنسيق المتجر
+        const user = {
+          id: response.data._id,
+          name: response.data.name,
+          email: response.data.email,
+          phone: "",
+          address: "",
+          registrationDate: response.data.createdAt ? new Date(response.data.createdAt).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+          status: "active" as const,
+          totalOrders: 0,
+          totalSpent: 0,
+        }
+
+        // حفظ بيانات المستخدم في المتجر
+        saveUserToStore(user, response.data.role === 'admin')
+
+        // الانتقال إلى صفحة المنتجات
+        router.push("/products")
       }
-
-      // البيانات موجودة في result.data
-      const userData = result.data
-
-      // إنشاء كائن المستخدم للـ store المحلي
-      const user = {
-        id: userData._id || userData.id,
-        name: userData.name,
-        email: userData.email,
-        phone: "",
-        address: "",
-        registrationDate: userData.createdAt ? new Date(userData.createdAt).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
-        status: "active" as const,
-        totalOrders: 0,
-        totalSpent: 0,
-      }
-
-      // إضافة المستخدم إلى قائمة العملاء إذا لم يكن موجوداً
-      addClient(user)
-      setCurrentUser(user)
-
-      // الانتقال إلى صفحة المنتجات
-      router.push("/products")
-
     } catch (err: any) {
       setError(err.message || "حدث خطأ أثناء تسجيل الدخول")
     } finally {
@@ -156,8 +139,6 @@ export default function LoginPage() {
           </Card>
         </div>
       </div>
-
-      <Footer />
     </div>
   )
 }

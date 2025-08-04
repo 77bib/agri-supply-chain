@@ -2,22 +2,22 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { Leaf, ShoppingCart, User, LogIn, LogOut, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Leaf, Menu, ShoppingCart, User, LogIn, LogOut } from "lucide-react"
 import { useStore } from "@/lib/store"
 import { HydrationBoundary } from "@/components/hydration-boundary"
+import { logoutUser } from "@/lib/auth-service"
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
-  const { cart, isAdmin, currentUser, setCurrentUser } = useStore()
+  const { cart, isAdmin, currentUser } = useStore()
 
   const cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0)
 
   const handleLogout = () => {
-    setCurrentUser(null)
+    logoutUser()
   }
 
   const navigation = [
@@ -71,10 +71,10 @@ export function Header() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem asChild>
-                      <Link href="/profile">My Profile</Link>
+                      <Link href="/dashboard">My Dashboard</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/orders">My Orders</Link>
+                      <Link href="/cart">My Cart</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="h-4 w-4 mr-2" />
@@ -112,78 +112,95 @@ export function Header() {
             </HydrationBoundary>
           </div>
 
-          {/* Mobile Menu */}
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="md:hidden bg-transparent">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-80">
-              <div className="flex flex-col space-y-4 mt-8">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className="text-lg font-medium text-gray-600 hover:text-green-600 transition-colors"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
+        </div>
 
-                <div className="border-t pt-4 space-y-4">
-                  <HydrationBoundary>
-                    <Link href="/cart" onClick={() => setIsOpen(false)}>
-                      <Button variant="outline" className="w-full justify-start bg-transparent">
-                        <ShoppingCart className="h-4 w-4 mr-2" />
-                        Cart ({cartItemsCount})
+        {/* Mobile Navigation */}
+        {isOpen && (
+          <div className="md:hidden py-4 border-t">
+            <nav className="space-y-4">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="block text-gray-600 hover:text-green-600 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="mt-6 space-y-4">
+              <HydrationBoundary>
+                <Link href="/cart" className="flex items-center space-x-2" onClick={() => setIsOpen(false)}>
+                  <Button variant="outline" size="icon">
+                    <ShoppingCart className="h-5 w-5" />
+                  </Button>
+                  <span>Cart ({cartItemsCount})</span>
+                </Link>
+              </HydrationBoundary>
+
+              <HydrationBoundary>
+                {currentUser ? (
+                  <div className="space-y-2">
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      <p className="text-sm text-gray-600">Welcome, {currentUser.name}!</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Link href="/dashboard" className="block w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded">
+                        My Dashboard
+                      </Link>
+                      <Link href="/cart" className="block w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded">
+                        My Cart
+                      </Link>
+                      <button
+                        onClick={() => {
+                          handleLogout()
+                          setIsOpen(false)
+                        }}
+                        className="block w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Link href="/login" className="block w-full">
+                      <Button variant="outline" className="w-full">
+                        <LogIn className="h-4 w-4 mr-2" />
+                        Login
                       </Button>
                     </Link>
-                  </HydrationBoundary>
+                    <Link href="/register" className="block w-full">
+                      <Button className="w-full">
+                        <User className="h-4 w-4 mr-2" />
+                        Register
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </HydrationBoundary>
 
-                  <HydrationBoundary>
-                    {currentUser ? (
-                      <div className="space-y-2">
-                        <p className="text-sm text-gray-600">Welcome, {currentUser.name}!</p>
-                        <Button variant="outline" className="w-full justify-start bg-transparent" onClick={handleLogout}>
-                          <LogOut className="h-4 w-4 mr-2" />
-                          Logout
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <Link href="/login" onClick={() => setIsOpen(false)}>
-                          <Button variant="outline" className="w-full justify-start bg-transparent">
-                            <LogIn className="h-4 w-4 mr-2" />
-                            Login
-                          </Button>
-                        </Link>
-                        <Link href="/register" onClick={() => setIsOpen(false)}>
-                          <Button className="w-full justify-start">
-                            <User className="h-4 w-4 mr-2" />
-                            Register
-                          </Button>
-                        </Link>
-                      </div>
-                    )}
-                  </HydrationBoundary>
-
-                  <HydrationBoundary>
-                    {isAdmin && (
-                      <Link href="/admin" onClick={() => setIsOpen(false)}>
-                        <Button variant="outline" className="w-full justify-start bg-transparent">
-                          <User className="h-4 w-4 mr-2" />
-                          Admin Dashboard
-                        </Button>
-                      </Link>
-                    )}
-                  </HydrationBoundary>
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
+              <HydrationBoundary>
+                {isAdmin && (
+                  <Link href="/admin" className="block w-full" onClick={() => setIsOpen(false)}>
+                    <Button variant="outline" className="w-full">
+                      <User className="h-4 w-4 mr-2" />
+                      Admin Dashboard
+                    </Button>
+                  </Link>
+                )}
+              </HydrationBoundary>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   )
