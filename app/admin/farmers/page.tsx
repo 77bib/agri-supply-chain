@@ -15,7 +15,7 @@ import {
 } from "recharts"
 import {
   Users, MapPin, Calendar, TrendingUp, Award, Star, Phone, Mail, 
-  Globe, Leaf, Wheat, Apple, Carrot, Corn, Grape, Tomato, Pepper,
+  Globe, Leaf, Wheat, Apple, Carrot, Cherry, Grape, TreePine, Banana,
   Plus, Search, Filter, RefreshCw, Eye, Edit, Trash2, Download,
   Upload, MoreHorizontal, CheckCircle, AlertTriangle, Clock,
   Thermometer, Droplets, Sun, Cloud, Rain, Wind, Gauge, Timer,
@@ -955,8 +955,8 @@ const mockFarmers = [
 ]
 
 const cropIcons = {
-  Tomatoes: Tomato,
-  Peppers: Pepper,
+      Tomatoes: TreePine,
+    Peppers: Banana,
   Cucumbers: Carrot,
   Strawberries: Heart,
   Raspberries: Heart,
@@ -970,7 +970,7 @@ const cropIcons = {
   Grapes: Grape,
   Pears: Apple,
   Apples: Apple,
-  Corn: Corn,
+  Corn: Cherry,
   Carrots: Carrot
 }
 
