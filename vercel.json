@@ -1,17 +1,19 @@
 {
+  "_comment": "Vercel configuration for Next.js TypeScript app with optimized API functions",
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
   "env": {
     "MONGODB_URI": "@mongodb_uri"
   },
   "functions": {
     "pages/api/**/*.ts": {
-      "maxDuration": 30
+      "memory": 1024,
+      "maxDuration": 10
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ]
 } 
