@@ -1,7 +1,9 @@
 import { useStore } from './store';
 import { saveCart, saveCartToLocalStorage, loadCart, loadCartFromLocalStorage, mergeCarts, clearCartFromLocalStorage, clearOtherUsersData } from './cart-service';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_BASE_URL = typeof window !== 'undefined' 
+  ? window.location.origin
+  : (process.env.NEXT_PUBLIC_API_URL || '');
 
 // Interface for user data
 export interface UserData {

@@ -1,6 +1,8 @@
 import { IProduct } from '../types/product';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_BASE_URL = typeof window !== 'undefined' 
+  ? window.location.origin
+  : (process.env.NEXT_PUBLIC_API_URL || '');
 
 // دالة جلب جميع المنتجات للعملاء
 export async function getPublicProducts(page = 1, limit = 12, category?: string, search?: string, sortBy = 'createdAt', sortOrder = 'desc'): Promise<{

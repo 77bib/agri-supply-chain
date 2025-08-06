@@ -1,6 +1,8 @@
 import { CreateOrderRequest, UpdateOrderStatusRequest, OrdersResponse, OrderResponse } from '../types/order';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_BASE_URL = typeof window !== 'undefined' 
+  ? window.location.origin
+  : (process.env.NEXT_PUBLIC_API_URL || '');
 
 // دالة إنشاء طلب جديد
 export async function createOrder(orderData: CreateOrderRequest): Promise<OrderResponse> {

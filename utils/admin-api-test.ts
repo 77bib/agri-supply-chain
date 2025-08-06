@@ -1,7 +1,9 @@
 // utils/admin-api-test.ts
 // اختبار شامل لـ API مع ميزات الـ admin
 
-const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = typeof window !== 'undefined' 
+  ? `${window.location.origin}/api`
+  : (process.env.NEXT_PUBLIC_API_URL || '/api');
 
 interface TestResult {
   test: string;

@@ -1,5 +1,7 @@
 // API Service for backend communication
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+const API_BASE_URL = typeof window !== 'undefined' 
+  ? `${window.location.origin}/api`
+  : (process.env.NEXT_PUBLIC_API_URL || '/api');
 
 export interface ApiResponse<T> {
   success: boolean;

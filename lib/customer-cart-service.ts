@@ -1,7 +1,9 @@
 import Cart, { ICart, ICartProduct, ICustomerInfo } from '@/models/Cart';
 import { connectToDB } from '@/lib/db';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_BASE_URL = typeof window !== 'undefined' 
+  ? window.location.origin
+  : (process.env.NEXT_PUBLIC_API_URL || '');
 
 // دالة إنشاء عربة تسوق جديدة للعميل
 export async function createCustomerCart(userId: string, customerInfo: ICustomerInfo): Promise<{ success: boolean; data?: ICart; message: string }> {
