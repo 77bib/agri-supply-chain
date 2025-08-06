@@ -1,19 +1,77 @@
 {
-  "_comment": "Vercel configuration for Next.js TypeScript app with optimized API functions",
+  "_comment": "Vercel configuration for Bifa Agri-Supply Chain Next.js TypeScript app",
   "version": 2,
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "outputDirectory": ".next",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "regions": ["fra1"],
   "env": {
-    "MONGODB_URI": "@mongodb_uri"
+    "MONGODB_URI": "@mongodb_uri",
+    "JWT_SECRET": "@jwt_secret",
+    "NODE_ENV": "production"
   },
   "functions": {
     "pages/api/**/*.ts": {
       "memory": 1024,
-      "maxDuration": 10
+      "maxDuration": 10,
+      "regions": ["fra1"]
     }
   },
-  "rewrites": [
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
+    },
     {
       "source": "/(.*)",
-      "destination": "/"
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "origin-when-cross-origin"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/dashboard",
+      "destination": "/",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/admin/:path*",
+      "destination": "/admin/:path*"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
     }
   ]
 } 
