@@ -89,7 +89,7 @@ export default function AdminLoginPage() {
   }
 
   const handleDemoLogin = () => {
-    setCredentials({ email: "superadmin@agri.com", password: "Admin123456" })
+    setCredentials({ email: "admin@bifa.com", password: "admin123456" })
   }
 
   return (
@@ -97,9 +97,12 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center space-x-2 text-2xl font-bold text-gray-900">
-            <Leaf className="h-8 w-8 text-green-600" />
-            <span>AgriChain</span>
+          <Link href="/" className="inline-flex items-center space-x-2">
+            <img 
+              src="/bifa-logo.svg" 
+              alt="Bifa Logo" 
+              className="w-24 h-12 drop-shadow-lg"
+            />
           </Link>
           <p className="text-gray-600 mt-2">Admin Dashboard Access</p>
         </div>

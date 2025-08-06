@@ -106,6 +106,10 @@ Content-Type: application/json
 
 ## اختبار التكامل
 
+mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+
+
 ### اختبار التسجيل:
 1. اذهب إلى `/register`
 2. املأ النموذج ببيانات صحيحة

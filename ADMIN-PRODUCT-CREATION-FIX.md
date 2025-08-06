@@ -77,7 +77,7 @@ Created a comprehensive test script (`test-admin-product-creation.js`) to verify
 
 Ensure your `.env.local` file contains:
 ```env
-MONGODB_URI=mongodb://localhost:27017/agri-supply-chain
+MONGODB_URI=mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 JWT_EXPIRES_IN=7d
 ADMIN_SECRET=admin-secret-2024

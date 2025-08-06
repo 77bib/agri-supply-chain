@@ -35,7 +35,7 @@ npm install
 إنشاء ملف `.env.local` في المجلد الجذر:
 ```env
 # MongoDB Connection String
-MONGODB_URI=mongodb://localhost:27017/agri-supply-chain
+MONGODB_URI=mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 # JWT Secret (للمصادقة المستقبلية)
 JWT_SECRET=your-super-secret-jwt-key-here

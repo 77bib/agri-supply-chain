@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { UserPlus, ArrowLeft } from "lucide-react"
+import { UserPlus, ArrowLeft, Eye, EyeOff, Shield, CheckCircle } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { useStore } from "@/lib/store"
@@ -25,6 +25,8 @@ export default function RegisterPage() {
     confirmPassword: "",
   })
   const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
 
@@ -36,14 +38,14 @@ export default function RegisterPage() {
 
     // التحقق من تطابق كلمات المرور
     if (formData.password !== formData.confirmPassword) {
-      setError("كلمات المرور غير متطابقة")
+      setError("Passwords do not match")
       setIsLoading(false)
       return
     }
 
     // التحقق من قوة كلمة المرور
     if (formData.password.length < 8) {
-      setError("كلمة المرور يجب أن تكون 8 أحرف على الأقل")
+      setError("Password must be at least 8 characters long")
       setIsLoading(false)
       return
     }
@@ -64,7 +66,7 @@ export default function RegisterPage() {
       const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(result.message || "حدث خطأ أثناء إنشاء الحساب")
+        throw new Error(result.message || "Error creating account")
       }
 
       // البيانات موجودة في result.data
@@ -85,7 +87,7 @@ export default function RegisterPage() {
 
       addClient(newClient)
       setCurrentUser(newClient)
-      setSuccess("تم إنشاء الحساب بنجاح!")
+      setSuccess("Account created successfully!")
 
       // الانتقال إلى صفحة المنتجات بعد ثانيتين
       setTimeout(() => {
@@ -93,7 +95,7 @@ export default function RegisterPage() {
       }, 2000)
 
     } catch (err: any) {
-      setError(err.message || "حدث خطأ أثناء إنشاء الحساب")
+      setError(err.message || "Error creating account")
     } finally {
       setIsLoading(false)
     }
@@ -104,114 +106,177 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-green-400/20 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-green-400/20 to-blue-400/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
+      </div>
+
       <Header />
 
-      <div className="container-custom py-8">
+      <div className="container-custom py-8 relative z-10">
         <div className="max-w-md mx-auto">
           {/* Back Link */}
-          <Link href="/" className="flex items-center text-gray-500 hover:text-gray-700 mb-6">
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            العودة للرئيسية
+          <Link 
+            href="/" 
+            className="flex items-center text-gray-600 hover:text-blue-600 mb-8 transition-colors duration-300 animate-fade-in-up"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Home
           </Link>
 
-          <Card>
-            <CardHeader className="text-center">
-              <div className="flex justify-center mb-4">
-                <div className="p-3 bg-green-100 rounded-full">
-                  <UserPlus className="h-8 w-8 text-green-600" />
+          <Card className="border-0 shadow-2xl bg-white/80 backdrop-blur-sm animate-fade-in-up">
+            <CardHeader className="text-center pb-6">
+              <div className="flex justify-center mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <UserPlus className="h-8 w-8 text-white" />
                 </div>
               </div>
-              <CardTitle className="text-2xl">إنشاء حساب جديد</CardTitle>
-              <CardDescription>
-                انضم إلى AgriChain للوصول إلى منتجاتنا العضوية المميزة وتتبع طلباتك
+              <CardTitle className="text-3xl font-bold text-gray-900 mb-2">Create Account</CardTitle>
+              <CardDescription className="text-gray-600 text-lg">
+                Join Bifa to access our premium organic products and track your orders
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
               <HydrationBoundary>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <Label htmlFor="name">الاسم الكامل *</Label>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="name" className="text-gray-700 font-medium">Full Name *</Label>
                     <Input
                       id="name"
                       type="text"
                       required
                       value={formData.name}
                       onChange={(e) => handleInputChange("name", e.target.value)}
-                      placeholder="أدخل اسمك الكامل"
+                      placeholder="Enter your full name"
+                      className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 h-12 text-lg"
                     />
                   </div>
 
-                  <div>
-                    <Label htmlFor="email">البريد الإلكتروني *</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-gray-700 font-medium">Email Address *</Label>
                     <Input
                       id="email"
                       type="email"
                       required
                       value={formData.email}
                       onChange={(e) => handleInputChange("email", e.target.value)}
-                      placeholder="أدخل بريدك الإلكتروني"
+                      placeholder="Enter your email"
+                      className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 h-12 text-lg"
                     />
                   </div>
 
-                  <div>
-                    <Label htmlFor="password">كلمة المرور *</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      required
-                      value={formData.password}
-                      onChange={(e) => handleInputChange("password", e.target.value)}
-                      placeholder="أدخل كلمة المرور (8 أحرف على الأقل)"
-                    />
+                  <div className="space-y-2">
+                    <Label htmlFor="password" className="text-gray-700 font-medium">Password *</Label>
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        required
+                        value={formData.password}
+                        onChange={(e) => handleInputChange("password", e.target.value)}
+                        placeholder="Enter password (min 8 characters)"
+                        className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 h-12 text-lg pr-12"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                      >
+                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
+                    </div>
                   </div>
 
-                  <div>
-                    <Label htmlFor="confirmPassword">تأكيد كلمة المرور *</Label>
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      required
-                      value={formData.confirmPassword}
-                      onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-                      placeholder="أعد إدخال كلمة المرور"
-                    />
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword" className="text-gray-700 font-medium">Confirm Password *</Label>
+                    <div className="relative">
+                      <Input
+                        id="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        required
+                        value={formData.confirmPassword}
+                        onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
+                        placeholder="Re-enter your password"
+                        className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 h-12 text-lg pr-12"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
+                    </div>
                   </div>
 
                   {error && (
-                    <div className="text-sm text-red-600 bg-red-50 p-3 rounded-lg">
+                    <div className="text-sm text-red-600 bg-red-50 p-4 rounded-lg border border-red-200 animate-fade-in-up">
                       {error}
                     </div>
                   )}
 
                   {success && (
-                    <div className="text-sm text-green-600 bg-green-50 p-3 rounded-lg">
-                      {success}
+                    <div className="text-sm text-green-600 bg-green-50 p-4 rounded-lg border border-green-200 animate-fade-in-up">
+                      <div className="flex items-center">
+                        <CheckCircle className="h-5 w-5 mr-2" />
+                        {success}
+                      </div>
                     </div>
                   )}
 
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? "جاري إنشاء الحساب..." : "إنشاء الحساب"}
+                  <Button 
+                    type="submit" 
+                    className="w-full h-12 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 btn-animate text-lg font-semibold"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center">
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                        Creating account...
+                      </div>
+                    ) : (
+                      <div className="flex items-center">
+                        <UserPlus className="h-5 w-5 mr-2" />
+                        Create Account
+                      </div>
+                    )}
                   </Button>
                 </form>
               </HydrationBoundary>
 
-              <div className="mt-6 text-center">
-                <p className="text-sm text-gray-600">
-                  لديك حساب بالفعل؟{" "}
-                  <Link href="/login" className="text-green-600 hover:text-green-700 font-medium">
-                    سجل دخولك هنا
+              <div className="text-center space-y-4">
+                <p className="text-gray-600">
+                  Already have an account?{" "}
+                  <Link 
+                    href="/login" 
+                    className="text-gradient font-semibold hover:underline transition-all duration-300"
+                  >
+                    Sign in here
                   </Link>
                 </p>
-              </div>
 
-              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                <p className="text-xs text-blue-800 font-medium mb-2">متطلبات كلمة المرور:</p>
-                <ul className="text-xs text-blue-700 space-y-1">
-                  <li>• 8 أحرف على الأقل</li>
-                  <li>• يجب أن تحتوي على حروف وأرقام</li>
-                  <li>• يفضل استخدام رموز خاصة</li>
-                </ul>
+                <div className="p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-xl border border-blue-200">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <Shield className="h-5 w-5 text-blue-600" />
+                    <p className="text-sm font-semibold text-blue-800">Password Requirements</p>
+                  </div>
+                  <ul className="text-xs text-blue-700 space-y-1 text-left">
+                    <li className="flex items-center">
+                      <div className="w-1 h-1 bg-blue-600 rounded-full mr-2"></div>
+                      At least 8 characters
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-1 h-1 bg-blue-600 rounded-full mr-2"></div>
+                      Include letters and numbers
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-1 h-1 bg-blue-600 rounded-full mr-2"></div>
+                      Special characters recommended
+                    </li>
+                  </ul>
+                </div>
               </div>
             </CardContent>
           </Card>

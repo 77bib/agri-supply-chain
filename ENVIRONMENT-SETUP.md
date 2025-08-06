@@ -8,7 +8,7 @@
 
 ```env
 # MongoDB Connection String
-MONGODB_URI=mongodb://localhost:27017/agri-supply-chain
+MONGODB_URI=mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 # JWT Configuration
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
@@ -24,7 +24,7 @@ NODE_ENV=development
 
 #### للمطورين:
 ```env
-MONGODB_URI=mongodb://localhost:27017/agri-supply-chain
+MONGODB_URI=mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 JWT_EXPIRES_IN=7d
 NODE_ENV=development
@@ -43,7 +43,7 @@ NODE_ENV=production
 ### للمطورين (MongoDB محلي):
 1. قم بتثبيت MongoDB على جهازك
 2. شغل خدمة MongoDB
-3. استخدم `mongodb://localhost:27017/agri-supply-chain`
+3. استخدم `mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 
 ### للإنتاج (MongoDB Atlas):
 1. أنشئ حساب على MongoDB Atlas

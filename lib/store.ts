@@ -2,6 +2,25 @@ import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import { saveCart, saveCartToLocalStorage } from "./cart-service"
 
+// Debounce utility for cart auto-save
+let saveTimeout: NodeJS.Timeout | null = null
+const debouncedSaveCart = (cart: CartItem[]) => {
+  if (saveTimeout) {
+    clearTimeout(saveTimeout)
+  }
+  saveTimeout = setTimeout(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('auth-token')
+      if (token) {
+        saveCart(cart).catch(error => {
+          console.error('Failed to auto-save cart:', error)
+        })
+        saveCartToLocalStorage(cart)
+      }
+    }
+  }, 1000) // انتظار ثانية واحدة قبل الحفظ
+}
+
 // Types
 export interface Product {
   id: string
@@ -81,7 +100,7 @@ interface StoreState {
 
   // Cart
   cart: CartItem[]
-  setCart: (cart: CartItem[]) => void
+  setCart: (cart: CartItem[], skipAutoSave?: boolean) => void
   addToCart: (product: Product, quantity: number) => void
   removeFromCart: (productId: string) => void
   updateCartQuantity: (productId: string, quantity: number) => void
@@ -143,19 +162,11 @@ export const useStore = create<StoreState>()(
 
       // Cart
       cart: [],
-      setCart: (cart) => {
+      setCart: (cart, skipAutoSave = false) => {
         set({ cart })
-        // حفظ تلقائي عند تغيير السلة
-        if (typeof window !== 'undefined') {
-          const token = localStorage.getItem('auth-token')
-          if (token) {
-            // حفظ في قاعدة البيانات
-            saveCart(cart).catch(error => {
-              console.error('Failed to auto-save cart:', error)
-            })
-            // حفظ في localStorage كنسخة احتياطية
-            saveCartToLocalStorage(cart)
-          }
+        // حفظ تلقائي عند تغيير السلة (إلا إذا تم تخطيه)
+        if (!skipAutoSave) {
+          debouncedSaveCart(cart)
         }
       },
       addToCart: (product, quantity) =>
@@ -170,16 +181,8 @@ export const useStore = create<StoreState>()(
             newCart = [...state.cart, { product, quantity }]
           }
           
-          // حفظ تلقائي
-          if (typeof window !== 'undefined') {
-            const token = localStorage.getItem('auth-token')
-            if (token) {
-              saveCart(newCart).catch(error => {
-                console.error('Failed to auto-save cart:', error)
-              })
-              saveCartToLocalStorage(newCart)
-            }
-          }
+          // حفظ تلقائي مع التأخير
+          debouncedSaveCart(newCart)
           
           return { cart: newCart }
         }),
@@ -187,16 +190,8 @@ export const useStore = create<StoreState>()(
         set((state) => {
           const newCart = state.cart.filter((item) => item.product.id !== productId)
           
-          // حفظ تلقائي
-          if (typeof window !== 'undefined') {
-            const token = localStorage.getItem('auth-token')
-            if (token) {
-              saveCart(newCart).catch(error => {
-                console.error('Failed to auto-save cart:', error)
-              })
-              saveCartToLocalStorage(newCart)
-            }
-          }
+          // حفظ تلقائي مع التأخير
+          debouncedSaveCart(newCart)
           
           return { cart: newCart }
         }),
@@ -204,16 +199,8 @@ export const useStore = create<StoreState>()(
         set((state) => {
           const newCart = state.cart.map((item) => (item.product.id === productId ? { ...item, quantity } : item))
           
-          // حفظ تلقائي
-          if (typeof window !== 'undefined') {
-            const token = localStorage.getItem('auth-token')
-            if (token) {
-              saveCart(newCart).catch(error => {
-                console.error('Failed to auto-save cart:', error)
-              })
-              saveCartToLocalStorage(newCart)
-            }
-          }
+          // حفظ تلقائي مع التأخير
+          debouncedSaveCart(newCart)
           
           return { cart: newCart }
         }),

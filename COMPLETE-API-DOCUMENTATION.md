@@ -4,6 +4,26 @@
 
 هذا التوثيق يغطي جميع endpoints المتاحة في backend مشروع Agri Supply Chain، بما في ذلك ميزات الـ admin الجديدة.
 
+## 🔑 Demo Credentials
+
+For testing purposes, use these demo credentials:
+
+### **Admin Access:**
+- **Email:** `admin@bifa.com`
+- **Password:** `admin123456`
+- **Admin Dashboard:** `http://localhost:3000/admin/login`
+- **Client Area:** `http://localhost:3000/login`
+
+### **Features Available:**
+- ✅ Full admin dashboard access
+- ✅ Product management (CRUD operations)
+- ✅ Order management and status updates
+- ✅ Client management and analytics
+- ✅ Inventory tracking and forecasting
+- ✅ Blockchain traceability features
+
+**Note:** These are demo credentials for development and testing only.
+
 ## 🔐 Authentication Endpoints
 
 ### 1. تسجيل مستخدم جديد
@@ -76,7 +96,7 @@ POST /api/auth/create-admin
 ```json
 {
   "name": "Admin User",
-  "email": "admin@example.com",
+  "email": "admin@bifa.com",
   "password": "admin_password",
   "adminSecret": "admin-secret-2024"
 }
@@ -90,7 +110,7 @@ POST /api/auth/create-admin
   "data": {
     "_id": "admin_id",
     "name": "Admin User",
-    "email": "admin@example.com",
+    "email": "admin@bifa.com",
     "role": "admin",
     "createdAt": "2024-01-01T00:00:00.000Z",
     "updatedAt": "2024-01-01T00:00:00.000Z"
@@ -412,7 +432,7 @@ Authorization: Bearer admin_jwt_token_here
     {
       "_id": "admin_id",
       "name": "Admin User",
-      "email": "admin@example.com",
+      "email": "admin@bifa.com",
       "role": "admin",
       "createdAt": "2024-01-01T00:00:00.000Z",
       "updatedAt": "2024-01-01T00:00:00.000Z"
@@ -474,7 +494,7 @@ curl -X POST http://localhost:3000/api/auth/create-admin \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Admin User",
-    "email": "admin@example.com",
+    "email": "admin@bifa.com",
     "password": "admin123456",
     "adminSecret": "admin-secret-2024"
   }'

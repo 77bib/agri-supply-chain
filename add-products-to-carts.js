@@ -90,7 +90,7 @@ const productsForUsers = {
 
 async function addProductsToCarts() {
   try {
-    await mongoose.connect('mongodb://localhost:27017/agri-supply-chain');
+    await mongoose.connect('mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
     console.log('✅ Connected to MongoDB');
 
     // إضافة منتجات لكل مستخدم

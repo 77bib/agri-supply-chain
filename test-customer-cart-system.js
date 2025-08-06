@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 // تكوين الاتصال بقاعدة البيانات
-const MONGODB_URI = 'mongodb://localhost:27017/agri-supply-chain';
+const MONGODB_URI = 'mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 // نموذج عربة التسوق
 const CartSchema = new mongoose.Schema({

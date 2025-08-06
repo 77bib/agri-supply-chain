@@ -4,8 +4,7 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   LineChart,
   Line,
@@ -19,43 +18,35 @@ import {
   Cell,
   BarChart,
   Bar,
+  AreaChart,
+  Area,
 } from "recharts"
 import {
-  Package,
   Truck,
-  TrendingDown,
+  Users,
+  Package,
+  TrendingUp,
+  Shield,
+  MapPin,
+  Thermometer,
   AlertTriangle,
   CheckCircle,
   Clock,
-  MapPin,
-  Thermometer,
-  ShoppingCart,
-  Users,
-  Mail,
-  Calendar,
+  DollarSign,
+  Activity,
+  BarChart3,
   RefreshCw,
+  Plus,
   Eye,
   Edit,
   Trash2,
-  Plus,
-  DollarSign,
-  TrendingUp,
-  Activity,
-  Database,
-  Shield,
-  Bell,
-  Settings,
   Download,
   Upload,
   Filter,
   Search,
-  MoreHorizontal,
-  UserPlus,
-  FileText,
-  BarChart3,
-  PieChart as PieChartIcon,
-  Target,
-  Zap,
+  Leaf,
+  Warehouse,
+  Factory,
   Globe,
   Wifi,
   Battery,
@@ -65,9 +56,6 @@ import {
   Key,
   CreditCard,
   Truck as TruckIcon,
-  Warehouse,
-  Factory,
-  Leaf,
   Sun,
   Cloud,
   Rain,
@@ -103,647 +91,624 @@ import {
   Calculator,
   Percent,
   Hash,
-  Hash as HashIcon,
-  Hash as HashIcon2,
-  Hash as HashIcon3,
-  Hash as HashIcon4,
-  Hash as HashIcon5,
-  Hash as HashIcon6,
-  Hash as HashIcon7,
-  Hash as HashIcon8,
-  Hash as HashIcon9,
-  Hash as HashIcon10,
+  Target,
+  Zap,
 } from "lucide-react"
 import AdminLayout from "@/components/admin-layout"
-import { usersAPI, User } from "@/lib/api-service"
-import { getAllOrders } from "@/lib/order-service"
 import { toast } from "sonner"
 
-// Real data fetching functions
-const fetchDashboardData = async () => {
-  try {
-    // Fetch all data in parallel
-    const [usersResponse, ordersResponse] = await Promise.all([
-      usersAPI.getAll(),
-      getAllOrders()
-    ])
-
-    return {
-      users: usersResponse.success ? usersResponse.data : [],
-      orders: ordersResponse.success ? ordersResponse.data : [],
-      stats: ordersResponse.stats || {
-        totalOrders: 0,
-        totalRevenue: 0,
-        averageOrderValue: 0,
-        pendingOrders: 0
-      }
-    }
-  } catch (error) {
-    console.error("Error fetching dashboard data:", error)
-    return { users: [], orders: [], stats: { totalOrders: 0, totalRevenue: 0, averageOrderValue: 0, pendingOrders: 0 } }
+// Mock data for demonstration
+const mockData = {
+  farmers: {
+    total: 156,
+    active: 142,
+    newThisMonth: 12,
+    averageYield: 85.6,
+    topPerformers: [
+      { name: "Ahmed Benali", farm: "Green Valley", yield: 95.2, quality: 92 },
+      { name: "Fatima Zohra", farm: "Sunrise Farm", yield: 93.8, quality: 89 },
+      { name: "Mohammed Kaci", farm: "Golden Fields", yield: 91.5, quality: 94 },
+    ]
+  },
+  logistics: {
+    activeShipments: 23,
+    deliveredToday: 8,
+    delayed: 3,
+    totalVehicles: 45,
+    alerts: [
+      { type: "temperature", severity: "high", message: "Temp deviation in Truck-023" },
+      { type: "delay", severity: "medium", message: "Delivery delayed by 2 hours" },
+    ]
+  },
+  inventory: {
+    totalBatches: 89,
+    lowStock: 12,
+    expiringSoon: 8,
+    totalValue: 1250000,
+    categories: [
+      { name: "Grains", quantity: 45, value: 450000 },
+      { name: "Vegetables", quantity: 23, value: 320000 },
+      { name: "Fruits", quantity: 21, value: 480000 },
+    ]
+  },
+  forecasts: {
+    accuracy: 87.3,
+    demandTrend: "increasing",
+    nextMonthPrediction: 1250000,
+    recommendations: [
+      "Increase wheat production by 15%",
+      "Optimize storage for seasonal crops",
+      "Prepare for Ramadan demand spike",
+    ]
+  },
+  traceability: {
+    activeProducts: 234,
+    verifiedToday: 45,
+    blockchainTransactions: 1234,
+    qrScans: 567,
   }
-}
-
-// Enhanced dashboard data
-const getEnhancedKPIs = (users: User[], orders: any[], stats: any) => {
-  const totalUsers = users.length
-  const adminUsers = users.filter(u => u.role === 'admin').length
-  const regularUsers = users.filter(u => u.role === 'user').length
-  const newUsersThisWeek = users.filter(u => {
-    const registrationDate = new Date(u.createdAt)
-    const oneWeekAgo = new Date()
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
-    return registrationDate > oneWeekAgo
-  }).length
-
-  const totalOrders = stats.totalOrders || 0
-  const totalRevenue = stats.totalRevenue || 0
-  const averageOrderValue = stats.averageOrderValue || 0
-  const pendingOrders = stats.pendingOrders || 0
-
-  // Calculate additional metrics
-  const completedOrders = orders.filter(o => o.status === 'delivered').length
-  const processingOrders = orders.filter(o => o.status === 'processing').length
-  const shippedOrders = orders.filter(o => o.status === 'shipped').length
-
-  return {
-    totalUsers,
-    adminUsers,
-    regularUsers,
-    newUsersThisWeek,
-    totalOrders,
-    totalRevenue,
-    averageOrderValue,
-    pendingOrders,
-    completedOrders,
-    processingOrders,
-    shippedOrders
-  }
-}
-
-// Enhanced charts data
-const getChartData = (orders: any[]) => {
-  // Monthly orders data
-  const monthlyData = [
-    { month: "Jan", orders: 0, revenue: 0 },
-    { month: "Feb", orders: 0, revenue: 0 },
-    { month: "Mar", orders: 0, revenue: 0 },
-    { month: "Apr", orders: 0, revenue: 0 },
-    { month: "May", orders: 0, revenue: 0 },
-    { month: "Jun", orders: 0, revenue: 0 },
-  ]
-
-  orders.forEach(order => {
-    const orderDate = new Date(order.createdAt)
-    const monthIndex = orderDate.getMonth()
-    if (monthIndex < 6) {
-      monthlyData[monthIndex].orders += 1
-      monthlyData[monthIndex].revenue += order.totalPrice || 0
-    }
-  })
-
-  // Order status distribution
-  const statusData = [
-    { name: "Pending", value: orders.filter(o => o.status === 'pending').length, color: "#f59e0b" },
-    { name: "Processing", value: orders.filter(o => o.status === 'processing').length, color: "#3b82f6" },
-    { name: "Shipped", value: orders.filter(o => o.status === 'shipped').length, color: "#8b5cf6" },
-    { name: "Delivered", value: orders.filter(o => o.status === 'delivered').length, color: "#10b981" },
-  ]
-
-  return { monthlyData, statusData }
 }
 
 export default function AdminDashboard() {
-  const [dashboardData, setDashboardData] = useState({
-    users: [] as User[],
-    orders: [] as any[],
-    stats: { totalOrders: 0, totalRevenue: 0, averageOrderValue: 0, pendingOrders: 0 }
-  })
-  const [loading, setLoading] = useState(true)
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
-  const [selectedOrder, setSelectedOrder] = useState<any>(null)
-  const [showUserDetails, setShowUserDetails] = useState(false)
-  const [showOrderDetails, setShowOrderDetails] = useState(false)
+  const [activeTab, setActiveTab] = useState("overview")
+  const [loading, setLoading] = useState(false)
 
-  // Fetch dashboard data
-  const fetchData = async () => {
-    try {
-      setLoading(true)
-      const data = await fetchDashboardData()
-      setDashboardData(data)
-      toast.success("Dashboard data refreshed successfully!")
-    } catch (error) {
-      console.error("Error fetching dashboard data:", error)
-      toast.error("Failed to refresh dashboard data")
-    } finally {
-      setLoading(false)
-    }
+  const handleRefresh = async () => {
+    setLoading(true)
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    toast.success("Dashboard data refreshed successfully!")
+    setLoading(false)
   }
-
-  useEffect(() => {
-    fetchData()
-  }, [])
-
-  const kpis = getEnhancedKPIs(dashboardData.users, dashboardData.orders, dashboardData.stats)
-  const charts = getChartData(dashboardData.orders)
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "pending":
-        return <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>
-      case "processing":
-        return <Badge className="bg-blue-100 text-blue-800">Processing</Badge>
-      case "shipped":
-        return <Badge className="bg-purple-100 text-purple-800">Shipped</Badge>
-      case "delivered":
-        return <Badge className="bg-green-100 text-green-800">Delivered</Badge>
-      case "cancelled":
-        return <Badge variant="destructive">Cancelled</Badge>
-      default:
-        return <Badge variant="outline">Unknown</Badge>
+    const variants = {
+      active: "bg-green-100 text-green-800",
+      inactive: "bg-gray-100 text-gray-800",
+      delayed: "bg-red-100 text-red-800",
+      processing: "bg-blue-100 text-blue-800",
+      completed: "bg-green-100 text-green-800"
     }
+    return <Badge className={variants[status as keyof typeof variants] || "bg-gray-100 text-gray-800"}>{status}</Badge>
   }
 
-  const getRoleBadge = (role: string) => {
-    return role === 'admin' 
-      ? <Badge className="bg-purple-100 text-purple-800">Admin</Badge>
-      : <Badge className="bg-blue-100 text-blue-800">User</Badge>
-  }
-
-  const handleViewUser = (user: User) => {
-    setSelectedUser(user)
-    setShowUserDetails(true)
-  }
-
-  const handleViewOrder = (order: any) => {
-    setSelectedOrder(order)
-    setShowOrderDetails(true)
-  }
-
-  const handleEditUser = (user: User) => {
-    toast.info(`Edit user: ${user.name}`)
-    // TODO: Implement edit user functionality
-  }
-
-  const handleDeleteUser = (user: User) => {
-    toast.info(`Delete user: ${user.name}`)
-    // TODO: Implement delete user functionality
-  }
-
-  const handleExportData = () => {
-    toast.info("Exporting dashboard data...")
-    // TODO: Implement export functionality
+  const getSeverityBadge = (severity: string) => {
+    const variants = {
+      low: "bg-blue-100 text-blue-800",
+      medium: "bg-yellow-100 text-yellow-800",
+      high: "bg-orange-100 text-orange-800",
+      critical: "bg-red-100 text-red-800"
+    }
+    return <Badge className={variants[severity as keyof typeof variants] || "bg-gray-100 text-gray-800"}>{severity}</Badge>
   }
 
   return (
     <AdminLayout>
       <div className="space-y-6">
-        {/* Enhanced Header */}
+        {/* Header */}
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-              <BarChart3 className="h-8 w-8 text-blue-600" />
-              Admin Dashboard
+              <BarChart3 className="h-8 w-8 text-green-600" />
+              BIFA Algeria - Supply Chain Dashboard
             </h1>
-            <p className="text-muted-foreground">Comprehensive overview of your supply chain system</p>
+            <p className="text-muted-foreground">Comprehensive agricultural supply chain management system</p>
           </div>
           <div className="flex space-x-2">
-            <Button variant="outline" onClick={handleExportData}>
+            <Button variant="outline">
               <Download className="h-4 w-4 mr-2" />
               Export Report
             </Button>
-            <Button onClick={fetchData} disabled={loading}>
+            <Button onClick={handleRefresh} disabled={loading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              Refresh Data
+              Refresh
             </Button>
           </div>
         </div>
 
-        {/* Enhanced KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-              <Users className="h-4 w-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">{kpis.totalUsers}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">{kpis.regularUsers}</span> regular users
-              </p>
-            </CardContent>
-          </Card>
+        {/* Main Dashboard Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="farmers">Farmers</TabsTrigger>
+            <TabsTrigger value="logistics">Logistics</TabsTrigger>
+            <TabsTrigger value="inventory">Inventory</TabsTrigger>
+            <TabsTrigger value="forecasting">Forecasting</TabsTrigger>
+            <TabsTrigger value="traceability">Traceability</TabsTrigger>
+          </TabsList>
 
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Admin Users</CardTitle>
-              <Shield className="h-4 w-4 text-purple-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-purple-600">{kpis.adminUsers}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-purple-600">Administrators</span> in system
-              </p>
-            </CardContent>
-          </Card>
+          {/* Overview Tab */}
+          <TabsContent value="overview" className="space-y-6">
+            {/* KPI Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card className="hover:shadow-lg transition-shadow border-green-200">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Active Farmers</CardTitle>
+                  <Users className="h-4 w-4 text-green-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-green-600">{mockData.farmers.active}</div>
+                  <p className="text-xs text-muted-foreground">
+                    <span className="text-green-600">+{mockData.farmers.newThisMonth}</span> new this month
+                  </p>
+                </CardContent>
+              </Card>
 
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-              <ShoppingCart className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">{kpis.totalOrders}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">${kpis.totalRevenue.toFixed(2)}</span> total revenue
-              </p>
-            </CardContent>
-          </Card>
+              <Card className="hover:shadow-lg transition-shadow border-blue-200">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Active Shipments</CardTitle>
+                  <Truck className="h-4 w-4 text-blue-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-blue-600">{mockData.logistics.activeShipments}</div>
+                  <p className="text-xs text-muted-foreground">
+                    <span className="text-red-600">{mockData.logistics.delayed}</span> delayed
+                  </p>
+                </CardContent>
+              </Card>
 
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>
-              <Clock className="h-4 w-4 text-orange-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-orange-600">{kpis.pendingOrders}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-orange-600">Awaiting</span> processing
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+              <Card className="hover:shadow-lg transition-shadow border-purple-200">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Inventory Value</CardTitle>
+                  <Package className="h-4 w-4 text-purple-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-purple-600">${(mockData.inventory.totalValue / 1000000).toFixed(1)}M</div>
+                  <p className="text-xs text-muted-foreground">
+                    <span className="text-orange-600">{mockData.inventory.lowStock}</span> low stock alerts
+                  </p>
+                </CardContent>
+              </Card>
 
-        {/* Additional KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">New Users (Week)</CardTitle>
-              <UserPlus className="h-4 w-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">{kpis.newUsersThisWeek}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-blue-600">New registrations</span> this week
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Average Order Value</CardTitle>
-              <DollarSign className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">${kpis.averageOrderValue.toFixed(2)}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">Per order</span> average
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Completed Orders</CardTitle>
-              <CheckCircle className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">{kpis.completedOrders}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">Successfully</span> delivered
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Processing Orders</CardTitle>
-              <Activity className="h-4 w-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">{kpis.processingOrders}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-blue-600">Currently</span> processing
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Enhanced Charts Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-blue-600" />
-                Monthly Orders & Revenue
-              </CardTitle>
-              <CardDescription>Orders and revenue trends over the last 6 months</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={charts.monthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis yAxisId="left" />
-                  <YAxis yAxisId="right" orientation="right" />
-                  <Tooltip />
-                  <Bar yAxisId="left" dataKey="orders" fill="#3b82f6" name="Orders" />
-                  <Bar yAxisId="right" dataKey="revenue" fill="#10b981" name="Revenue ($)" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <PieChartIcon className="h-5 w-5 text-purple-600" />
-                Order Status Distribution
-              </CardTitle>
-              <CardDescription>Distribution of orders by status</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={charts.statusData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {charts.statusData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="flex justify-center space-x-4 mt-4">
-                {charts.statusData.map((item) => (
-                  <div key={item.name} className="flex items-center">
-                    <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: item.color }}></div>
-                    <span className="text-sm">
-                      {item.name} ({item.value})
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Enhanced Users Section */}
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <div>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-blue-600" />
-                  All Users
-                </CardTitle>
-                <CardDescription>Complete list of registered users with actions</CardDescription>
-              </div>
-              <Button variant="outline" onClick={fetchData} disabled={loading}>
-                <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                Refresh
-              </Button>
+              <Card className="hover:shadow-lg transition-shadow border-orange-200">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Forecast Accuracy</CardTitle>
+                  <TrendingUp className="h-4 w-4 text-orange-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-orange-600">{mockData.forecasts.accuracy}%</div>
+                  <p className="text-xs text-muted-foreground">
+                    <span className="text-green-600">{mockData.forecasts.demandTrend}</span> trend
+                  </p>
+                </CardContent>
+              </Card>
             </div>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="text-center py-8">
-                <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground">Loading users...</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {dashboardData.users.map((user) => (
-                  <Card key={user._id} className="p-4 hover:shadow-md transition-shadow">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center space-x-2">
-                        <Users className="h-5 w-5 text-blue-600" />
+
+            {/* Charts Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-green-600" />
+                    Monthly Production Trends
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <AreaChart data={[
+                      { month: "Jan", production: 1200, target: 1000 },
+                      { month: "Feb", production: 1350, target: 1100 },
+                      { month: "Mar", production: 1100, target: 1200 },
+                      { month: "Apr", production: 1400, target: 1300 },
+                      { month: "May", production: 1600, target: 1400 },
+                      { month: "Jun", production: 1800, target: 1500 },
+                    ]}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Area type="monotone" dataKey="production" stroke="#10b981" fill="#10b981" fillOpacity={0.3} />
+                      <Area type="monotone" dataKey="target" stroke="#6b7280" fill="#6b7280" fillOpacity={0.1} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <PieChart className="h-5 w-5 text-blue-600" />
+                    Product Categories Distribution
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={mockData.inventory.categories.map(cat => ({
+                          name: cat.name,
+                          value: cat.quantity,
+                          color: cat.name === "Grains" ? "#10b981" : cat.name === "Vegetables" ? "#3b82f6" : "#f59e0b"
+                        }))}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={100}
+                        paddingAngle={5}
+                        dataKey="value"
+                      >
+                        {mockData.inventory.categories.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.name === "Grains" ? "#10b981" : entry.name === "Vegetables" ? "#3b82f6" : "#f59e0b"} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Alerts Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-red-600" />
+                  Active Alerts
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {mockData.logistics.alerts.map((alert, index) => (
+                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <AlertTriangle className="h-5 w-5 text-red-600" />
                         <div>
-                          <h3 className="font-semibold text-sm">{user.name}</h3>
-                          <p className="text-xs text-gray-500">ID: {user._id.slice(-8)}</p>
+                          <p className="font-medium">{alert.message}</p>
+                          <p className="text-sm text-muted-foreground">Logistics Alert</p>
                         </div>
                       </div>
-                      {getRoleBadge(user.role)}
-                    </div>
-                    <div className="space-y-2 text-xs mb-3">
                       <div className="flex items-center space-x-2">
-                        <Mail className="h-3 w-3 text-gray-500" />
-                        <span className="truncate">{user.email}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Calendar className="h-3 w-3 text-gray-500" />
-                        <span>Joined {new Date(user.createdAt).toLocaleDateString()}</span>
+                        {getSeverityBadge(alert.severity)}
+                        <Button size="sm" variant="outline">
+                          <Eye className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
-                    <div className="flex space-x-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleViewUser(user)}
-                        className="flex-1"
-                      >
-                        <Eye className="h-3 w-3 mr-1" />
-                        View
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleEditUser(user)}
-                      >
-                        <Edit className="h-3 w-3" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleDeleteUser(user)}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Farmers Tab */}
+          <TabsContent value="farmers" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="h-5 w-5 text-green-600" />
+                      Farmers Management
+                    </CardTitle>
+                    <CardDescription>Manage farmer profiles, performance, and certifications</CardDescription>
+                  </div>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Farmer
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {mockData.farmers.topPerformers.map((farmer, index) => (
+                    <Card key={index} className="p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h3 className="font-semibold">{farmer.name}</h3>
+                          <p className="text-sm text-muted-foreground">{farmer.farm}</p>
+                        </div>
+                        <Trophy className="h-5 w-5 text-yellow-600" />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span>Yield:</span>
+                          <span className="font-medium">{farmer.yield}%</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span>Quality:</span>
+                          <span className="font-medium">{farmer.quality}%</span>
+                        </div>
+                      </div>
+                      <div className="flex space-x-2 mt-3">
+                        <Button size="sm" variant="outline" className="flex-1">
+                          <Eye className="h-3 w-3 mr-1" />
+                          View
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Edit className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Logistics Tab */}
+          <TabsContent value="logistics" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Truck className="h-5 w-5 text-blue-600" />
+                      Transport & Logistics
+                    </CardTitle>
+                    <CardDescription>Track shipments, vehicles, and delivery status</CardDescription>
+                  </div>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Shipment
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <Card className="p-4 border-blue-200">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <Truck className="h-6 w-6 text-blue-600" />
+                      <div>
+                        <h3 className="font-semibold">Active Shipments</h3>
+                        <p className="text-2xl font-bold text-blue-600">{mockData.logistics.activeShipments}</p>
+                      </div>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>Delivered Today:</span>
+                        <span className="font-medium text-green-600">{mockData.logistics.deliveredToday}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Delayed:</span>
+                        <span className="font-medium text-red-600">{mockData.logistics.delayed}</span>
+                      </div>
                     </div>
                   </Card>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
 
-        {/* Enhanced Orders Section */}
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <div>
-                <CardTitle className="flex items-center gap-2">
-                  <ShoppingCart className="h-5 w-5 text-green-600" />
-                  Recent Orders
-                </CardTitle>
-                <CardDescription>Latest customer orders with detailed information</CardDescription>
-              </div>
-              <Button variant="outline" onClick={fetchData} disabled={loading}>
-                <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                Refresh
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="text-center py-8">
-                <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground">Loading orders...</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {dashboardData.orders.slice(0, 10).map((order) => (
-                  <div key={order._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                    <div className="flex items-center space-x-4">
+                  <Card className="p-4 border-green-200">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <MapPin className="h-6 w-6 text-green-600" />
                       <div>
-                        <p className="font-medium">Order #{order._id.slice(-8)}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {order.userId?.name || 'Unknown Customer'}
-                        </p>
-                      </div>
-                      <div className="text-sm">
-                        <p>{order.quantity} items</p>
-                        <p className="font-medium">${order.totalPrice}</p>
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        <p>{new Date(order.createdAt).toLocaleDateString()}</p>
-                        <p>{new Date(order.createdAt).toLocaleTimeString()}</p>
+                        <h3 className="font-semibold">Fleet Status</h3>
+                        <p className="text-2xl font-bold text-green-600">{mockData.logistics.totalVehicles}</p>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      {getStatusBadge(order.status)}
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleViewOrder(order)}
-                      >
-                        <Eye className="h-3 w-3 mr-1" />
-                        View
-                      </Button>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>Available:</span>
+                        <span className="font-medium text-green-600">32</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>In Transit:</span>
+                        <span className="font-medium text-blue-600">13</span>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                  </Card>
 
-        {/* User Details Dialog */}
-        <Dialog open={showUserDetails} onOpenChange={setShowUserDetails}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-blue-600" />
-                User Details
-              </DialogTitle>
-            </DialogHeader>
-            {selectedUser && (
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <Users className="h-8 w-8 text-blue-600" />
+                  <Card className="p-4 border-orange-200">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <Thermometer className="h-6 w-6 text-orange-600" />
+                      <div>
+                        <h3 className="font-semibold">Cold Chain</h3>
+                        <p className="text-2xl font-bold text-orange-600">98.5%</p>
+                      </div>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>Compliance:</span>
+                        <span className="font-medium text-green-600">98.5%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Alerts:</span>
+                        <span className="font-medium text-red-600">2</span>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Inventory Tab */}
+          <TabsContent value="inventory" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
                   <div>
-                    <h3 className="font-semibold">{selectedUser.name}</h3>
-                    <p className="text-sm text-muted-foreground">{selectedUser.email}</p>
+                    <CardTitle className="flex items-center gap-2">
+                      <Package className="h-5 w-5 text-purple-600" />
+                      Inventory & Batch Management
+                    </CardTitle>
+                    <CardDescription>Track inventory levels, batch quality, and storage conditions</CardDescription>
                   </div>
-                </div>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Role:</span>
-                    <span>{getRoleBadge(selectedUser.role)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">User ID:</span>
-                    <span className="font-mono text-xs">{selectedUser._id}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Joined:</span>
-                    <span>{new Date(selectedUser.createdAt).toLocaleDateString()}</span>
-                  </div>
-                </div>
-                <div className="flex space-x-2 pt-4">
-                  <Button variant="outline" onClick={() => handleEditUser(selectedUser)} className="flex-1">
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit User
-                  </Button>
-                  <Button variant="outline" onClick={() => handleDeleteUser(selectedUser)} className="flex-1 text-red-600">
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Batch
                   </Button>
                 </div>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <Card className="p-4">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <Warehouse className="h-6 w-6 text-purple-600" />
+                      <div>
+                        <h3 className="font-semibold">Total Batches</h3>
+                        <p className="text-2xl font-bold text-purple-600">{mockData.inventory.totalBatches}</p>
+                      </div>
+                    </div>
+                  </Card>
 
-        {/* Order Details Dialog */}
-        <Dialog open={showOrderDetails} onOpenChange={setShowOrderDetails}>
-          <DialogContent className="max-w-lg">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <ShoppingCart className="h-5 w-5 text-green-600" />
-                Order Details
-              </DialogTitle>
-            </DialogHeader>
-            {selectedOrder && (
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <ShoppingCart className="h-8 w-8 text-green-600" />
+                  <Card className="p-4">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <AlertTriangle className="h-6 w-6 text-red-600" />
+                      <div>
+                        <h3 className="font-semibold">Low Stock</h3>
+                        <p className="text-2xl font-bold text-red-600">{mockData.inventory.lowStock}</p>
+                      </div>
+                    </div>
+                  </Card>
+
+                  <Card className="p-4">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <Clock className="h-6 w-6 text-orange-600" />
+                      <div>
+                        <h3 className="font-semibold">Expiring Soon</h3>
+                        <p className="text-2xl font-bold text-orange-600">{mockData.inventory.expiringSoon}</p>
+                      </div>
+                    </div>
+                  </Card>
+
+                  <Card className="p-4">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <DollarSign className="h-6 w-6 text-green-600" />
+                      <div>
+                        <h3 className="font-semibold">Total Value</h3>
+                        <p className="text-2xl font-bold text-green-600">${(mockData.inventory.totalValue / 1000000).toFixed(1)}M</p>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Forecasting Tab */}
+          <TabsContent value="forecasting" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
                   <div>
-                    <h3 className="font-semibold">Order #{selectedOrder._id.slice(-8)}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {selectedOrder.userId?.name || 'Unknown Customer'}
-                    </p>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5 text-orange-600" />
+                      Predictive Analytics & Forecasting
+                    </CardTitle>
+                    <CardDescription>Demand forecasting and production planning</CardDescription>
                   </div>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Forecast
+                  </Button>
                 </div>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Status:</span>
-                    <span>{getStatusBadge(selectedOrder.status)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Quantity:</span>
-                    <span>{selectedOrder.quantity} items</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Total Price:</span>
-                    <span className="font-semibold">${selectedOrder.totalPrice}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Created:</span>
-                    <span>{new Date(selectedOrder.createdAt).toLocaleString()}</span>
-                  </div>
-                  {selectedOrder.updatedAt && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Updated:</span>
-                      <span>{new Date(selectedOrder.updatedAt).toLocaleString()}</span>
-                    </div>
-                  )}
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Forecast Accuracy</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center">
+                        <div className="text-4xl font-bold text-orange-600 mb-2">{mockData.forecasts.accuracy}%</div>
+                        <p className="text-muted-foreground">Overall accuracy rate</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Next Month Prediction</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center">
+                        <div className="text-4xl font-bold text-green-600 mb-2">${(mockData.forecasts.nextMonthPrediction / 1000000).toFixed(1)}M</div>
+                        <p className="text-muted-foreground">Expected revenue</p>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
-                {selectedOrder.shippingInfo && (
-                  <div className="pt-4 border-t">
-                    <h4 className="font-semibold mb-2">Shipping Information</h4>
-                    <div className="space-y-1 text-sm">
-                      <p><strong>Name:</strong> {selectedOrder.shippingInfo.firstName} {selectedOrder.shippingInfo.lastName}</p>
-                      <p><strong>Email:</strong> {selectedOrder.shippingInfo.email}</p>
-                      <p><strong>Phone:</strong> {selectedOrder.shippingInfo.phone}</p>
-                      <p><strong>Address:</strong> {selectedOrder.shippingInfo.address}</p>
-                      <p><strong>City:</strong> {selectedOrder.shippingInfo.city}, {selectedOrder.shippingInfo.state}</p>
+
+                <Card className="mt-6">
+                  <CardHeader>
+                    <CardTitle>Recommendations</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {mockData.forecasts.recommendations.map((rec, index) => (
+                        <div key={index} className="flex items-center space-x-3 p-3 border rounded-lg">
+                          <Target className="h-5 w-5 text-blue-600" />
+                          <span>{rec}</span>
+                        </div>
+                      ))}
                     </div>
+                  </CardContent>
+                </Card>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Traceability Tab */}
+          <TabsContent value="traceability" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Shield className="h-5 w-5 text-green-600" />
+                      Blockchain Traceability
+                    </CardTitle>
+                    <CardDescription>Product journey tracking and verification</CardDescription>
                   </div>
-                )}
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Product
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <Card className="p-4">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <Package className="h-6 w-6 text-green-600" />
+                      <div>
+                        <h3 className="font-semibold">Active Products</h3>
+                        <p className="text-2xl font-bold text-green-600">{mockData.traceability.activeProducts}</p>
+                      </div>
+                    </div>
+                  </Card>
+
+                  <Card className="p-4">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <CheckCircle className="h-6 w-6 text-blue-600" />
+                      <div>
+                        <h3 className="font-semibold">Verified Today</h3>
+                        <p className="text-2xl font-bold text-blue-600">{mockData.traceability.verifiedToday}</p>
+                      </div>
+                    </div>
+                  </Card>
+
+                  <Card className="p-4">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <Hash className="h-6 w-6 text-purple-600" />
+                      <div>
+                        <h3 className="font-semibold">Blockchain TX</h3>
+                        <p className="text-2xl font-bold text-purple-600">{mockData.traceability.blockchainTransactions}</p>
+                      </div>
+                    </div>
+                  </Card>
+
+                  <Card className="p-4">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <QrCode className="h-6 w-6 text-orange-600" />
+                      <div>
+                        <h3 className="font-semibold">QR Scans</h3>
+                        <p className="text-2xl font-bold text-orange-600">{mockData.traceability.qrScans}</p>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </AdminLayout>
   )
 }
+
+// QrCode component for traceability
+const QrCode = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+  </svg>
+)

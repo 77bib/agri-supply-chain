@@ -10,7 +10,7 @@ npm install mongoose --legacy-peer-deps
 ### 2. إعداد قاعدة البيانات
 قم بإنشاء ملف `.env.local` في مجلد المشروع:
 ```env
-MONGODB_URI=mongodb://localhost:27017/agri-supply-chain
+MONGODB_URI=mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 ```
 
 ### 3. تشغيل MongoDB

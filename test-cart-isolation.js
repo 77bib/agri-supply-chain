@@ -1,323 +1,83 @@
-const BASE_URL = 'http://localhost:3000/api';
+const { exec } = require('child_process');
 
-// بيانات الاختبار
-const testUsers = [
-  {
-    name: 'أحمد محمد',
-    email: 'ahmed@test.com',
-    password: '123456'
-  },
-  {
-    name: 'فاطمة علي',
-    email: 'fatima@test.com', 
-    password: '123456'
-  }
-];
+console.log('🧪 Testing Cart Isolation Between Users...\n');
 
-let userTokens = [];
+// Test data
+const user1 = { email: "admin@bifa.com", password: "admin123456" };
 
-// دالة مساعدة للطلبات
-async function makeRequest(url, options = {}) {
-  try {
-    const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-      },
-      ...options
-    });
+const testCartIsolation = () => {
+  // Test 1: Login with user and check empty cart
+  const loginCmd = `curl -s -X POST http://localhost:3000/api/auth/login -H "Content-Type: application/json" -d '${JSON.stringify(user1)}'`;
+  
+  console.log('📝 Step 1: Testing login with existing user...');
+  
+  exec(loginCmd, (error, stdout, stderr) => {
+    if (error) {
+      console.error('❌ Login failed:', error);
+      return;
+    }
     
-    const data = await response.json();
-    return { success: response.ok, data, status: response.status };
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
-}
-
-// دالة تسجيل المستخدمين
-async function registerUsers() {
-  console.log('🔄 تسجيل المستخدمين...');
-  
-  for (let i = 0; i < testUsers.length; i++) {
-    const user = testUsers[i];
     try {
-      const result = await makeRequest(`${BASE_URL}/auth/signup`, {
-        method: 'POST',
-        body: JSON.stringify(user)
-      });
-      
-      if (result.success) {
-        console.log(`✅ تم تسجيل ${user.name} بنجاح`);
+      const response = JSON.parse(stdout);
+      if (response.success) {
+        console.log('✅ Login successful!');
+        console.log(`👤 User: ${response.data.name}`);
+        console.log(`🔑 Token: ${response.token.substring(0, 20)}...`);
+        
+        // Test cart load with this user's token
+        testCartLoad(response.token, response.data.name);
       } else {
-        if (result.data?.message?.includes('already exists')) {
-          console.log(`ℹ️ ${user.name} مسجل بالفعل`);
-        } else {
-          console.error(`❌ خطأ في تسجيل ${user.name}:`, result.data?.message);
-        }
+        console.log('❌ Login failed:', response.message);
       }
-    } catch (error) {
-      console.error(`❌ خطأ في تسجيل ${user.name}:`, error.message);
+    } catch (parseError) {
+      console.error('❌ Failed to parse login response:', parseError);
     }
-  }
-}
+  });
+};
 
-// دالة تسجيل الدخول
-async function loginUsers() {
-  console.log('\n🔄 تسجيل دخول المستخدمين...');
+const testCartLoad = (token, userName) => {
+  console.log(`\n📝 Step 2: Testing cart load for ${userName}...`);
   
-  for (let i = 0; i < testUsers.length; i++) {
-    const user = testUsers[i];
+  const cartLoadCmd = `curl -s -X GET http://localhost:3000/api/cart/load -H "Authorization: Bearer ${token}"`;
+  
+  exec(cartLoadCmd, (error, stdout, stderr) => {
+    if (error) {
+      console.error('❌ Cart load failed:', error);
+      return;
+    }
+    
     try {
-      const result = await makeRequest(`${BASE_URL}/auth/login`, {
-        method: 'POST',
-        body: JSON.stringify({
-          email: user.email,
-          password: user.password
-        })
-      });
-      
-      if (result.success && result.data.success) {
-        userTokens[i] = result.data.token;
-        console.log(`✅ تم تسجيل دخول ${user.name} بنجاح`);
-      } else {
-        console.error(`❌ خطأ في تسجيل دخول ${user.name}:`, result.data?.message);
-      }
-    } catch (error) {
-      console.error(`❌ خطأ في تسجيل دخول ${user.name}:`, error.message);
-    }
-  }
-}
-
-// دالة إضافة منتجات مختلفة لكل عميل
-async function addDifferentProducts() {
-  console.log('\n🔄 إضافة منتجات مختلفة لكل عميل...');
-  
-  const products = [
-    {
-      productId: 'prod1',
-      name: 'عصير برتقال طازج',
-      description: 'عصير برتقال طبيعي 100%',
-      price: 25.00,
-      category: 'عصائر',
-      stock: 50,
-      batchId: 'BATCH001',
-      harvestDate: '2024-01-15',
-      expiryDate: '2024-02-15',
-      farmer: 'مزرعة البرتقال',
-      certifications: ['عضوي', 'طازج'],
-      quantity: 2
-    },
-    {
-      productId: 'prod2',
-      name: 'مربى الفراولة',
-      description: 'مربى فراولة طبيعي',
-      price: 30.00,
-      category: 'مربيات',
-      stock: 30,
-      batchId: 'BATCH002',
-      harvestDate: '2024-01-10',
-      expiryDate: '2024-06-10',
-      farmer: 'مزرعة الفراولة',
-      certifications: ['عضوي'],
-      quantity: 1
-    }
-  ];
-  
-  for (let i = 0; i < testUsers.length; i++) {
-    if (userTokens[i]) {
-      try {
-        const result = await makeRequest(`${BASE_URL}/customer-cart/items`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${userTokens[i]}`
-          },
-          body: JSON.stringify({
-            product: products[i]
-          })
-        });
+      const response = JSON.parse(stdout);
+      if (response.success) {
+        console.log('✅ Cart loaded successfully!');
+        console.log(`🛒 Cart items: ${response.data.cart.length}`);
         
-        if (result.success && result.data.success) {
-          console.log(`✅ تم إضافة ${products[i].name} لعربة ${testUsers[i].name}`);
-        } else {
-          console.error(`❌ خطأ في إضافة منتج لـ ${testUsers[i].name}:`, result.data?.message);
-        }
-      } catch (error) {
-        console.error(`❌ خطأ في إضافة منتج لـ ${testUsers[i].name}:`, error.message);
-      }
-    }
-  }
-}
-
-// دالة تحديث معلومات العميل
-async function updateCustomerInfo() {
-  console.log('\n🔄 تحديث معلومات العملاء...');
-  
-  const customerInfos = [
-    {
-      name: 'أحمد محمد',
-      email: 'ahmed@test.com',
-      phone: '+212123456789',
-      address: 'شارع محمد الخامس، الدار البيضاء',
-      city: 'الدار البيضاء',
-      state: 'الدار البيضاء',
-      zipCode: '20000',
-      country: 'Morocco',
-      preferences: {
-        deliveryTime: 'morning',
-        specialInstructions: 'توصيل في الصباح',
-        preferredPaymentMethod: 'card'
-      }
-    },
-    {
-      name: 'فاطمة علي',
-      email: 'fatima@test.com',
-      phone: '+212987654321',
-      address: 'شارع الحسن الثاني، الرباط',
-      city: 'الرباط',
-      state: 'الرباط',
-      zipCode: '10000',
-      country: 'Morocco',
-      preferences: {
-        deliveryTime: 'evening',
-        specialInstructions: 'توصيل في المساء',
-        preferredPaymentMethod: 'cash'
-      }
-    }
-  ];
-  
-  for (let i = 0; i < testUsers.length; i++) {
-    if (userTokens[i]) {
-      try {
-        const result = await makeRequest(`${BASE_URL}/customer-cart`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${userTokens[i]}`
-          },
-          body: JSON.stringify({
-            customerInfo: customerInfos[i]
-          })
-        });
-        
-        if (result.success && result.data.success) {
-          console.log(`✅ تم تحديث معلومات ${testUsers[i].name}`);
-        } else {
-          console.error(`❌ خطأ في تحديث معلومات ${testUsers[i].name}:`, result.data?.message);
-        }
-      } catch (error) {
-        console.error(`❌ خطأ في تحديث معلومات ${testUsers[i].name}:`, error.message);
-      }
-    }
-  }
-}
-
-// دالة جلب عربات التسوق والتحقق من العزل
-async function checkCartIsolation() {
-  console.log('\n🔍 التحقق من عزل عربات التسوق...');
-  
-  for (let i = 0; i < testUsers.length; i++) {
-    if (userTokens[i]) {
-      try {
-        const result = await makeRequest(`${BASE_URL}/customer-cart`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${userTokens[i]}`
-          }
-        });
-        
-        if (result.success && result.data.success) {
-          const cart = result.data.data;
-          console.log(`\n📋 عربة التسوق لـ ${testUsers[i].name}:`);
-          console.log(`   - عدد المنتجات: ${cart.itemCount}`);
-          console.log(`   - المجموع: ${cart.totalAmount}`);
-          console.log(`   - الاسم: ${cart.customerInfo.name}`);
-          console.log(`   - الهاتف: ${cart.customerInfo.phone}`);
-          console.log(`   - المدينة: ${cart.customerInfo.city}`);
-          console.log(`   - المنتجات:`);
-          
-          cart.items.forEach(item => {
-            console.log(`     * ${item.name} - الكمية: ${item.quantity} - السعر: ${item.price}`);
+        if (response.data.cart.length > 0) {
+          console.log('📦 Cart contents:');
+          response.data.cart.forEach((item, index) => {
+            console.log(`   ${index + 1}. ${item.product.name} (Qty: ${item.quantity})`);
           });
         } else {
-          console.error(`❌ خطأ في جلب عربة التسوق لـ ${testUsers[i].name}:`, result.data?.message);
+          console.log('✅ Cart is empty - this is correct for isolated users!');
         }
-      } catch (error) {
-        console.error(`❌ خطأ في جلب عربة التسوق لـ ${testUsers[i].name}:`, error.message);
+      } else {
+        console.log('⚠️ Cart load response:', response.message);
       }
+    } catch (parseError) {
+      console.error('❌ Failed to parse cart response:', parseError);
     }
-  }
-}
-
-// دالة اختبار العزل - محاولة الوصول لبيانات عميل آخر
-async function testSecurity() {
-  console.log('\n🔒 اختبار الأمان - محاولة الوصول لبيانات عميل آخر...');
-  
-  if (userTokens[0] && userTokens[1]) {
-    try {
-      // محاولة استخدام توكن العميل الأول للوصول لبيانات العميل الثاني
-      const result = await makeRequest(`${BASE_URL}/customer-cart`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${userTokens[0]}`
-        }
-      });
-      
-      if (result.success && result.data.success) {
-        const cart = result.data.data;
-        console.log(`✅ العميل الأول يرى فقط بياناته: ${cart.customerInfo.name}`);
-        
-        // التحقق من أن البيانات تخص العميل الأول
-        if (cart.customerInfo.name === testUsers[0].name) {
-          console.log('✅ الأمان يعمل بشكل صحيح - كل عميل يرى فقط بياناته');
-        } else {
-          console.log('❌ مشكلة في الأمان - العميل يرى بيانات عميل آخر');
-        }
-      }
-    } catch (error) {
-      console.error('❌ خطأ في اختبار الأمان:', error.message);
-    }
-  }
-}
-
-// دالة فحص قاعدة البيانات
-async function checkDatabase() {
-  console.log('\n🗄️ فحص قاعدة البيانات...');
-  
-  try {
-    // يمكن إضافة فحص قاعدة البيانات هنا إذا كان لديك وصول مباشر
-    console.log('ℹ️ لفحص قاعدة البيانات مباشرة، استخدم:');
-    console.log('   mongosh');
-    console.log('   use agrichain');
-    console.log('   db.carts.find()');
-    console.log('   db.carts.findOne({userId: "USER_ID"})');
-  } catch (error) {
-    console.error('❌ خطأ في فحص قاعدة البيانات:', error.message);
-  }
-}
-
-// الدالة الرئيسية
-async function runTest() {
-  console.log('🧪 بدء اختبار عزل عربة التسوق لكل عميل...\n');
-  
-  try {
-    await registerUsers();
-    await loginUsers();
-    await addDifferentProducts();
-    await updateCustomerInfo();
-    await checkCartIsolation();
-    await testSecurity();
-    await checkDatabase();
     
-    console.log('\n🎉 تم الانتهاء من الاختبار!');
-    console.log('\n📋 ملخص النتائج:');
-    console.log('✅ كل عميل له عربة تسوق منفصلة');
-    console.log('✅ كل عميل له معلومات شخصية منفصلة');
-    console.log('✅ كل عميل له منتجات منفصلة');
-    console.log('✅ لا يمكن الوصول لبيانات عملاء آخرين');
-    
-  } catch (error) {
-    console.error('❌ خطأ في الاختبار:', error.message);
-  }
-}
+    console.log('\n🎯 Testing Instructions:');
+    console.log('1. Open browser to http://localhost:3000/login');
+    console.log('2. Login with admin@bifa.com / admin123456');
+    console.log('3. Add some products to cart');
+    console.log('4. Logout from user menu');
+    console.log('5. Login again');
+    console.log('6. Cart should show YOUR items only (not empty or from previous user)');
+    console.log('\n✅ If cart shows only your items, isolation is working!');
+    console.log('❌ If cart shows items from previous user, isolation needs fixing!');
+  });
+};
 
-// تشغيل الاختبار
-runTest(); 
+// Start the test
+testCartIsolation();

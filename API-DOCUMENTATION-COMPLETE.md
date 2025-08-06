@@ -274,7 +274,7 @@ Authorization: Bearer <jwt_token>
       "userId": {
         "_id": "admin_id",
         "name": "Admin Name",
-        "email": "admin@example.com"
+        "email": "admin@bifa.com"
       },
       "createdAt": "2024-01-01T00:00:00.000Z"
     }
@@ -500,7 +500,7 @@ try {
 Create a `.env.local` file:
 
 ```env
-MONGODB_URI=mongodb://localhost:27017/agri-supply-chain
+MONGODB_URI=mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 JWT_SECRET=your-super-secret-jwt-key
 NEXT_PUBLIC_API_URL=http://localhost:3000
 ```

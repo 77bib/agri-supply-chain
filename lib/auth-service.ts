@@ -1,5 +1,5 @@
 import { useStore } from './store';
-import { saveCart, saveCartToLocalStorage, loadCart, loadCartFromLocalStorage, mergeCarts } from './cart-service';
+import { saveCart, saveCartToLocalStorage, loadCart, loadCartFromLocalStorage, mergeCarts, clearCartFromLocalStorage, clearOtherUsersData } from './cart-service';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
@@ -97,6 +97,9 @@ export async function logoutUser() {
   } catch (error) {
     console.error('Error during logout:', error);
   } finally {
+    // مسح بيانات السلة من localStorage أولاً
+    clearCartFromLocalStorage();
+    
     // حذف التوكن من localStorage
     localStorage.removeItem('auth-token');
     
@@ -167,24 +170,32 @@ export async function saveUserToStore(user: any, isAdmin: boolean = false) {
   setCurrentUser(user);
   setIsAdmin(isAdmin);
 
-  // استرجاع عربة التسوق المحفوظة
+  // مسح جميع بيانات المستخدمين الآخرين من localStorage
+  clearOtherUsersData();
+
+  // مسح عربة التسوق الحالية أولاً لضمان عزل المستخدمين
+  setCart([], true); // مسح السلة لتجنب رؤية سلة المستخدم السابق
+  
+  // استرجاع عربة التسوق المحفوظة للمستخدم الحالي فقط
   try {
     const savedCartResponse = await loadCart();
-    if (savedCartResponse.success && savedCartResponse.data.cart.length > 0) {
-      // دمج عربة التسوق المحفوظة مع الحالية
-      const mergedCart = mergeCarts(savedCartResponse.data.cart, cart);
-      setCart(mergedCart);
-      console.log('Saved cart restored successfully');
+    if (savedCartResponse.success && savedCartResponse.data.cart && savedCartResponse.data.cart.length > 0) {
+      // استخدام سلة المستخدم المحفوظة فقط (بدون دمج)
+      setCart(savedCartResponse.data.cart, true); // تخطي الحفظ التلقائي لتجنب التكرار
+      console.log('User cart restored successfully:', savedCartResponse.data.cart.length, 'items');
+    } else {
+      console.log('No saved cart found for this user');
     }
   } catch (error) {
     console.error('Failed to load saved cart:', error);
     // محاولة استرجاع من localStorage كنسخة احتياطية
     try {
       const localCart = loadCartFromLocalStorage();
-      if (localCart.length > 0) {
-        const mergedCart = mergeCarts(localCart, cart);
-        setCart(mergedCart);
-        console.log('Cart restored from localStorage');
+      if (localCart && localCart.length > 0) {
+        setCart(localCart, true); // استخدام localStorage فقط (بدون دمج)
+        console.log('Cart restored from localStorage:', localCart.length, 'items');
+      } else {
+        console.log('No cart found in localStorage either');
       }
     } catch (localError) {
       console.error('Failed to load cart from localStorage:', localError);

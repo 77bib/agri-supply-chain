@@ -107,7 +107,7 @@ utils/
 ### 1. إنشاء ملف .env.local
 ```env
 # MongoDB Connection
-MONGODB_URI=mongodb://localhost:27017/agri-supply-chain
+MONGODB_URI=mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 # JWT Configuration
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
@@ -140,7 +140,7 @@ curl -X POST http://localhost:3000/api/auth/create-admin \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Admin User",
-    "email": "admin@example.com",
+    "email": "admin@bifa.com",
     "password": "admin123456",
     "adminSecret": "admin-secret-2024"
   }'

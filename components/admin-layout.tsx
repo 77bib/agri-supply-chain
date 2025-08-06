@@ -85,8 +85,12 @@ function AdminLayout({ children }: AdminLayoutProps) {
         <div className="flex flex-col flex-grow bg-card border-r border-border">
           <div className="flex h-16 items-center border-b px-6">
             <Link href="/admin" className="flex items-center space-x-2">
-              <Leaf className="h-6 w-6 text-green-600" />
-              <span className="text-lg font-semibold">AgriChain Admin</span>
+              <img 
+                src="/bifa-logo.svg" 
+                alt="Bifa Logo" 
+                className="w-16 h-8 drop-shadow-lg"
+              />
+              <span className="text-sm font-medium text-gray-600">Admin</span>
             </Link>
           </div>
           <nav className="flex-1 space-y-1 px-3 py-4">
@@ -147,8 +151,12 @@ function AdminLayout({ children }: AdminLayoutProps) {
               <div className="flex h-full flex-col">
                 <div className="flex h-16 items-center border-b px-6">
                   <Link href="/admin" className="flex items-center space-x-2">
-                    <Leaf className="h-6 w-6 text-green-600" />
-                    <span className="text-lg font-semibold">AgriChain</span>
+                    <img 
+                      src="/bifa-logo.svg" 
+                      alt="Bifa Logo" 
+                      className="w-16 h-8 drop-shadow-lg"
+                    />
+                    <span className="text-sm font-medium text-gray-600">Admin</span>
                   </Link>
                 </div>
                 <nav className="flex-1 space-y-1 px-3 py-4">

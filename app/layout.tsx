@@ -7,6 +7,7 @@ import { StoreProvider } from "@/components/store-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { CartAutoSave } from "@/components/cart-auto-save"
 import { CartRestoreNotification } from "@/components/cart-restore-notification"
+import { CartHydration } from "@/components/cart-hydration"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -31,6 +32,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <StoreProvider>
+            <CartHydration />
             <CartAutoSave />
             <CartRestoreNotification />
             {children}

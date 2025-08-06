@@ -6,7 +6,7 @@
 
 ```env
 # MongoDB Connection
-MONGODB_URI=mongodb://localhost:27017/agri-supply-chain
+MONGODB_URI=mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 # JWT Configuration
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
@@ -22,7 +22,7 @@ NODE_ENV=development
 ## 🔧 شرح المتغيرات
 
 ### MONGODB_URI
-- **التطوير المحلي**: `mongodb://localhost:27017/agri-supply-chain`
+- **التطوير المحلي**: `mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 - **MongoDB Atlas**: `mongodb+srv://username:password@cluster.mongodb.net/agri-supply-chain`
 
 ### JWT_SECRET
@@ -43,7 +43,7 @@ NODE_ENV=development
 ### للتطوير المحلي:
 1. قم بتثبيت MongoDB على جهازك
 2. شغل MongoDB service
-3. استخدم: `mongodb://localhost:27017/agri-supply-chain`
+3. استخدم: `mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 
 ### لـ MongoDB Atlas:
 1. أنشئ حساب على MongoDB Atlas
@@ -90,7 +90,7 @@ curl -X POST http://localhost:3000/api/auth/create-admin \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Admin User",
-    "email": "admin@example.com",
+    "email": "admin@bifa.com",
     "password": "123456",
     "adminSecret": "admin-secret-2024"
   }'
@@ -104,7 +104,7 @@ curl -X POST http://localhost:3000/api/auth/create-admin \
 # ==========================================
 
 # Database Configuration
-MONGODB_URI=mongodb://localhost:27017/agri-supply-chain
+MONGODB_URI=mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 # JWT Authentication
 JWT_SECRET=agri-supply-chain-jwt-secret-2024-super-secure-key

@@ -115,7 +115,7 @@ pages/api/
 # ==========================================
 
 # Database Configuration
-MONGODB_URI=mongodb://localhost:27017/agri-supply-chain
+MONGODB_URI=mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 # JWT Authentication
 JWT_SECRET=agri-supply-chain-jwt-secret-2024-super-secure-key
@@ -154,7 +154,7 @@ curl -X POST http://localhost:3000/api/auth/create-admin \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Admin User",
-    "email": "admin@example.com",
+    "email": "admin@bifa.com",
     "password": "Admin123456",
     "adminSecret": "admin-secret-2024"
   }'

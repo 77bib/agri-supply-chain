@@ -83,7 +83,7 @@ export function CartRestoreNotification() {
               size="sm"
               onClick={() => {
                 const mergedCart = mergeCarts(savedCart, cart)
-                setCart(mergedCart)
+                setCart(mergedCart, true) // تخطي الحفظ التلقائي لتجنب التكرار
                 toast.success(`Restored ${totalItems} items to your cart!`)
                 toast.dismiss(t.id)
               }}

@@ -7,7 +7,7 @@
 ```env
 # MongoDB Connection String
 # استبدل هذا الرابط برابط قاعدة البيانات الخاصة بك
-MONGODB_URI=mongodb://localhost:27017/agri-supply-chain
+MONGODB_URI=mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 # أو استخدم MongoDB Atlas
 # MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/agri-supply-chain?retryWrites=true&w=majority
@@ -24,7 +24,7 @@ NODE_ENV=development
 ### 1. MongoDB المحلي
 إذا كنت تستخدم MongoDB محلياً:
 ```env
-MONGODB_URI=mongodb://localhost:27017/agri-supply-chain
+MONGODB_URI=mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 ```
 
 ### 2. MongoDB Atlas (موصى به للإنتاج)

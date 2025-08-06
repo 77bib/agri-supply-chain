@@ -42,9 +42,6 @@ const UserSchema: Schema = new Schema({
   timestamps: true
 });
 
-// إنشاء فهرس للبريد الإلكتروني للبحث السريع
-UserSchema.index({ email: 1 });
-
 // منع إرجاع كلمة المرور في الاستعلامات
 UserSchema.methods.toJSON = function() {
   const user = this.toObject();
