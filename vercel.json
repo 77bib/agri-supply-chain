@@ -1,5 +1,4 @@
 {
-  "_comment": "Vercel configuration for Bifa Agri-Supply Chain Next.js TypeScript app",
   "version": 2,
   "framework": "nextjs",
   "buildCommand": "npm run build",
