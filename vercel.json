@@ -1,10 +1,5 @@
 {
   "version": 2,
-  "env": {
-    "MONGODB_URI": "@mongodb_uri",
-    "JWT_SECRET": "@jwt_secret",
-    "NODE_ENV": "production"
-  },
   "functions": {
     "pages/api/**/*.ts": {
       "memory": 1024,
