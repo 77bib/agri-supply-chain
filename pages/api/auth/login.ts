@@ -9,6 +9,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // Set timeout for the API route
+  res.setTimeout(30000); // 30 seconds
+  
   // التحقق من طريقة الطلب
   if (req.method !== 'POST') {
     return res.status(405).json({
@@ -18,8 +21,16 @@ export default async function handler(
   }
 
   try {
-    // الاتصال بقاعدة البيانات
+    console.log('🔄 Starting login process...');
+    
+    // الاتصال بقاعدة البيانات مع timeout
+    const dbConnectTimeout = setTimeout(() => {
+      throw new Error('Database connection timeout');
+    }, 10000);
+    
     await dbConnect();
+    clearTimeout(dbConnectTimeout);
+    console.log('✅ Database connected');
 
     // التحقق من صحة البيانات المرسلة
     const validation = validateLoginData(req.body);
@@ -35,24 +46,30 @@ export default async function handler(
     const { email, password } = validation.data;
 
     // البحث عن المستخدم
+    console.log('🔍 Searching for user:', email.toLowerCase());
     const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
     
     if (!user) {
+      console.log('❌ User not found:', email);
       return res.status(401).json({
         success: false,
         message: 'البريد الإلكتروني أو كلمة المرور غير صحيحة'
       });
     }
 
+    console.log('✅ User found, verifying password...');
     // التحقق من كلمة المرور
     const isPasswordValid = await verifyPassword(password, user.password);
     
     if (!isPasswordValid) {
+      console.log('❌ Invalid password for user:', email);
       return res.status(401).json({
         success: false,
         message: 'البريد الإلكتروني أو كلمة المرور غير صحيحة'
       });
     }
+    
+    console.log('✅ Password verified');
 
     // إنشاء JWT token
     const token = generateToken({
