@@ -16,8 +16,7 @@
   "functions": {
     "pages/api/**/*.ts": {
       "memory": 1024,
-      "maxDuration": 10,
-      "regions": ["fra1"]
+      "maxDuration": 10
     }
   },
   "headers": [
