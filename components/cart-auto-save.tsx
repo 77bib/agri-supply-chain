@@ -11,7 +11,7 @@ export function CartAutoSave() {
     const handleBeforeUnload = async () => {
       if (currentUser && cart.length > 0) {
         try {
-          // حفظ في قاعدة البيانات
+          // حفظ بيانات
           await saveCart(cart)
           // حفظ في localStorage كنسخة احتياطية
           saveCartToLocalStorage(cart)
