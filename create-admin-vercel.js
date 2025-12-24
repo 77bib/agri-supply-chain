@@ -35,11 +35,11 @@ async function createAdminUser() {
     console.log('✅ Connected to MongoDB');
 
     // Check if admin exists
-    const adminExists = await User.findOne({ email: 'admin@bifa.com' });
+    const adminExists = await User.findOne({ email: 'admin@brijuice.com' });
     
     if (adminExists) {
       console.log('✅ Admin user already exists');
-      console.log('📧 Email: admin@bifa.com');
+      console.log('📧 Email: admin@brijuice.com');
       console.log('🔑 Password: admin123456');
       return;
     }
@@ -51,8 +51,8 @@ async function createAdminUser() {
     // Create admin user
     console.log('👤 Creating admin user...');
     const adminUser = new User({
-      name: 'Bifa Admin',
-      email: 'admin@bifa.com',
+      name: 'BRIJUICE Admin',
+      email: 'admin@brijuice.com',
       password: hashedPassword,
       role: 'admin',
       phone: '+213 123 456 789',
@@ -62,7 +62,7 @@ async function createAdminUser() {
     await adminUser.save();
     
     console.log('🎉 Admin user created successfully!');
-    console.log('📧 Email: admin@bifa.com');
+    console.log('📧 Email: admin@brijuice.com');
     console.log('🔑 Password: admin123456');
     console.log('👑 Role: admin');
 

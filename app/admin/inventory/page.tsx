@@ -32,120 +32,121 @@ import {
   TrendingDown,
 } from "lucide-react"
 import AdminLayout from "@/components/admin-layout"
+import { useI18n } from "@/lib/i18n"
 
-// Dummy data
+// Données factices
 const inventoryItems = [
   {
     id: "INV-001",
     productId: "OJ-001",
-    productName: "Premium Orange Juice",
-    type: "Finished Product",
-    batchOrigin: "Green Valley Farm",
+    productName: "Jus d'Orange Premium",
+    type: "Produit Fini",
+    batchOrigin: "Ferme Vallée Verte",
     quantity: 150,
-    unit: "bottles",
+    unit: "bouteilles",
     minStock: 50,
     maxStock: 200,
-    status: "stored",
-    location: "Warehouse A",
+    status: "stocké",
+    location: "Entrepôt A",
     expiryDate: "2024-07-15",
     lastUpdated: "2024-01-20",
-    value: "$747.50",
+    value: "747,50 DA",
   },
   {
     id: "INV-002",
     productId: "SJ-001",
-    productName: "Strawberry Jam",
-    type: "Finished Product",
-    batchOrigin: "Berry Fresh Co",
+    productName: "Confiture de Fraise",
+    type: "Produit Fini",
+    batchOrigin: "Ferme Berries Fresh",
     quantity: 25,
-    unit: "jars",
+    unit: "pots",
     minStock: 30,
     maxStock: 100,
-    status: "low-stock",
-    location: "Warehouse B",
+    status: "stock-faible",
+    location: "Entrepôt B",
     expiryDate: "2025-01-10",
     lastUpdated: "2024-01-19",
-    value: "$162.50",
+    value: "162,50 DA",
   },
   {
     id: "INV-003",
     productId: "RAW-001",
-    productName: "Fresh Oranges",
-    type: "Raw Material",
-    batchOrigin: "Green Valley Farm",
+    productName: "Oranges Fraîches",
+    type: "Matière Première",
+    batchOrigin: "Ferme Vallée Verte",
     quantity: 500,
     unit: "kg",
     minStock: 200,
     maxStock: 800,
-    status: "in-processing",
-    location: "Processing Unit",
+    status: "en-traitement",
+    location: "Unité de Traitement",
     expiryDate: "2024-02-15",
     lastUpdated: "2024-01-20",
-    value: "$750.00",
+    value: "750,00 DA",
   },
   {
     id: "INV-004",
     productId: "AC-001",
-    productName: "Apple Compote",
-    type: "Finished Product",
-    batchOrigin: "Mountain Orchards",
+    productName: "Compote de Pomme",
+    type: "Produit Fini",
+    batchOrigin: "Verger de la Montagne",
     quantity: 120,
-    unit: "jars",
+    unit: "pots",
     minStock: 40,
     maxStock: 150,
-    status: "stored",
-    location: "Warehouse A",
+    status: "stocké",
+    location: "Entrepôt A",
     expiryDate: "2024-12-08",
     lastUpdated: "2024-01-18",
-    value: "$690.00",
+    value: "690,00 DA",
   },
   {
     id: "INV-005",
     productId: "RAW-002",
-    productName: "Fresh Strawberries",
-    type: "Raw Material",
-    batchOrigin: "Berry Fresh Co",
+    productName: "Fraises Fraîches",
+    type: "Matière Première",
+    batchOrigin: "Ferme Berries Fresh",
     quantity: 0,
     unit: "kg",
     minStock: 100,
     maxStock: 300,
-    status: "out-of-stock",
-    location: "Cold Storage",
+    status: "rupture-stock",
+    location: "Chambre Froide",
     expiryDate: "N/A",
     lastUpdated: "2024-01-17",
-    value: "$0.00",
+    value: "0,00 DA",
   },
   {
     id: "INV-006",
     productId: "TR-001",
-    productName: "Oranges Batch #001",
-    type: "Raw Material",
-    batchOrigin: "Green Valley Farm",
+    productName: "Lot d'Oranges #001",
+    type: "Matière Première",
+    batchOrigin: "Ferme Vallée Verte",
     quantity: 300,
     unit: "kg",
     minStock: 0,
     maxStock: 500,
-    status: "in-transit",
-    location: "Truck TR-001",
+    status: "en-transit",
+    location: "Camion TR-001",
     expiryDate: "2024-02-20",
     lastUpdated: "2024-01-20",
-    value: "$450.00",
+    value: "450,00 DA",
   },
 ]
 
 const productBatches = [
   {
     id: "BATCH-001",
-    productName: "Premium Orange Juice",
+    productName: "Jus d'Orange Premium",
     batchNumber: "OJ-2024-001",
-    origin: "Green Valley Farm",
+    origin: "Ferme Vallée Verte",
     harvestDate: "2024-01-15",
     processingDate: "2024-01-17",
     quantity: 500,
-    unit: "bottles",
-    status: "stored",
+    unit: "bouteilles",
+    status: "stocké",
     quality: "A+",
-    location: "Warehouse A",
+    location: "Entrepôt A",
     expiryDate: "2024-07-15",
     traceabilityId: "TRC-001",
   },
@@ -236,6 +237,7 @@ const stockMovements = [
 ]
 
 export default function InventoryPage() {
+  const { t } = useI18n()
   const [selectedTab, setSelectedTab] = useState("inventory")
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
@@ -253,18 +255,18 @@ export default function InventoryPage() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "stored":
-        return <Badge className="bg-green-100 text-green-800">Stored</Badge>
-      case "in-processing":
-        return <Badge className="bg-blue-100 text-blue-800">In Processing</Badge>
-      case "in-transit":
-        return <Badge className="bg-purple-100 text-purple-800">In Transit</Badge>
-      case "low-stock":
-        return <Badge className="bg-yellow-100 text-yellow-800">Low Stock</Badge>
-      case "out-of-stock":
-        return <Badge variant="destructive">Out of Stock</Badge>
+      case "stocké":
+        return <Badge className="bg-green-100 text-green-800">Stocké</Badge>
+      case "en-traitement":
+        return <Badge className="bg-blue-100 text-blue-800">En Traitement</Badge>
+      case "en-transit":
+        return <Badge className="bg-purple-100 text-purple-800">En Transit</Badge>
+      case "stock-faible":
+        return <Badge className="bg-yellow-100 text-yellow-800">Stock Faible</Badge>
+      case "rupture-stock":
+        return <Badge variant="destructive">Rupture de Stock</Badge>
       default:
-        return <Badge variant="outline">Unknown</Badge>
+        return <Badge variant="outline">Inconnu</Badge>
     }
   }
 
@@ -283,15 +285,15 @@ export default function InventoryPage() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "stored":
+      case "stocké":
         return <Warehouse className="h-4 w-4 text-green-600" />
-      case "in-processing":
+      case "en-traitement":
         return <Factory className="h-4 w-4 text-blue-600" />
-      case "in-transit":
+      case "en-transit":
         return <Truck className="h-4 w-4 text-purple-600" />
-      case "low-stock":
+      case "stock-faible":
         return <AlertTriangle className="h-4 w-4 text-yellow-600" />
-      case "out-of-stock":
+      case "rupture-stock":
         return <AlertTriangle className="h-4 w-4 text-red-600" />
       default:
         return <Package className="h-4 w-4 text-gray-600" />
@@ -304,78 +306,78 @@ export default function InventoryPage() {
   }
 
   const getStockStatus = (current: number, min: number) => {
-    if (current === 0) return "out-of-stock"
-    if (current <= min) return "low-stock"
-    return "good"
+    if (current === 0) return "rupture-stock"
+    if (current <= min) return "stock-faible"
+    return "bon"
   }
 
   return (
     <AdminLayout>
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+        {/* En-tête */}
+        <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Inventory & Product Batches</h1>
-            <p className="text-muted-foreground">Manage your inventory, track batches, and monitor stock levels</p>
+            <h1 className="text-3xl font-bold text-foreground">{t("admin.inventory.title")}</h1>
+            <p className="text-muted-foreground">{t("admin.inventory.subtitle")}</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-2">
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Item
+                  {t("admin.inventory.add")}
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Add Inventory Item</DialogTitle>
-                  <DialogDescription>Add a new item to your inventory</DialogDescription>
+                  <DialogTitle>{t("admin.inventory.addDialog.title")}</DialogTitle>
+                  <DialogDescription>{t("admin.inventory.addDialog.subtitle")}</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="productName">Product Name</Label>
-                    <Input id="productName" placeholder="Enter product name" />
+                    <Label htmlFor="productName">{t("admin.form.productName")}</Label>
+                    <Input id="productName" placeholder={t("admin.form.productName.placeholder")} />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="type">Type</Label>
+                      <Label htmlFor="type">{t("admin.inventory.form.type")}</Label>
                       <Select>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select type" />
+                          <SelectValue placeholder={t("admin.inventory.form.type.placeholder")} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="raw-material">Raw Material</SelectItem>
-                          <SelectItem value="finished-product">Finished Product</SelectItem>
-                          <SelectItem value="packaging">Packaging</SelectItem>
+                          <SelectItem value="raw-material">{t("admin.inventory.form.type.raw")}</SelectItem>
+                          <SelectItem value="finished-product">{t("admin.inventory.form.type.finished")}</SelectItem>
+                          <SelectItem value="packaging">{t("admin.inventory.form.type.packaging")}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="origin">Batch Origin</Label>
-                      <Input id="origin" placeholder="e.g., Green Valley Farm" />
+                      <Label htmlFor="origin">{t("admin.inventory.form.origin")}</Label>
+                      <Input id="origin" placeholder={t("admin.inventory.form.origin.placeholder")} />
                     </div>
                   </div>
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <Label htmlFor="quantity">Quantity</Label>
+                      <Label htmlFor="quantity">{t("quantity")}</Label>
                       <Input id="quantity" type="number" placeholder="0" />
                     </div>
                     <div>
-                      <Label htmlFor="unit">Unit</Label>
+                      <Label htmlFor="unit">{t("admin.inventory.form.unit")}</Label>
                       <Select>
                         <SelectTrigger>
-                          <SelectValue placeholder="Unit" />
+                          <SelectValue placeholder={t("admin.inventory.form.unit.placeholder")} />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="kg">kg</SelectItem>
-                          <SelectItem value="bottles">bottles</SelectItem>
-                          <SelectItem value="jars">jars</SelectItem>
-                          <SelectItem value="units">units</SelectItem>
+                          <SelectItem value="bottles">{t("admin.inventory.form.unit.bottles")}</SelectItem>
+                          <SelectItem value="jars">{t("admin.inventory.form.unit.jars")}</SelectItem>
+                          <SelectItem value="units">{t("admin.inventory.form.unit.units")}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="location">Location</Label>
+                      <Label htmlFor="location">{t("admin.inventory.form.location")}</Label>
                       <Select>
                         <SelectTrigger>
                           <SelectValue placeholder="Location" />
@@ -395,15 +397,15 @@ export default function InventoryPage() {
                       <Input id="minStock" type="number" placeholder="0" />
                     </div>
                     <div>
-                      <Label htmlFor="maxStock">Max Stock</Label>
+                      <Label htmlFor="maxStock">{t("admin.inventory.form.maxStock")}</Label>
                       <Input id="maxStock" type="number" placeholder="0" />
                     </div>
                   </div>
                   <div className="flex justify-end space-x-2">
                     <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                      Cancel
+                      {t("cancel")}
                     </Button>
-                    <Button onClick={() => setIsAddDialogOpen(false)}>Add Item</Button>
+                    <Button onClick={() => setIsAddDialogOpen(false)}>{t("admin.inventory.add")}</Button>
                   </div>
                 </div>
               </DialogContent>
@@ -415,20 +417,19 @@ export default function InventoryPage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Items</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("admin.inventory.stats.totalItems")}</CardTitle>
               <Package className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{inventoryItems.length}</div>
               <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">{inventoryItems.filter((i) => i.status === "stored").length}</span> in
-                stock
+                <span className="text-green-600">{inventoryItems.filter((i) => i.status === "stored").length}</span> {t("admin.inventory.stats.inStockSuffix")}
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Low Stock Alerts</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("admin.inventory.stats.lowStockAlerts")}</CardTitle>
               <AlertTriangle className="h-4 w-4 text-yellow-600" />
             </CardHeader>
             <CardContent>
@@ -437,45 +438,45 @@ export default function InventoryPage() {
               </div>
               <p className="text-xs text-muted-foreground">
                 <span className="text-red-600">{inventoryItems.filter((i) => i.status === "out-of-stock").length}</span>{" "}
-                out of stock
+                {t("admin.inventory.stats.outOfStockSuffix")}
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">In Processing</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("admin.inventory.status.inProcessing")}</CardTitle>
               <Factory className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
                 {inventoryItems.filter((i) => i.status === "in-processing").length}
               </div>
-              <p className="text-xs text-muted-foreground">Active batches</p>
+              <p className="text-xs text-muted-foreground">{t("admin.inventory.stats.activeBatches")}</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Value</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("admin.inventory.analytics.totalValue")}</CardTitle>
               <TrendingUp className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                $
+                DZ
                 {inventoryItems
-                  .reduce((sum, item) => sum + Number.parseFloat(item.value.replace("$", "").replace(",", "")), 0)
+                  .reduce((sum, item) => sum + Number.parseFloat(item.value.replace(/[^0-9.-]/g, "")), 0)
                   .toLocaleString()}
               </div>
-              <p className="text-xs text-muted-foreground">Current inventory value</p>
+              <p className="text-xs text-muted-foreground">{t("admin.inventory.stats.currentValue")}</p>
             </CardContent>
           </Card>
         </div>
 
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-4">
           <TabsList>
-            <TabsTrigger value="inventory">Inventory Overview</TabsTrigger>
-            <TabsTrigger value="batches">Product Batches</TabsTrigger>
-            <TabsTrigger value="movements">Stock Movements</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="inventory">{t("admin.inventory.tabs.inventory")}</TabsTrigger>
+            <TabsTrigger value="batches">{t("admin.inventory.tabs.batches")}</TabsTrigger>
+            <TabsTrigger value="movements">{t("admin.inventory.tabs.movements")}</TabsTrigger>
+            <TabsTrigger value="analytics">{t("admin.inventory.tabs.analytics")}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="inventory" className="space-y-4">
@@ -487,7 +488,7 @@ export default function InventoryPage() {
                     <div className="relative">
                       <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                       <Input
-                        placeholder="Search products..."
+                        placeholder={t("admin.inventory.searchPlaceholder")}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="pl-8"
@@ -497,25 +498,25 @@ export default function InventoryPage() {
                   <div className="flex gap-2">
                     <Select value={statusFilter} onValueChange={setStatusFilter}>
                       <SelectTrigger className="w-40">
-                        <SelectValue placeholder="Filter by status" />
+                        <SelectValue placeholder={t("admin.inventory.filters.status")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="stored">Stored</SelectItem>
-                        <SelectItem value="in-processing">In Processing</SelectItem>
-                        <SelectItem value="in-transit">In Transit</SelectItem>
-                        <SelectItem value="low-stock">Low Stock</SelectItem>
-                        <SelectItem value="out-of-stock">Out of Stock</SelectItem>
+                        <SelectItem value="all">{t("admin.common.allStatuses")}</SelectItem>
+                        <SelectItem value="stored">{t("admin.inventory.status.stored")}</SelectItem>
+                        <SelectItem value="in-processing">{t("admin.inventory.status.inProcessing")}</SelectItem>
+                        <SelectItem value="in-transit">{t("admin.inventory.status.inTransit")}</SelectItem>
+                        <SelectItem value="low-stock">{t("admin.common.lowStock")}</SelectItem>
+                        <SelectItem value="out-of-stock">{t("admin.common.outOfStock")}</SelectItem>
                       </SelectContent>
                     </Select>
                     <Select value={typeFilter} onValueChange={setTypeFilter}>
                       <SelectTrigger className="w-40">
-                        <SelectValue placeholder="Filter by type" />
+                        <SelectValue placeholder={t("admin.inventory.filters.type")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        <SelectItem value="Raw Material">Raw Material</SelectItem>
-                        <SelectItem value="Finished Product">Finished Product</SelectItem>
+                        <SelectItem value="all">{t("admin.common.allTypes")}</SelectItem>
+                        <SelectItem value="Raw Material">{t("admin.inventory.form.type.raw")}</SelectItem>
+                        <SelectItem value="Finished Product">{t("admin.inventory.form.type.finished")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -529,14 +530,14 @@ export default function InventoryPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Product</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Origin</TableHead>
-                      <TableHead>Stock Level</TableHead>
-                      <TableHead>Location</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Value</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead>{t("admin.inventory.table.product")}</TableHead>
+                      <TableHead>{t("admin.inventory.table.type")}</TableHead>
+                      <TableHead>{t("admin.inventory.table.origin")}</TableHead>
+                      <TableHead>{t("admin.inventory.table.stockLevel")}</TableHead>
+                      <TableHead>{t("admin.inventory.table.location")}</TableHead>
+                      <TableHead>{t("admin.inventory.table.status")}</TableHead>
+                      <TableHead>{t("admin.inventory.table.value")}</TableHead>
+                      <TableHead>{t("admin.inventory.table.actions")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -575,7 +576,7 @@ export default function InventoryPage() {
                               className="h-2"
                             />
                             <div className="text-xs text-muted-foreground">
-                              Min: {item.minStock} | Max: {item.maxStock}
+                              {t("admin.inventory.stock.min")}: {item.minStock} | {t("admin.inventory.stock.max")}: {item.maxStock}
                             </div>
                           </div>
                         </TableCell>
@@ -608,22 +609,22 @@ export default function InventoryPage() {
           <TabsContent value="batches" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Product Batches</CardTitle>
-                <CardDescription>Track product batches from harvest to storage</CardDescription>
+                <CardTitle>{t("admin.inventory.batches.title")}</CardTitle>
+                <CardDescription>{t("admin.inventory.batches.subtitle")}</CardDescription>
               </CardHeader>
               <CardContent className="p-0">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Batch Number</TableHead>
-                      <TableHead>Product</TableHead>
-                      <TableHead>Origin</TableHead>
-                      <TableHead>Quantity</TableHead>
-                      <TableHead>Quality</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Location</TableHead>
-                      <TableHead>Expiry Date</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead>{t("admin.inventory.batches.table.batchNumber")}</TableHead>
+                      <TableHead>{t("admin.inventory.table.product")}</TableHead>
+                      <TableHead>{t("admin.inventory.table.origin")}</TableHead>
+                      <TableHead>{t("quantity")}</TableHead>
+                      <TableHead>{t("admin.inventory.batches.table.quality")}</TableHead>
+                      <TableHead>{t("admin.inventory.table.status")}</TableHead>
+                      <TableHead>{t("admin.inventory.table.location")}</TableHead>
+                      <TableHead>{t("admin.inventory.batches.table.expiryDate")}</TableHead>
+                      <TableHead>{t("admin.inventory.table.actions")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -645,7 +646,7 @@ export default function InventoryPage() {
                               <Edit className="h-4 w-4" />
                             </Button>
                             <Button size="sm" variant="outline">
-                              View Trace
+                              {t("admin.inventory.batches.viewTrace")}
                             </Button>
                           </div>
                         </TableCell>
@@ -660,22 +661,22 @@ export default function InventoryPage() {
           <TabsContent value="movements" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Stock Movements</CardTitle>
-                <CardDescription>Track all inventory movements and transactions</CardDescription>
+                <CardTitle>{t("admin.inventory.movements.title")}</CardTitle>
+                <CardDescription>{t("admin.inventory.movements.subtitle")}</CardDescription>
               </CardHeader>
               <CardContent className="p-0">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Movement ID</TableHead>
-                      <TableHead>Product</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Quantity</TableHead>
-                      <TableHead>From</TableHead>
-                      <TableHead>To</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Reason</TableHead>
-                      <TableHead>Operator</TableHead>
+                      <TableHead>{t("admin.inventory.movements.table.id")}</TableHead>
+                      <TableHead>{t("admin.inventory.table.product")}</TableHead>
+                      <TableHead>{t("admin.inventory.movements.table.type")}</TableHead>
+                      <TableHead>{t("quantity")}</TableHead>
+                      <TableHead>{t("admin.inventory.movements.table.from")}</TableHead>
+                      <TableHead>{t("admin.inventory.movements.table.to")}</TableHead>
+                      <TableHead>{t("admin.inventory.movements.table.date")}</TableHead>
+                      <TableHead>{t("admin.inventory.movements.table.reason")}</TableHead>
+                      <TableHead>{t("admin.inventory.movements.table.operator")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -694,7 +695,9 @@ export default function InventoryPage() {
                             ) : (
                               <TrendingDown className="h-3 w-3 mr-1" />
                             )}
-                            {movement.type}
+                            {movement.type === "inbound"
+                              ? t("admin.inventory.movements.type.inbound")
+                              : t("admin.inventory.movements.type.outbound")}
                           </Badge>
                         </TableCell>
                         <TableCell>
@@ -717,33 +720,33 @@ export default function InventoryPage() {
             <div className="grid md:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Inventory Health</CardTitle>
-                  <CardDescription>Stock level distribution</CardDescription>
+                  <CardTitle>{t("admin.inventory.analytics.health.title")}</CardTitle>
+                  <CardDescription>{t("admin.inventory.analytics.health.subtitle")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm">Good Stock</span>
+                      <span className="text-sm">{t("admin.inventory.analytics.goodStock")}</span>
                       <span className="text-sm font-medium text-green-600">
-                        {inventoryItems.filter((i) => getStockStatus(i.quantity, i.minStock) === "good").length} items
+                        {inventoryItems.filter((i) => getStockStatus(i.quantity, i.minStock) === "good").length} {t("admin.common.items")}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm">Low Stock</span>
+                      <span className="text-sm">{t("admin.common.lowStock")}</span>
                       <span className="text-sm font-medium text-yellow-600">
-                        {inventoryItems.filter((i) => i.status === "low-stock").length} items
+                        {inventoryItems.filter((i) => i.status === "low-stock").length} {t("admin.common.items")}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm">Out of Stock</span>
+                      <span className="text-sm">{t("admin.common.outOfStock")}</span>
                       <span className="text-sm font-medium text-red-600">
-                        {inventoryItems.filter((i) => i.status === "out-of-stock").length} items
+                        {inventoryItems.filter((i) => i.status === "out-of-stock").length} {t("admin.common.items")}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm">In Transit</span>
+                      <span className="text-sm">{t("admin.inventory.status.inTransit")}</span>
                       <span className="text-sm font-medium text-purple-600">
-                        {inventoryItems.filter((i) => i.status === "in-transit").length} items
+                        {inventoryItems.filter((i) => i.status === "in-transit").length} {t("admin.common.items")}
                       </span>
                     </div>
                   </div>
@@ -752,32 +755,32 @@ export default function InventoryPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Inventory Value</CardTitle>
-                  <CardDescription>Value distribution by category</CardDescription>
+                  <CardTitle>{t("admin.inventory.analytics.value.title")}</CardTitle>
+                  <CardDescription>{t("admin.inventory.analytics.value.subtitle")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm">Raw Materials</span>
+                      <span className="text-sm">{t("admin.inventory.analytics.rawMaterials")}</span>
                       <span className="text-sm font-medium">
-                        $
+                        DZ
                         {inventoryItems
                           .filter((i) => i.type === "Raw Material")
                           .reduce(
-                            (sum, item) => sum + Number.parseFloat(item.value.replace("$", "").replace(",", "")),
+                            (sum, item) => sum + Number.parseFloat(item.value.replace(/[^0-9.-]/g, "")),
                             0,
                           )
                           .toLocaleString()}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm">Finished Products</span>
+                      <span className="text-sm">{t("admin.inventory.analytics.finishedProducts")}</span>
                       <span className="text-sm font-medium">
-                        $
+                        DZ
                         {inventoryItems
                           .filter((i) => i.type === "Finished Product")
                           .reduce(
-                            (sum, item) => sum + Number.parseFloat(item.value.replace("$", "").replace(",", "")),
+                            (sum, item) => sum + Number.parseFloat(item.value.replace(/[^0-9.-]/g, "")),
                             0,
                           )
                           .toLocaleString()}
@@ -785,12 +788,12 @@ export default function InventoryPage() {
                     </div>
                     <div className="pt-2 border-t">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium">Total Value</span>
+                        <span className="text-sm font-medium">{t("admin.inventory.analytics.totalValue")}</span>
                         <span className="text-lg font-bold">
-                          $
+                          DZ
                           {inventoryItems
                             .reduce(
-                              (sum, item) => sum + Number.parseFloat(item.value.replace("$", "").replace(",", "")),
+                              (sum, item) => sum + Number.parseFloat(item.value.replace(/[^0-9.-]/g, "")),
                               0,
                             )
                             .toLocaleString()}
@@ -804,37 +807,37 @@ export default function InventoryPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-                <CardDescription>Latest inventory updates and alerts</CardDescription>
+                <CardTitle>{t("admin.inventory.analytics.activity.title")}</CardTitle>
+                <CardDescription>{t("admin.inventory.analytics.activity.subtitle")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-start space-x-3">
                     <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium">Low stock alert: Strawberry Jam</p>
-                      <p className="text-xs text-muted-foreground">Current stock: 25 jars (Min: 30)</p>
+                      <p className="text-sm font-medium">{t("admin.inventory.analytics.activity.lowStockAlertTitle")}</p>
+                      <p className="text-xs text-muted-foreground">{t("admin.inventory.analytics.activity.lowStockAlertDesc")}</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium">Stock replenished: Premium Orange Juice</p>
-                      <p className="text-xs text-muted-foreground">Added 100 bottles to Warehouse A</p>
+                      <p className="text-sm font-medium">{t("admin.inventory.analytics.activity.replenishedTitle")}</p>
+                      <p className="text-xs text-muted-foreground">{t("admin.inventory.analytics.activity.replenishedDesc")}</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
                     <AlertTriangle className="h-5 w-5 text-red-600 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium">Out of stock: Fresh Strawberries</p>
-                      <p className="text-xs text-muted-foreground">Immediate restocking required</p>
+                      <p className="text-sm font-medium">{t("admin.inventory.analytics.activity.outOfStockTitle")}</p>
+                      <p className="text-xs text-muted-foreground">{t("admin.inventory.analytics.activity.outOfStockDesc")}</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
                     <Truck className="h-5 w-5 text-blue-600 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium">In transit: Oranges Batch #001</p>
-                      <p className="text-xs text-muted-foreground">300 kg arriving from Green Valley Farm</p>
+                      <p className="text-sm font-medium">{t("admin.inventory.analytics.activity.inTransitTitle")}</p>
+                      <p className="text-xs text-muted-foreground">{t("admin.inventory.analytics.activity.inTransitDesc")}</p>
                     </div>
                   </div>
                 </div>

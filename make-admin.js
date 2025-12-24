@@ -59,7 +59,7 @@ async function makeAdmin() {
     const adminLoginResponse = await makeRequest(`${BASE_URL}/auth/login`, {
       method: 'POST',
       body: {
-        email: 'admin@agri.com',
+        email: 'admin@brijuice.com',
         password: 'admin123456'
       }
     });

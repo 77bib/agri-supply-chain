@@ -271,7 +271,7 @@ export const useStore = create<StoreState>()(
       setHasHydrated: (state) => set({ _hasHydrated: state }),
     }),
     {
-      name: "agrichain-store",
+      name: "brijuice-store",
       skipHydration: true,
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true)

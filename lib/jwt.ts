@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, { TokenExpiredError } from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
@@ -22,7 +22,11 @@ export function verifyToken(token: string): JWTPayload | null {
     const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload;
     return decoded;
   } catch (error) {
-    console.error('خطأ في التحقق من التوكن:', error);
+    if (error instanceof TokenExpiredError) {
+      console.warn('انتهت صلاحية التوكن عند:', error.expiredAt);
+    } else {
+      console.error('خطأ في التحقق من التوكن:', error);
+    }
     return null;
   }
 }

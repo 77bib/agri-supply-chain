@@ -17,6 +17,7 @@ import { useStore } from "@/lib/store"
 import { getMyOrders } from "@/lib/order-service"
 import { toast } from "sonner"
 import { AuthGuard } from "@/components/auth-guard"
+import { formatCurrency } from "@/lib/utils"
 
 interface Order {
   _id: string
@@ -155,7 +156,7 @@ export default function DashboardPage() {
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">${stats.totalSpent.toFixed(2)}</div>
+                <div className="text-2xl font-bold">{formatCurrency(stats.totalSpent)}</div>
                 <p className="text-xs text-muted-foreground">Total amount spent</p>
               </CardContent>
             </Card>
@@ -165,7 +166,7 @@ export default function DashboardPage() {
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">${stats.averageOrderValue.toFixed(2)}</div>
+                <div className="text-2xl font-bold">{formatCurrency(stats.averageOrderValue)}</div>
                 <p className="text-xs text-muted-foreground">Per order</p>
               </CardContent>
             </Card>
@@ -254,7 +255,7 @@ export default function DashboardPage() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-semibold">${order.totalPrice.toFixed(2)}</div>
+                        <div className="font-semibold">{formatCurrency(order.totalPrice)}</div>
                         {getStatusBadge(order.status)}
                       </div>
                     </div>

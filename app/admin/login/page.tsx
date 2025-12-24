@@ -11,11 +11,13 @@ import { Label } from "@/components/ui/label"
 import { useStore } from "@/lib/store"
 import { useToast } from "@/hooks/use-toast"
 import { loginUser, saveUserToStore } from "@/lib/auth-service"
+import { useI18n } from "@/lib/i18n"
 
 export default function AdminLoginPage() {
   const router = useRouter()
   const { setIsAdmin } = useStore()
   const { toast } = useToast()
+  const { t } = useI18n()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -33,12 +35,12 @@ export default function AdminLoginPage() {
       const response = await loginUser(credentials.email, credentials.password)
       
       if (response.success && response.data) {
-        // حفظ التوكن في localStorage
+        // Save token in localStorage
         localStorage.setItem('auth-token', response.token)
         
-        // التحقق من أن المستخدم admin
+        // Verify that user is admin
         if (response.data.role === 'admin') {
-          // تحويل بيانات المستخدم إلى تنسيق المتجر
+          // Transform user data to store format
           const user = {
             id: response.data._id,
             name: response.data.name,
@@ -51,36 +53,36 @@ export default function AdminLoginPage() {
             totalSpent: 0,
           }
 
-          // حفظ بيانات المستخدم في المتجر
+          // Save user data to store
           saveUserToStore(user, true)
 
           toast({
-            title: "Success",
-            description: "Welcome back, Admin!",
+            title: t("admin.login.toast.successTitle"),
+            description: t("admin.login.toast.successDescription"),
           })
           router.push("/admin")
         } else {
-          setError("Access denied. Admin privileges required.")
+          setError(t("admin.login.errors.accessDenied"))
           toast({
-            title: "Access Denied",
-            description: "You need admin privileges to access this area.",
+            title: t("admin.login.toast.accessDeniedTitle"),
+            description: t("admin.login.toast.accessDeniedDescription"),
             variant: "destructive",
           })
         }
       } else {
-        setError(response.message || "Invalid email or password")
+        setError(response.message || t("admin.login.errors.invalidCredentials"))
         toast({
-          title: "Login Failed",
-          description: response.message || "Invalid email or password",
+          title: t("admin.login.toast.errorTitle"),
+          description: response.message || t("admin.login.errors.invalidCredentials"),
           variant: "destructive",
         })
       }
     } catch (error) {
-      console.error("Login error:", error)
-      setError("An error occurred during login")
+      console.error(t("admin.login.errors.consoleLoginError"), error)
+      setError(t("admin.login.errors.generic"))
       toast({
-        title: "Error",
-        description: "An error occurred during login",
+        title: t("admin.login.toast.genericErrorTitle"),
+        description: t("admin.login.errors.generic"),
         variant: "destructive",
       })
     } finally {
@@ -99,23 +101,25 @@ export default function AdminLoginPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center space-x-2">
             <img 
-              src="/bifa-logo.svg" 
-              alt="Bifa Logo" 
-              className="w-24 h-12 drop-shadow-lg"
+              src="/brijuice-logo.png" 
+              alt={t("admin.login.logoAlt")} 
+              className="h-24 w-auto drop-shadow-2xl"
+              width={260}
+              height={180}
             />
           </Link>
-          <p className="text-gray-600 mt-2">Admin Dashboard Access</p>
+          <p className="text-gray-600 mt-2">{t("admin.login.headerSubtitle")}</p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Admin Login</CardTitle>
-            <CardDescription>Enter your credentials to access the admin dashboard</CardDescription>
+            <CardTitle>{t("admin.login.title")}</CardTitle>
+            <CardDescription>{t("admin.login.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t("admin.login.email")}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -126,7 +130,7 @@ export default function AdminLoginPage() {
               </div>
 
               <div>
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t("admin.login.password")}</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -154,7 +158,7 @@ export default function AdminLoginPage() {
               )}
 
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Signing in..." : "Sign In"}
+                {isLoading ? t("admin.login.loading") : t("admin.login.submit")}
               </Button>
 
               <div className="text-center">
@@ -164,16 +168,16 @@ export default function AdminLoginPage() {
                   onClick={handleDemoLogin}
                   className="text-sm"
                 >
-                  Use Demo Credentials
+                  {t("admin.login.useDemo")}
                 </Button>
               </div>
             </form>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                Back to{" "}
+                {t("admin.login.backTo")} {" "}
                 <Link href="/" className="text-green-600 hover:text-green-700 font-medium">
-                  Main Site
+                  {t("admin.login.mainSite")}
                 </Link>
               </p>
             </div>

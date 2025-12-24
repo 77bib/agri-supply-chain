@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -25,24 +25,25 @@ import {
 } from "lucide-react"
 import AdminLayout from "@/components/admin-layout"
 import { toast } from "sonner"
+import { useI18n } from "@/lib/i18n"
 
-// Mock data for demonstration - 28 Algerian Farmers with Farm Images
+// Données fictives pour démonstration - 28 agriculteurs algériens avec images de fermes
 const mockFarmers = [
   {
     _id: "1",
     name: "Ahmed Benali",
     email: "ahmed.benali@email.com",
     phone: "+213 555 123 456",
-    farmName: "Green Valley Farm",
+    farmName: "Ferme Vallée Verte",
     farmSize: 150,
     farmLocation: {
       address: "Route Nationale 1, Km 45",
       city: "Blida",
-      state: "Blida Province",
+      state: "Wilaya de Blida",
       coordinates: { lat: 36.4700, lng: 2.8300 }
     },
-    certifications: ["Organic", "GlobalGAP", "ISO 22000"],
-    crops: ["Tomatoes", "Peppers", "Cucumbers"],
+    certifications: ["Bio", "GlobalG.A.P.", "ISO 22000"],
+    crops: ["Tomates", "Poivrons", "Concombres"],
     performance: {
       totalHarvested: 25000,
       averageYield: 85,
@@ -55,9 +56,9 @@ const mockFarmers = [
     rating: 4.8,
     totalOrders: 156,
     revenue: 45000,
-    farmType: "Greenhouse",
-    irrigationSystem: "Drip",
-    soilType: "Sandy Loam",
+    farmType: "Serre",
+    irrigationSystem: "Goutte-à-goutte",
+    soilType: "Limon sableux",
     elevation: 120,
     annualRainfall: 650
   },
@@ -66,16 +67,16 @@ const mockFarmers = [
     name: "Fatima Zohra",
     email: "fatima.zohra@email.com",
     phone: "+213 555 234 567",
-    farmName: "Sunshine Organic Farm",
+    farmName: "Ferme Bio Soleil",
     farmSize: 200,
     farmLocation: {
       address: "Chemin Rural 12",
       city: "Tipaza",
-      state: "Tipaza Province",
+      state: "Wilaya de Tipaza",
       coordinates: { lat: 36.5897, lng: 2.4477 }
     },
-    certifications: ["Organic", "Fair Trade", "Rainforest Alliance"],
-    crops: ["Strawberries", "Raspberries", "Blueberries"],
+    certifications: ["Bio", "Commerce équitable", "Alliance pour les forêts tropicales"],
+    crops: ["Fraises", "Framboises", "Myrtilles"],
     performance: {
       totalHarvested: 18000,
       averageYield: 78,
@@ -88,9 +89,9 @@ const mockFarmers = [
     rating: 4.9,
     totalOrders: 203,
     revenue: 52000,
-    farmType: "Berry Farm",
-    irrigationSystem: "Sprinkler",
-    soilType: "Clay Loam",
+    farmType: "Ferme de baies",
+    irrigationSystem: "Aspersion",
+    soilType: "Limon argileux",
     elevation: 85,
     annualRainfall: 720
   },
@@ -99,16 +100,16 @@ const mockFarmers = [
     name: "Mohammed Boudiaf",
     email: "mohammed.boudiaf@email.com",
     phone: "+213 555 345 678",
-    farmName: "Golden Wheat Fields",
+    farmName: "Champs de Blé Doré",
     farmSize: 300,
     farmLocation: {
       address: "Zone Agricole 5",
       city: "Constantine",
-      state: "Constantine Province",
+      state: "Wilaya de Constantine",
       coordinates: { lat: 36.3650, lng: 6.6147 }
     },
-    certifications: ["ISO 22000", "HACCP", "GlobalGAP"],
-    crops: ["Wheat", "Barley", "Oats"],
+    certifications: ["ISO 22000", "HACCP", "GlobalG.A.P."],
+    crops: ["Blé", "Orge", "Avoine"],
     performance: {
       totalHarvested: 45000,
       averageYield: 82,
@@ -121,9 +122,9 @@ const mockFarmers = [
     rating: 4.7,
     totalOrders: 189,
     revenue: 38000,
-    farmType: "Grain Farm",
-    irrigationSystem: "Center Pivot",
-    soilType: "Silty Clay",
+    farmType: "Ferme céréalière",
+    irrigationSystem: "Pivot central",
+    soilType: "Argile limoneuse",
     elevation: 650,
     annualRainfall: 580
   },
@@ -132,16 +133,16 @@ const mockFarmers = [
     name: "Amina Cherif",
     email: "amina.cherif@email.com",
     phone: "+213 555 456 789",
-    farmName: "Olive Grove Estate",
+    farmName: "Domaine Oléicole",
     farmSize: 120,
     farmLocation: {
       address: "Domaine Agricole 8",
       city: "Oran",
-      state: "Oran Province",
+      state: "Wilaya d'Oran",
       coordinates: { lat: 35.6971, lng: -0.6337 }
     },
-    certifications: ["Organic", "PDO", "Traditional Specialty"],
-    crops: ["Olives", "Almonds", "Figs"],
+    certifications: ["Bio", "AOP", "Spécialité traditionnelle garantie"],
+    crops: ["Olives", "Amandes", "Figues"],
     performance: {
       totalHarvested: 12000,
       averageYield: 90,
@@ -154,9 +155,9 @@ const mockFarmers = [
     rating: 5.0,
     totalOrders: 245,
     revenue: 65000,
-    farmType: "Orchard",
-    irrigationSystem: "Micro-sprinkler",
-    soilType: "Calcareous",
+    farmType: "Verger",
+    irrigationSystem: "Micro-aspersion",
+    soilType: "Calcaire",
     elevation: 200,
     annualRainfall: 450
   },
@@ -165,16 +166,16 @@ const mockFarmers = [
     name: "Karim Messaoudi",
     email: "karim.messaoudi@email.com",
     phone: "+213 555 567 890",
-    farmName: "Vineyard Paradise",
+    farmName: "Paradis des Vignes",
     farmSize: 180,
     farmLocation: {
       address: "Coteaux Viticoles 3",
       city: "Annaba",
-      state: "Annaba Province",
+      state: "Wilaya d'Annaba",
       coordinates: { lat: 36.9000, lng: 7.7667 }
     },
-    certifications: ["Organic", "Biodynamic", "Vegan"],
-    crops: ["Grapes", "Pears", "Apples"],
+    certifications: ["Bio", "Biodynamique", "Végane"],
+    crops: ["Raisins", "Poires", "Pommes"],
     performance: {
       totalHarvested: 22000,
       averageYield: 87,
@@ -187,9 +188,9 @@ const mockFarmers = [
     rating: 4.6,
     totalOrders: 134,
     revenue: 42000,
-    farmType: "Vineyard",
-    irrigationSystem: "Trellis",
-    soilType: "Volcanic",
+    farmType: "Vignoble",
+    irrigationSystem: "Palissage",
+    soilType: "Volcanique",
     elevation: 320,
     annualRainfall: 680
   },
@@ -198,16 +199,16 @@ const mockFarmers = [
     name: "Yasmine Bouzid",
     email: "yasmine.bouzid@email.com",
     phone: "+213 555 678 901",
-    farmName: "Rose Garden Farm",
+    farmName: "Ferme Jardin de Roses",
     farmSize: 85,
     farmLocation: {
       address: "Route des Fleurs 7",
       city: "Tlemcen",
-      state: "Tlemcen Province",
+      state: "Wilaya de Tlemcen",
       coordinates: { lat: 34.8828, lng: -1.3167 }
     },
-    certifications: ["Organic", "Fair Trade"],
-    crops: ["Roses", "Lavender", "Mint"],
+    certifications: ["Bio", "Commerce équitable"],
+    crops: ["Roses", "Lavande", "Menthe"],
     performance: {
       totalHarvested: 8000,
       averageYield: 88,
@@ -220,9 +221,9 @@ const mockFarmers = [
     rating: 4.9,
     totalOrders: 98,
     revenue: 28000,
-    farmType: "Flower Farm",
-    irrigationSystem: "Mist",
-    soilType: "Sandy",
+    farmType: "Ferme florale",
+    irrigationSystem: "Brumisation",
+    soilType: "Sablonneux",
     elevation: 150,
     annualRainfall: 550
   },
@@ -231,16 +232,16 @@ const mockFarmers = [
     name: "Hassan Tazi",
     email: "hassan.tazi@email.com",
     phone: "+213 555 789 012",
-    farmName: "Desert Oasis Farm",
+    farmName: "Ferme Oasis du Désert",
     farmSize: 250,
     farmLocation: {
       address: "Oasis Route 15",
       city: "Biskra",
-      state: "Biskra Province",
+      state: "Wilaya de Biskra",
       coordinates: { lat: 34.8500, lng: 5.7333 }
     },
-    certifications: ["Organic", "ISO 22000"],
-    crops: ["Dates", "Palm Hearts", "Cactus Fruit"],
+    certifications: ["Bio", "ISO 22000"],
+    crops: ["Dattes", "Cœurs de palmier", "Fruits de cactus"],
     performance: {
       totalHarvested: 35000,
       averageYield: 91,
@@ -253,9 +254,9 @@ const mockFarmers = [
     rating: 4.7,
     totalOrders: 167,
     revenue: 55000,
-    farmType: "Oasis Farm",
-    irrigationSystem: "Traditional",
-    soilType: "Desert Sand",
+    farmType: "Ferme oasis",
+    irrigationSystem: "Traditionnel",
+  soilType: "Sable désertique",
     elevation: 80,
     annualRainfall: 180
   },
@@ -264,16 +265,16 @@ const mockFarmers = [
     name: "Nadia Benchaabane",
     email: "nadia.benchaabane@email.com",
     phone: "+213 555 890 123",
-    farmName: "Mountain Herbs Farm",
+    farmName: "Ferme Herbes de Montagne",
     farmSize: 95,
     farmLocation: {
       address: "Chemin des Herbes 22",
-      city: "Bejaia",
-      state: "Bejaia Province",
+  city: "Béjaïa",
+      state: "Wilaya de Béjaïa",
       coordinates: { lat: 36.7500, lng: 5.0833 }
     },
-    certifications: ["Organic", "Traditional Specialty"],
-    crops: ["Thyme", "Rosemary", "Sage"],
+    certifications: ["Bio", "Spécialité traditionnelle garantie"],
+    crops: ["Thym", "Romarin", "Sauge"],
     performance: {
       totalHarvested: 12000,
       averageYield: 84,
@@ -286,9 +287,9 @@ const mockFarmers = [
     rating: 4.8,
     totalOrders: 145,
     revenue: 32000,
-    farmType: "Herb Farm",
-    irrigationSystem: "Manual",
-    soilType: "Rocky",
+    farmType: "Ferme d'herbes",
+    irrigationSystem: "Manuel",
+    soilType: "Rocailleux",
     elevation: 850,
     annualRainfall: 800
   },
@@ -297,16 +298,16 @@ const mockFarmers = [
     name: "Omar Zerrouki",
     email: "omar.zerrouki@email.com",
     phone: "+213 555 901 234",
-    farmName: "Citrus Valley",
+    farmName: "Vallée des Agrumes",
     farmSize: 180,
     farmLocation: {
       address: "Vallée des Agrumes 9",
       city: "Guelma",
-      state: "Guelma Province",
+      state: "Wilaya de Guelma",
       coordinates: { lat: 36.4667, lng: 7.4333 }
     },
-    certifications: ["GlobalGAP", "ISO 22000"],
-    crops: ["Oranges", "Lemons", "Mandarins"],
+    certifications: ["GlobalG.A.P.", "ISO 22000"],
+    crops: ["Oranges", "Citrons", "Mandarines"],
     performance: {
       totalHarvested: 28000,
       averageYield: 86,
@@ -319,9 +320,9 @@ const mockFarmers = [
     rating: 4.6,
     totalOrders: 178,
     revenue: 48000,
-    farmType: "Citrus Grove",
-    irrigationSystem: "Drip",
-    soilType: "Loamy",
+    farmType: "Verger d'agrumes",
+    irrigationSystem: "Goutte-à-goutte",
+    soilType: "Limonneux",
     elevation: 280,
     annualRainfall: 600
   },
@@ -330,16 +331,16 @@ const mockFarmers = [
     name: "Leila Mansouri",
     email: "leila.mansouri@email.com",
     phone: "+213 555 012 345",
-    farmName: "Berry Bliss Farm",
+    farmName: "Ferme Délices de Baies",
     farmSize: 110,
     farmLocation: {
       address: "Route des Baies 33",
-      city: "Setif",
-      state: "Setif Province",
+  city: "Sétif",
+      state: "Wilaya de Sétif",
       coordinates: { lat: 36.1900, lng: 5.4100 }
     },
-    certifications: ["Organic", "Fair Trade"],
-    crops: ["Blackberries", "Gooseberries", "Currants"],
+    certifications: ["Bio", "Commerce équitable"],
+    crops: ["Mûres", "Groseilles à maquereau", "Groseilles"],
     performance: {
       totalHarvested: 15000,
       averageYield: 79,
@@ -352,9 +353,9 @@ const mockFarmers = [
     rating: 4.7,
     totalOrders: 123,
     revenue: 38000,
-    farmType: "Berry Farm",
-    irrigationSystem: "Sprinkler",
-    soilType: "Acidic",
+    farmType: "Ferme de baies",
+    irrigationSystem: "Aspersion",
+    soilType: "Acide",
     elevation: 420,
     annualRainfall: 750
   },
@@ -363,16 +364,16 @@ const mockFarmers = [
     name: "Rachid Belkacemi",
     email: "rachid.belkacemi@email.com",
     phone: "+213 555 123 456",
-    farmName: "Highland Grains",
+    farmName: "Céréales des Hautes Terres",
     farmSize: 400,
     farmLocation: {
       address: "Plateau des Céréales 18",
       city: "Batna",
-      state: "Batna Province",
+      state: "Wilaya de Batna",
       coordinates: { lat: 35.5500, lng: 6.1667 }
     },
     certifications: ["ISO 22000", "HACCP"],
-    crops: ["Corn", "Millet", "Sorghum"],
+  crops: ["Maïs", "Millet", "Sorgho"],
     performance: {
       totalHarvested: 60000,
       averageYield: 83,
@@ -385,9 +386,9 @@ const mockFarmers = [
     rating: 4.5,
     totalOrders: 234,
     revenue: 72000,
-    farmType: "Grain Farm",
-    irrigationSystem: "Center Pivot",
-    soilType: "Clay",
+    farmType: "Ferme céréalière",
+    irrigationSystem: "Pivot central",
+    soilType: "Argileux",
     elevation: 1200,
     annualRainfall: 450
   },
@@ -396,16 +397,16 @@ const mockFarmers = [
     name: "Samira Boudjemaa",
     email: "samira.boudjemaa@email.com",
     phone: "+213 555 234 567",
-    farmName: "Coastal Vegetables",
+    farmName: "Légumes Côtiers",
     farmSize: 140,
     farmLocation: {
       address: "Côte des Légumes 25",
       city: "Mostaganem",
-      state: "Mostaganem Province",
+      state: "Wilaya de Mostaganem",
       coordinates: { lat: 35.9333, lng: 0.0833 }
     },
-    certifications: ["Organic", "GlobalGAP"],
-    crops: ["Carrots", "Potatoes", "Onions"],
+    certifications: ["Bio", "GlobalG.A.P."],
+    crops: ["Carottes", "Pommes de terre", "Oignons"],
     performance: {
       totalHarvested: 32000,
       averageYield: 89,
@@ -418,9 +419,9 @@ const mockFarmers = [
     rating: 4.8,
     totalOrders: 189,
     revenue: 42000,
-    farmType: "Vegetable Farm",
-    irrigationSystem: "Furrow",
-    soilType: "Silty",
+    farmType: "Ferme maraîchère",
+    irrigationSystem: "Sillons",
+  soilType: "Limoneux",
     elevation: 15,
     annualRainfall: 550
   },
@@ -429,16 +430,16 @@ const mockFarmers = [
     name: "Adel Khelifi",
     email: "adel.khelifi@email.com",
     phone: "+213 555 345 678",
-    farmName: "Sunflower Fields",
+    farmName: "Champs de Tournesols",
     farmSize: 220,
     farmLocation: {
       address: "Champs de Tournesols 12",
       city: "Relizane",
-      state: "Relizane Province",
+      state: "Wilaya de Relizane",
       coordinates: { lat: 35.7333, lng: 0.5500 }
     },
-    certifications: ["Organic", "ISO 22000"],
-    crops: ["Sunflowers", "Safflower", "Flax"],
+    certifications: ["Bio", "ISO 22000"],
+    crops: ["Tournesols", "Carthame", "Lin"],
     performance: {
       totalHarvested: 38000,
       averageYield: 85,
@@ -451,9 +452,9 @@ const mockFarmers = [
     rating: 4.6,
     totalOrders: 156,
     revenue: 58000,
-    farmType: "Oil Seed Farm",
-    irrigationSystem: "Center Pivot",
-    soilType: "Sandy Loam",
+    farmType: "Ferme oléagineuse",
+    irrigationSystem: "Pivot central",
+    soilType: "Limon sableux",
     elevation: 180,
     annualRainfall: 480
   },
@@ -462,16 +463,16 @@ const mockFarmers = [
     name: "Djamila Benali",
     email: "djamila.benali@email.com",
     phone: "+213 555 456 789",
-    farmName: "Aromatic Herbs Garden",
+    farmName: "Jardin des Herbes Aromatiques",
     farmSize: 75,
     farmLocation: {
       address: "Jardin des Aromates 8",
       city: "Tizi Ouzou",
-      state: "Tizi Ouzou Province",
+      state: "Wilaya de Tizi Ouzou",
       coordinates: { lat: 36.7167, lng: 4.0500 }
     },
-    certifications: ["Organic", "Traditional Specialty"],
-    crops: ["Basil", "Oregano", "Marjoram"],
+    certifications: ["Bio", "Spécialité traditionnelle garantie"],
+    crops: ["Basilic", "Origan", "Marjolaine"],
     performance: {
       totalHarvested: 9000,
       averageYield: 92,
@@ -484,9 +485,9 @@ const mockFarmers = [
     rating: 4.9,
     totalOrders: 87,
     revenue: 25000,
-    farmType: "Herb Garden",
-    irrigationSystem: "Drip",
-    soilType: "Well-drained",
+    farmType: "Jardin d'herbes",
+    irrigationSystem: "Goutte-à-goutte",
+    soilType: "Bien drainé",
     elevation: 650,
     annualRainfall: 850
   },
@@ -495,16 +496,16 @@ const mockFarmers = [
     name: "Malik Saadi",
     email: "malik.saadi@email.com",
     phone: "+213 555 567 890",
-    farmName: "Pistachio Grove",
+    farmName: "Verger de Pistaches",
     farmSize: 160,
     farmLocation: {
       address: "Verger de Pistaches 14",
       city: "Mascara",
-      state: "Mascara Province",
+      state: "Wilaya de Mascara",
       coordinates: { lat: 35.4000, lng: 0.1333 }
     },
-    certifications: ["Organic", "PDO"],
-    crops: ["Pistachios", "Walnuts", "Hazelnuts"],
+    certifications: ["Bio", "AOP"],
+    crops: ["Pistaches", "Noix", "Noisettes"],
     performance: {
       totalHarvested: 18000,
       averageYield: 87,
@@ -517,9 +518,9 @@ const mockFarmers = [
     rating: 4.7,
     totalOrders: 134,
     revenue: 68000,
-    farmType: "Nut Orchard",
-    irrigationSystem: "Micro-sprinkler",
-    soilType: "Deep Sandy",
+    farmType: "Nut Verger",
+    irrigationSystem: "Micro-aspersion",
+  soilType: "Sable profond",
     elevation: 320,
     annualRainfall: 420
   },
@@ -528,16 +529,16 @@ const mockFarmers = [
     name: "Zineb Merzougui",
     email: "zineb.merzougui@email.com",
     phone: "+213 555 678 901",
-    farmName: "Tea Plantation",
+    farmName: "Plantation de Thé",
     farmSize: 90,
     farmLocation: {
       address: "Plantation de Thé 6",
       city: "Jijel",
-      state: "Jijel Province",
+      state: "Wilaya de Jijel",
       coordinates: { lat: 36.8167, lng: 5.7667 }
     },
-    certifications: ["Organic", "Fair Trade"],
-    crops: ["Green Tea", "Mint Tea", "Herbal Tea"],
+    certifications: ["Bio", "Commerce équitable"],
+    crops: ["Thé vert", "Thé à la menthe", "Tisane"],
     performance: {
       totalHarvested: 11000,
       averageYield: 90,
@@ -550,9 +551,9 @@ const mockFarmers = [
     rating: 4.8,
     totalOrders: 112,
     revenue: 35000,
-    farmType: "Tea Estate",
-    irrigationSystem: "Overhead",
-    soilType: "Acidic",
+    farmType: "Domaine de thé",
+    irrigationSystem: "Arrosage aérien",
+    soilType: "Acide",
     elevation: 750,
     annualRainfall: 1200
   },
@@ -561,16 +562,16 @@ const mockFarmers = [
     name: "Bilal Hamidi",
     email: "bilal.hamidi@email.com",
     phone: "+213 555 789 012",
-    farmName: "Mushroom Farm",
+    farmName: "Ferme des Champignons",
     farmSize: 45,
     farmLocation: {
       address: "Ferme des Champignons 11",
       city: "Souk Ahras",
-      state: "Souk Ahras Province",
+      state: "Wilaya de Souk Ahras",
       coordinates: { lat: 36.2833, lng: 7.9500 }
     },
-    certifications: ["Organic", "ISO 22000"],
-    crops: ["Button Mushrooms", "Oyster Mushrooms", "Shiitake"],
+    certifications: ["Bio", "ISO 22000"],
+    crops: ["Champignons de Paris", "Pleurotes", "Shiitake"],
     performance: {
       totalHarvested: 8000,
       averageYield: 94,
@@ -583,9 +584,9 @@ const mockFarmers = [
     rating: 4.6,
     totalOrders: 76,
     revenue: 22000,
-    farmType: "Indoor Farm",
-    irrigationSystem: "Mist",
-    soilType: "Substrate",
+    farmType: "Ferme intérieure",
+    irrigationSystem: "Brumisation",
+    soilType: "Substrat",
     elevation: 450,
     annualRainfall: 600
   },
@@ -594,16 +595,16 @@ const mockFarmers = [
     name: "Nawel Bensalem",
     email: "nawel.bensalem@email.com",
     phone: "+213 555 890 123",
-    farmName: "Honey Bee Farm",
+    farmName: "Ferme Apicole",
     farmSize: 60,
     farmLocation: {
       address: "Rucher des Abeilles 17",
       city: "El Tarf",
-      state: "El Tarf Province",
+      state: "Wilaya d'El Tarf",
       coordinates: { lat: 36.7667, lng: 8.3167 }
     },
-    certifications: ["Organic", "Traditional Specialty"],
-    crops: ["Honey", "Beeswax", "Propolis"],
+    certifications: ["Bio", "Spécialité traditionnelle garantie"],
+    crops: ["Miel", "Cire d'abeille", "Propolis"],
     performance: {
       totalHarvested: 5000,
       averageYield: 88,
@@ -616,9 +617,9 @@ const mockFarmers = [
     rating: 4.9,
     totalOrders: 89,
     revenue: 18000,
-    farmType: "Apiary",
-    irrigationSystem: "Natural",
-    soilType: "Wildflower",
+    farmType: "Rucher",
+    irrigationSystem: "Naturel",
+    soilType: "Prairie fleurie",
     elevation: 280,
     annualRainfall: 700
   },
@@ -627,16 +628,16 @@ const mockFarmers = [
     name: "Younes Ait Ali",
     email: "younes.ait.ali@email.com",
     phone: "+213 555 901 234",
-    farmName: "Quinoa Fields",
+    farmName: "Champs de Quinoa",
     farmSize: 130,
     farmLocation: {
       address: "Champs de Quinoa 20",
       city: "Tamanrasset",
-      state: "Tamanrasset Province",
+      state: "Wilaya de Tamanrasset",
       coordinates: { lat: 22.7850, lng: 5.5228 }
     },
-    certifications: ["Organic", "Fair Trade"],
-    crops: ["Quinoa", "Amaranth", "Chia Seeds"],
+    certifications: ["Bio", "Commerce équitable"],
+    crops: ["Quinoa", "Amarante", "Graines de chia"],
     performance: {
       totalHarvested: 16000,
       averageYield: 82,
@@ -649,9 +650,9 @@ const mockFarmers = [
     rating: 4.7,
     totalOrders: 145,
     revenue: 42000,
-    farmType: "Ancient Grain Farm",
-    irrigationSystem: "Flood",
-    soilType: "Sandy",
+    farmType: "Ancient Ferme céréalière",
+    irrigationSystem: "Submersion",
+    soilType: "Sablonneux",
     elevation: 1400,
     annualRainfall: 150
   },
@@ -660,16 +661,16 @@ const mockFarmers = [
     name: "Hakima Benchaabane",
     email: "hakima.benchaabane@email.com",
     phone: "+213 555 012 345",
-    farmName: "Saffron Garden",
+    farmName: "Jardin de Safran",
     farmSize: 55,
     farmLocation: {
       address: "Jardin de Safran 13",
-      city: "Ghardaia",
-      state: "Ghardaia Province",
+  city: "Ghardaïa",
+      state: "Wilaya de Ghardaïa",
       coordinates: { lat: 32.4833, lng: 3.6667 }
     },
-    certifications: ["Organic", "PDO", "Traditional Specialty"],
-    crops: ["Saffron", "Turmeric", "Ginger"],
+    certifications: ["Bio", "AOP", "Spécialité traditionnelle garantie"],
+    crops: ["Safran", "Curcuma", "Gingembre"],
     performance: {
       totalHarvested: 3000,
       averageYield: 95,
@@ -682,9 +683,9 @@ const mockFarmers = [
     rating: 5.0,
     totalOrders: 67,
     revenue: 85000,
-    farmType: "Spice Garden",
-    irrigationSystem: "Hand Watering",
-    soilType: "Well-drained",
+    farmType: "Jardin d'épices",
+    irrigationSystem: "Arrosage manuel",
+    soilType: "Bien drainé",
     elevation: 450,
     annualRainfall: 200
   },
@@ -693,16 +694,16 @@ const mockFarmers = [
     name: "Riyad Boudiaf",
     email: "riyad.boudiaf@email.com",
     phone: "+213 555 123 456",
-    farmName: "Lentil Plains",
+    farmName: "Plaines de Lentilles",
     farmSize: 280,
     farmLocation: {
       address: "Plaines des Lentilles 26",
       city: "Tiaret",
-      state: "Tiaret Province",
+      state: "Wilaya de Tiaret",
       coordinates: { lat: 35.3667, lng: 1.3167 }
     },
     certifications: ["ISO 22000", "HACCP"],
-    crops: ["Lentils", "Chickpeas", "Fava Beans"],
+    crops: ["Lentilles", "Pois chiches", "Fèves"],
     performance: {
       totalHarvested: 42000,
       averageYield: 86,
@@ -715,9 +716,9 @@ const mockFarmers = [
     rating: 4.5,
     totalOrders: 198,
     revenue: 52000,
-    farmType: "Legume Farm",
-    irrigationSystem: "Center Pivot",
-    soilType: "Clay Loam",
+    farmType: "Ferme de légumineuses",
+    irrigationSystem: "Pivot central",
+    soilType: "Limon argileux",
     elevation: 1100,
     annualRainfall: 380
   },
@@ -726,16 +727,16 @@ const mockFarmers = [
     name: "Souad Hamdi",
     email: "souad.hamdi@email.com",
     phone: "+213 555 234 567",
-    farmName: "Artichoke Valley",
+    farmName: "Vallée des Artichauts",
     farmSize: 120,
     farmLocation: {
       address: "Vallée des Artichauts 19",
-      city: "Ain Defla",
-      state: "Ain Defla Province",
+  city: "Aïn Defla",
+      state: "Wilaya d'Aïn Defla",
       coordinates: { lat: 36.2667, lng: 1.9667 }
     },
-    certifications: ["Organic", "GlobalGAP"],
-    crops: ["Artichokes", "Cardoons", "Asparagus"],
+    certifications: ["Bio", "GlobalG.A.P."],
+    crops: ["Artichauts", "Cardons", "Asperges"],
     performance: {
       totalHarvested: 18000,
       averageYield: 83,
@@ -748,9 +749,9 @@ const mockFarmers = [
     rating: 4.6,
     totalOrders: 134,
     revenue: 38000,
-    farmType: "Perennial Farm",
-    irrigationSystem: "Drip",
-    soilType: "Silty Clay",
+    farmType: "Ferme de vivaces",
+    irrigationSystem: "Goutte-à-goutte",
+    soilType: "Argile limoneuse",
     elevation: 350,
     annualRainfall: 650
   },
@@ -759,16 +760,16 @@ const mockFarmers = [
     name: "Tarek Benmoussa",
     email: "tarek.benmoussa@email.com",
     phone: "+213 555 345 678",
-    farmName: "Cactus Farm",
+    farmName: "Ferme des Cactus",
     farmSize: 95,
     farmLocation: {
       address: "Ferme des Cactus 16",
       city: "Laghouat",
-      state: "Laghouat Province",
+      state: "Wilaya de Laghouat",
       coordinates: { lat: 33.8000, lng: 2.8833 }
     },
-    certifications: ["Organic"],
-    crops: ["Prickly Pear", "Aloe Vera", "Agave"],
+    certifications: ["Bio"],
+    crops: ["Figue de barbarie", "Aloé vera", "Agave"],
     performance: {
       totalHarvested: 12000,
       averageYield: 89,
@@ -781,9 +782,9 @@ const mockFarmers = [
     rating: 4.4,
     totalOrders: 87,
     revenue: 28000,
-    farmType: "Succulent Farm",
+    farmType: "Ferme succulente",
     irrigationSystem: "Minimal",
-    soilType: "Rocky",
+    soilType: "Rocailleux",
     elevation: 750,
     annualRainfall: 120
   },
@@ -792,16 +793,16 @@ const mockFarmers = [
     name: "Amira Benali",
     email: "amira.benali@email.com",
     phone: "+213 555 456 789",
-    farmName: "Microgreens Farm",
+    farmName: "Ferme de Micro-pousses",
     farmSize: 35,
     farmLocation: {
       address: "Ferme des Micro-pousses 10",
-      city: "Boumerdes",
-      state: "Boumerdes Province",
+  city: "Boumerdès",
+      state: "Wilaya de Boumerdès",
       coordinates: { lat: 36.7667, lng: 3.4667 }
     },
-    certifications: ["Organic", "ISO 22000"],
-    crops: ["Microgreens", "Sprouts", "Baby Lettuce"],
+    certifications: ["Bio", "ISO 22000"],
+    crops: ["Micro-pousses", "Germes", "Jeunes laitues"],
     performance: {
       totalHarvested: 6000,
       averageYield: 96,
@@ -814,9 +815,9 @@ const mockFarmers = [
     rating: 4.8,
     totalOrders: 156,
     revenue: 32000,
-    farmType: "Hydroponic Farm",
+    farmType: "Ferme hydroponique",
     irrigationSystem: "NFT",
-    soilType: "Hydroponic",
+    soilType: "Hydroponique",
     elevation: 25,
     annualRainfall: 750
   },
@@ -825,16 +826,16 @@ const mockFarmers = [
     name: "Khalil Zerrouki",
     email: "khalil.zerrouki@email.com",
     phone: "+213 555 567 890",
-    farmName: "Truffle Forest",
+    farmName: "Forêt aux Truffes",
     farmSize: 200,
     farmLocation: {
       address: "Forêt des Truffes 24",
       city: "Khenchela",
-      state: "Khenchela Province",
+      state: "Wilaya de Khenchela",
       coordinates: { lat: 35.4167, lng: 7.1333 }
     },
-    certifications: ["Organic", "Traditional Specialty"],
-    crops: ["Black Truffles", "White Truffles", "Morels"],
+    certifications: ["Bio", "Spécialité traditionnelle garantie"],
+    crops: ["Truffes noires", "Truffes blanches", "Morilles"],
     performance: {
       totalHarvested: 2000,
       averageYield: 98,
@@ -847,9 +848,9 @@ const mockFarmers = [
     rating: 5.0,
     totalOrders: 45,
     revenue: 120000,
-    farmType: "Forest Farm",
-    irrigationSystem: "Natural",
-    soilType: "Forest Floor",
+    farmType: "Ferme forestière",
+    irrigationSystem: "Naturel",
+    soilType: "Sol forestier",
     elevation: 1200,
     annualRainfall: 900
   },
@@ -858,16 +859,16 @@ const mockFarmers = [
     name: "Naima Bensalem",
     email: "naima.bensalem@email.com",
     phone: "+213 555 678 901",
-    farmName: "Vanilla Greenhouse",
+    farmName: "Serre de Vanille",
     farmSize: 40,
     farmLocation: {
       address: "Serre de Vanille 21",
-      city: "Tebessa",
-      state: "Tebessa Province",
+  city: "Tébessa",
+      state: "Wilaya de Tébessa",
       coordinates: { lat: 35.4000, lng: 8.1167 }
     },
-    certifications: ["Organic", "Fair Trade"],
-    crops: ["Vanilla", "Cinnamon", "Nutmeg"],
+    certifications: ["Bio", "Commerce équitable"],
+    crops: ["Vanille", "Cannelle", "Noix de muscade"],
     performance: {
       totalHarvested: 4000,
       averageYield: 93,
@@ -880,9 +881,9 @@ const mockFarmers = [
     rating: 4.7,
     totalOrders: 78,
     revenue: 45000,
-    farmType: "Greenhouse Farm",
-    irrigationSystem: "Mist",
-    soilType: "Potting Mix",
+  farmType: "Ferme en serre",
+    irrigationSystem: "Brumisation",
+    soilType: "Terreau",
     elevation: 850,
     annualRainfall: 550
   },
@@ -891,15 +892,15 @@ const mockFarmers = [
     name: "Wassim Hamdi",
     email: "wassim.hamdi@email.com",
     phone: "+213 555 789 012",
-    farmName: "Seaweed Farm",
+    farmName: "Ferme d'Algues",
     farmSize: 80,
     farmLocation: {
       address: "Ferme d'Algues 23",
       city: "Skikda",
-      state: "Skikda Province",
+      state: "Wilaya de Skikda",
       coordinates: { lat: 36.8667, lng: 6.9000 }
     },
-    certifications: ["Organic", "ISO 22000"],
+    certifications: ["Bio", "ISO 22000"],
     crops: ["Nori", "Wakame", "Kombu"],
     performance: {
       totalHarvested: 15000,
@@ -913,9 +914,9 @@ const mockFarmers = [
     rating: 4.5,
     totalOrders: 112,
     revenue: 35000,
-    farmType: "Aquaculture Farm",
-    irrigationSystem: "Seawater",
-    soilType: "Marine",
+    farmType: "Ferme aquacole",
+    irrigationSystem: "Eau de mer",
+    soilType: "Marin",
     elevation: 0,
     annualRainfall: 600
   },
@@ -924,16 +925,16 @@ const mockFarmers = [
     name: "Layla Benmoussa",
     email: "layla.benmoussa@email.com",
     phone: "+213 555 890 123",
-    farmName: "Edible Flowers Farm",
+    farmName: "Ferme des Fleurs Comestibles",
     farmSize: 50,
     farmLocation: {
       address: "Jardin des Fleurs Comestibles 27",
       city: "El Oued",
-      state: "El Oued Province",
+      state: "Wilaya d'El Oued",
       coordinates: { lat: 33.3667, lng: 6.8667 }
     },
-    certifications: ["Organic", "Traditional Specialty"],
-    crops: ["Nasturtiums", "Calendula", "Borage"],
+    certifications: ["Bio", "Spécialité traditionnelle garantie"],
+    crops: ["Capucines", "Calendula", "Bourrache"],
     performance: {
       totalHarvested: 3000,
       averageYield: 90,
@@ -946,59 +947,66 @@ const mockFarmers = [
     rating: 4.8,
     totalOrders: 89,
     revenue: 28000,
-    farmType: "Flower Farm",
-    irrigationSystem: "Drip",
-    soilType: "Sandy",
+    farmType: "Ferme florale",
+    irrigationSystem: "Goutte-à-goutte",
+    soilType: "Sablonneux",
     elevation: 85,
     annualRainfall: 180
   }
 ]
 
 const cropIcons = {
-      Tomatoes: TreePine,
-    Peppers: Banana,
-  Cucumbers: Carrot,
-  Strawberries: Heart,
-  Raspberries: Heart,
-  Blueberries: Heart,
-  Wheat: Wheat,
-  Barley: Wheat,
-  Oats: Wheat,
+  Tomates: TreePine,
+  Poivrons: Banana,
+  Concombres: Carrot,
+  Fraises: Heart,
+  Framboises: Heart,
+  Myrtilles: Heart,
+  "Blé": Wheat,
+  Orge: Wheat,
+  Avoine: Wheat,
   Olives: Leaf,
-  Almonds: Leaf,
-  Figs: Apple,
-  Grapes: Grape,
-  Pears: Apple,
-  Apples: Apple,
-  Corn: Cherry,
-  Carrots: Carrot
+  Amandes: Leaf,
+  Figues: Apple,
+  Raisins: Grape,
+  Poires: Apple,
+  Pommes: Apple,
+  "Maïs": Cherry,
+  Carottes: Carrot
 }
 
 const performanceData = [
-  { month: "Jan", yield: 85, quality: 92, revenue: 45000 },
-  { month: "Feb", yield: 88, quality: 94, revenue: 48000 },
-  { month: "Mar", yield: 82, quality: 89, revenue: 42000 },
-  { month: "Apr", yield: 90, quality: 96, revenue: 52000 },
-  { month: "May", yield: 87, quality: 93, revenue: 49000 },
-  { month: "Jun", yield: 92, quality: 95, revenue: 55000 }
+  { month: "Janv.", yield: 85, quality: 92, revenue: 45000 },
+  { month: "Févr.", yield: 88, quality: 94, revenue: 48000 },
+  { month: "Mars", yield: 82, quality: 89, revenue: 42000 },
+  { month: "Avr.", yield: 90, quality: 96, revenue: 52000 },
+  { month: "Mai", yield: 87, quality: 93, revenue: 49000 },
+  { month: "Juin", yield: 92, quality: 95, revenue: 55000 }
 ]
 
+const performanceLabels: Record<string, string> = {
+  yield: "Rendement",
+  quality: "Qualité",
+  revenue: "Chiffre d'affaires"
+}
+
 const cropDistribution = [
-  { name: "Vegetables", value: 35, color: "#22c55e" },
+  { name: "Légumes", value: 35, color: "#22c55e" },
   { name: "Fruits", value: 28, color: "#f59e0b" },
-  { name: "Grains", value: 22, color: "#8b5cf6" },
-  { name: "Nuts", value: 15, color: "#ef4444" }
+  { name: "Céréales", value: 22, color: "#8b5cf6" },
+  { name: "Fruits à coque", value: 15, color: "#ef4444" }
 ]
 
 const certificationData = [
-  { name: "Organic", value: 65, color: "#10b981" },
-  { name: "GlobalGAP", value: 45, color: "#3b82f6" },
+  { name: "Bio", value: 65, color: "#10b981" },
+  { name: "GlobalG.A.P.", value: 45, color: "#3b82f6" },
   { name: "ISO 22000", value: 38, color: "#f59e0b" },
-  { name: "Fair Trade", value: 25, color: "#8b5cf6" },
-  { name: "Rainforest Alliance", value: 20, color: "#ef4444" }
+  { name: "Commerce équitable", value: 25, color: "#8b5cf6" },
+  { name: "Alliance pour les forêts tropicales", value: 20, color: "#ef4444" }
 ]
 
 export default function FarmersPage() {
+  const { t } = useI18n()
   const [farmers, setFarmers] = useState(mockFarmers)
   const [loading, setLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
@@ -1010,18 +1018,18 @@ export default function FarmersPage() {
   const handleRefresh = async () => {
     setLoading(true)
     await new Promise(resolve => setTimeout(resolve, 1000))
-    toast.success("Farmers data refreshed successfully!")
+    toast.success(t("admin.farmers.refreshSuccess"))
     setLoading(false)
   }
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-green-100 text-green-800">Active</Badge>
+        return <Badge className="bg-green-100 text-green-800">{t("admin.farmers.status.active")}</Badge>
       case "inactive":
-        return <Badge className="bg-gray-100 text-gray-800">Inactive</Badge>
+        return <Badge className="bg-gray-100 text-gray-800">{t("admin.farmers.status.inactive")}</Badge>
       case "suspended":
-        return <Badge className="bg-red-100 text-red-800">Suspended</Badge>
+        return <Badge className="bg-red-100 text-red-800">{t("admin.farmers.status.suspended")}</Badge>
       default:
         return <Badge variant="outline">{status}</Badge>
     }
@@ -1054,34 +1062,34 @@ export default function FarmersPage() {
   return (
     <AdminLayout>
       <div className="space-y-6 animate-fade-in">
-        {/* Header */}
+  {/* En-tête */}
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
               <Users className="h-8 w-8 text-green-600" />
-              Farmers Management
+              {t("admin.farmers.title")}
             </h1>
-            <p className="text-gray-600 mt-2">Manage and monitor your network of agricultural partners</p>
+            <p className="text-gray-600 mt-2">{t("admin.farmers.subtitle")}</p>
           </div>
           <div className="flex gap-3">
             <Button variant="outline" onClick={handleRefresh} disabled={loading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              Refresh
+              {t("admin.farmers.refresh")}
             </Button>
             <Button className="bg-green-600 hover:bg-green-700">
               <Plus className="h-4 w-4 mr-2" />
-              Add Farmer
+              {t("admin.farmers.addFarmer")}
             </Button>
           </div>
         </div>
 
-        {/* Stats Cards */}
+  {/* Cartes statistiques */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="hover:shadow-lg transition-all duration-300 animate-slide-up">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Farmers</p>
+                  <p className="text-sm font-medium text-gray-600">{t("admin.farmers.stats.totalFarmers")}</p>
                   <p className="text-3xl font-bold text-gray-900">{stats.totalFarmers}</p>
                 </div>
                 <Users className="h-8 w-8 text-green-600" />
@@ -1093,7 +1101,7 @@ export default function FarmersPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Active Farmers</p>
+                  <p className="text-sm font-medium text-gray-600">{t("admin.farmers.stats.activeFarmers")}</p>
                   <p className="text-3xl font-bold text-green-600">{stats.activeFarmers}</p>
                 </div>
                 <CheckCircle className="h-8 w-8 text-green-600" />
@@ -1105,7 +1113,7 @@ export default function FarmersPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Farm Size</p>
+                  <p className="text-sm font-medium text-gray-600">{t("admin.farmers.stats.totalArea")}</p>
                   <p className="text-3xl font-bold text-blue-600">{stats.totalFarmSize} ha</p>
                 </div>
                 <MapPin className="h-8 w-8 text-blue-600" />
@@ -1117,7 +1125,7 @@ export default function FarmersPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Avg. Rating</p>
+                  <p className="text-sm font-medium text-gray-600">{t("admin.farmers.stats.avgRating")}</p>
                   <p className="text-3xl font-bold text-yellow-600">{stats.averageRating}</p>
                 </div>
                 <Star className="h-8 w-8 text-yellow-600" />
@@ -1126,25 +1134,25 @@ export default function FarmersPage() {
           </Card>
         </div>
 
-        {/* Main Content Tabs */}
+  {/* Onglets principaux */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="farmers">Farmers List</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="overview">{t("admin.farmers.tabs.overview")}</TabsTrigger>
+            <TabsTrigger value="farmers">{t("admin.farmers.tabs.farmers")}</TabsTrigger>
+            <TabsTrigger value="analytics">{t("admin.farmers.tabs.analytics")}</TabsTrigger>
           </TabsList>
 
-          {/* Overview Tab */}
+          {/* Onglet aperçu */}
           <TabsContent value="overview" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Performance Chart */}
+              {/* Graphique de performance */}
               <Card className="hover:shadow-lg transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TrendingUp className="h-5 w-5 text-green-600" />
-                    Performance Trends
+                    {t("admin.farmers.overview.performanceTrendsTitle")}
                   </CardTitle>
-                  <CardDescription>Monthly yield, quality, and revenue trends</CardDescription>
+                  <CardDescription>{t("admin.farmers.overview.performanceTrendsDescription")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
@@ -1152,7 +1160,10 @@ export default function FarmersPage() {
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="month" />
                       <YAxis />
-                      <Tooltip />
+                      <Tooltip formatter={(value, name) => [
+                        value,
+                        performanceLabels[name as keyof typeof performanceLabels] ?? name
+                      ]} />
                       <Line type="monotone" dataKey="yield" stroke="#22c55e" strokeWidth={2} />
                       <Line type="monotone" dataKey="quality" stroke="#3b82f6" strokeWidth={2} />
                     </LineChart>
@@ -1160,14 +1171,14 @@ export default function FarmersPage() {
                 </CardContent>
               </Card>
 
-              {/* Crop Distribution */}
+              {/* Répartition des cultures */}
               <Card className="hover:shadow-lg transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Leaf className="h-5 w-5 text-green-600" />
-                    Crop Distribution
+                    {t("admin.farmers.overview.cropDistributionTitle")}
                   </CardTitle>
-                  <CardDescription>Percentage of different crop types</CardDescription>
+                  <CardDescription>{t("admin.farmers.overview.cropDistributionDescription")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
@@ -1191,14 +1202,14 @@ export default function FarmersPage() {
               </Card>
             </div>
 
-            {/* Top Performers */}
+            {/* Producteurs les plus performants */}
             <Card className="hover:shadow-lg transition-all duration-300">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Trophy className="h-5 w-5 text-yellow-600" />
-                  Top Performing Farmers
+                  {t("admin.farmers.overview.topPerformersTitle")}
                 </CardTitle>
-                <CardDescription>Farmers with highest quality scores and yields</CardDescription>
+                <CardDescription>{t("admin.farmers.overview.topPerformersDescription")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1225,7 +1236,7 @@ export default function FarmersPage() {
                             <span className="text-sm font-medium">{farmer.rating}</span>
                             <span className="text-sm text-gray-500">•</span>
                             <span className={`text-sm font-medium ${getPerformanceColor(farmer.performance.qualityScore)}`}>
-                              {farmer.performance.qualityScore}% quality
+                              {t("admin.farmers.qualityPercent", { value: farmer.performance.qualityScore })}
                             </span>
                           </div>
                         </div>
@@ -1236,16 +1247,16 @@ export default function FarmersPage() {
             </Card>
           </TabsContent>
 
-          {/* Farmers List Tab */}
+          {/* Onglet liste des agriculteurs */}
           <TabsContent value="farmers" className="space-y-6">
-            {/* Filters */}
+            {/* Filtres */}
             <Card className="hover:shadow-lg transition-all duration-300">
               <CardContent className="p-6">
                 <div className="grid md:grid-cols-4 gap-4">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                     <Input
-                      placeholder="Search farmers..."
+                      placeholder={t("admin.farmers.filters.searchPlaceholder")}
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="pl-10"
@@ -1254,38 +1265,38 @@ export default function FarmersPage() {
 
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Status" />
+                      <SelectValue placeholder={t("admin.farmers.filters.status") } />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Status</SelectItem>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="inactive">Inactive</SelectItem>
-                      <SelectItem value="suspended">Suspended</SelectItem>
+                      <SelectItem value="all">{t("admin.farmers.filters.allStatuses")}</SelectItem>
+                      <SelectItem value="active">{t("admin.farmers.status.active")}</SelectItem>
+                      <SelectItem value="inactive">{t("admin.farmers.status.inactive")}</SelectItem>
+                      <SelectItem value="suspended">{t("admin.farmers.status.suspended")}</SelectItem>
                     </SelectContent>
                   </Select>
 
                   <Select value={cropFilter} onValueChange={setCropFilter}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Crop Type" />
+                      <SelectValue placeholder={t("admin.farmers.filters.cropType")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Crops</SelectItem>
-                      <SelectItem value="tomatoes">Tomatoes</SelectItem>
-                      <SelectItem value="wheat">Wheat</SelectItem>
-                      <SelectItem value="olives">Olives</SelectItem>
-                      <SelectItem value="grapes">Grapes</SelectItem>
+                      <SelectItem value="all">{t("admin.farmers.filters.allCrops")}</SelectItem>
+                      <SelectItem value="tomates">{t("admin.farmers.crops.tomatoes")}</SelectItem>
+                      <SelectItem value="blé">{t("admin.farmers.crops.wheat")}</SelectItem>
+                      <SelectItem value="olives">{t("admin.farmers.crops.olives")}</SelectItem>
+                      <SelectItem value="raisins">{t("admin.farmers.crops.grapes")}</SelectItem>
                     </SelectContent>
                   </Select>
 
                   <Button variant="outline" onClick={handleRefresh} disabled={loading}>
                     <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                    Refresh
+                    {t("admin.farmers.refresh")}
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Farmers Grid */}
+            {/* Grille des agriculteurs */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredFarmers.map((farmer) => {
                 const CropIcon = cropIcons[farmer.crops[0] as keyof typeof cropIcons] || Leaf
@@ -1326,21 +1337,21 @@ export default function FarmersPage() {
                           </DialogTrigger>
                           <DialogContent>
                             <DialogHeader>
-                              <DialogTitle>Farmer Actions</DialogTitle>
-                              <DialogDescription>Choose an action to perform on this farmer</DialogDescription>
+                              <DialogTitle>{t("admin.farmers.actions.title")}</DialogTitle>
+                              <DialogDescription>{t("admin.farmers.actions.description")}</DialogDescription>
                             </DialogHeader>
                             <div className="flex gap-2">
                               <Button variant="outline" className="flex-1">
                                 <Eye className="h-4 w-4 mr-2" />
-                                View Details
+                                {t("admin.farmers.actions.viewDetails")}
                               </Button>
                               <Button variant="outline" className="flex-1">
                                 <Edit className="h-4 w-4 mr-2" />
-                                Edit
+                                {t("admin.farmers.actions.edit")}
                               </Button>
                               <Button variant="outline" className="flex-1">
                                 <Trash2 className="h-4 w-4 mr-2" />
-                                Delete
+                                {t("admin.farmers.actions.delete")}
                               </Button>
                             </div>
                           </DialogContent>
@@ -1356,7 +1367,7 @@ export default function FarmersPage() {
 
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <CropIcon className="h-4 w-4" />
-                        <span>{farmer.farmSize} hectares</span>
+                        <span>{t("admin.farmers.units.hectares", { value: farmer.farmSize })}</span>
                       </div>
 
                       <div className="flex flex-wrap gap-1">
@@ -1367,7 +1378,7 @@ export default function FarmersPage() {
                         ))}
                         {farmer.crops.length > 3 && (
                           <Badge variant="outline" className="text-xs">
-                            +{farmer.crops.length - 3} more
+                            {t("admin.farmers.moreCount", { count: farmer.crops.length - 3 })}
                           </Badge>
                         )}
                       </div>
@@ -1375,24 +1386,24 @@ export default function FarmersPage() {
                       <div className="grid grid-cols-2 gap-4 pt-2">
                         <div className="text-center p-3 bg-gray-50 rounded-lg">
                           <p className="text-2xl font-bold text-green-600">{farmer.performance.averageYield}%</p>
-                          <p className="text-xs text-gray-600">Yield</p>
+                          <p className="text-xs text-gray-600">{t("admin.farmers.metrics.yield")}</p>
                         </div>
                         <div className="text-center p-3 bg-gray-50 rounded-lg">
                           <p className={`text-2xl font-bold ${getPerformanceColor(farmer.performance.qualityScore)}`}>
                             {farmer.performance.qualityScore}%
                           </p>
-                          <p className="text-xs text-gray-600">Quality</p>
+                          <p className="text-xs text-gray-600">{t("admin.farmers.metrics.quality")}</p>
                         </div>
                       </div>
 
                       <div className="flex gap-2">
                         <Button variant="outline" className="flex-1">
                           <Eye className="h-4 w-4 mr-2" />
-                          View Profile
+                          {t("admin.farmers.viewProfile")}
                         </Button>
                         <Button className="flex-1 bg-green-600 hover:bg-green-700">
                           <Phone className="h-4 w-4 mr-2" />
-                          Contact
+                          {t("admin.farmers.contact")}
                         </Button>
                       </div>
                     </CardContent>
@@ -1404,22 +1415,22 @@ export default function FarmersPage() {
             {filteredFarmers.length === 0 && (
               <Card className="text-center py-12">
                 <Users className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                <p className="text-gray-500 text-lg">No farmers found matching your criteria.</p>
+                <p className="text-gray-500 text-lg">{t("admin.farmers.emptyState")}</p>
               </Card>
             )}
           </TabsContent>
 
-          {/* Analytics Tab */}
+          {/* Onglet analyses */}
           <TabsContent value="analytics" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Certifications Chart */}
+              {/* Graphique des certifications */}
               <Card className="hover:shadow-lg transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Award className="h-5 w-5 text-green-600" />
-                    Certifications Distribution
+                    {t("admin.farmers.analytics.certificationsTitle")}
                   </CardTitle>
-                  <CardDescription>Number of farmers with each certification</CardDescription>
+                  <CardDescription>{t("admin.farmers.analytics.certificationsDescription")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
@@ -1434,40 +1445,40 @@ export default function FarmersPage() {
                 </CardContent>
               </Card>
 
-              {/* Performance Radar Chart */}
+              {/* Radar de performance */}
               <Card className="hover:shadow-lg transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Target className="h-5 w-5 text-green-600" />
-                    Performance Metrics
+                    {t("admin.farmers.analytics.performanceIndicatorsTitle")}
                   </CardTitle>
-                  <CardDescription>Average performance across key metrics</CardDescription>
+                  <CardDescription>{t("admin.farmers.analytics.performanceIndicatorsDescription")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
                     <RadarChart data={[
                       {
-                        metric: "Yield",
+                        metric: t("admin.farmers.metrics.yield"),
                         value: stats.averageYield,
                         fullMark: 100,
                       },
                       {
-                        metric: "Quality",
+                        metric: t("admin.farmers.metrics.quality"),
                         value: 92,
                         fullMark: 100,
                       },
                       {
-                        metric: "Certifications",
+                        metric: t("admin.farmers.metrics.certifications"),
                         value: 75,
                         fullMark: 100,
                       },
                       {
-                        metric: "Experience",
+                        metric: t("admin.farmers.metrics.experience"),
                         value: 85,
                         fullMark: 100,
                       },
                       {
-                        metric: "Revenue",
+                        metric: t("admin.farmers.metrics.revenue"),
                         value: 70,
                         fullMark: 100,
                       },
@@ -1475,7 +1486,7 @@ export default function FarmersPage() {
                       <PolarGrid />
                       <PolarAngleAxis dataKey="metric" />
                       <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                      <Radar name="Performance" dataKey="value" stroke="#22c55e" fill="#22c55e" fillOpacity={0.3} />
+                      <Radar name={t("admin.farmers.analytics.radarSeriesName")} dataKey="value" stroke="#22c55e" fill="#22c55e" fillOpacity={0.3} />
                     </RadarChart>
                   </ResponsiveContainer>
                 </CardContent>

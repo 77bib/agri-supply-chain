@@ -25,6 +25,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { toast } from "sonner"
+import { formatCurrency } from "@/lib/utils"
 
 export default function CartPage() {
   const router = useRouter()
@@ -283,10 +284,10 @@ export default function CartPage() {
                             </div>
                             <div className="text-right">
                               <div className="text-2xl font-bold text-gradient">
-                                ${(item.product.price * item.quantity).toFixed(2)}
+                                {formatCurrency(item.product.price * item.quantity)}
                               </div>
                               <div className="text-sm text-gray-500">
-                                ${item.product.price} each
+                                {formatCurrency(item.product.price)} each
                               </div>
                             </div>
                           </div>
@@ -314,20 +315,20 @@ export default function CartPage() {
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">Subtotal ({totalItems} items)</span>
-                      <span className="font-semibold text-lg">${calculateSubtotal().toFixed(2)}</span>
+                      <span className="font-semibold text-lg">{formatCurrency(calculateSubtotal())}</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">Shipping</span>
-                      <span className="font-semibold">${calculateShipping().toFixed(2)}</span>
+                      <span className="font-semibold">{formatCurrency(calculateShipping())}</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">Tax (15%)</span>
-                      <span className="font-semibold">${calculateTax().toFixed(2)}</span>
+                      <span className="font-semibold">{formatCurrency(calculateTax())}</span>
                     </div>
                     <Separator className="bg-blue-200" />
                     <div className="flex justify-between items-center text-xl font-bold">
                       <span className="text-gray-900">Total</span>
-                      <span className="text-gradient text-2xl">${calculateTotal().toFixed(2)}</span>
+                      <span className="text-gradient text-2xl">{formatCurrency(calculateTotal())}</span>
                     </div>
                   </div>
 
@@ -335,7 +336,7 @@ export default function CartPage() {
                   <div className="space-y-4 pt-4 bg-gradient-to-r from-blue-50 to-green-50 p-4 rounded-xl border border-blue-200">
                     <div className="flex items-center space-x-3 text-sm text-blue-800">
                       <Truck className="h-4 w-4 text-blue-600" />
-                      <span>Free shipping on orders over $50</span>
+                      <span>Free shipping on orders over DZ 50</span>
                     </div>
                     <div className="flex items-center space-x-3 text-sm text-green-800">
                       <Shield className="h-4 w-4 text-green-600" />

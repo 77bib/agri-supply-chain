@@ -1,3 +1,5 @@
+import { resetAuthState } from './auth-service';
+
 // API Service for backend communication
 const API_BASE_URL = typeof window !== 'undefined' 
   ? `${window.location.origin}/api`
@@ -57,6 +59,9 @@ async function makeRequest<T>(
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        resetAuthState();
+      }
       throw new Error(data.message || `HTTP error! status: ${response.status}`);
     }
 

@@ -59,7 +59,7 @@ async function testAPI() {
     const adminLoginResponse = await makeRequest(`${BASE_URL}/auth/login`, {
       method: 'POST',
       body: {
-        email: 'superadmin@agri.com',
+        email: 'superadmin@brijuice.com',
         password: 'Admin123456'
       }
     });
@@ -76,7 +76,7 @@ async function testAPI() {
       const userLoginResponse = await makeRequest(`${BASE_URL}/auth/login`, {
         method: 'POST',
         body: {
-          email: 'user2@agri.com',
+          email: 'user2@brijuice.com',
           password: 'User123456'
         }
       });

@@ -10,10 +10,12 @@ import { ShoppingCart, Search, Filter, Star, Package, RefreshCw, Plus, Minus, Ey
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { useStore } from "@/lib/store"
+import { useI18n } from "@/lib/i18n"
 import { getPublicProducts } from "@/lib/product-service"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { formatCurrency } from "@/lib/utils"
 
 interface Product {
   _id: string
@@ -29,6 +31,7 @@ interface Product {
 
 export default function ProductsPage() {
   const router = useRouter()
+  const { t } = useI18n()
   const { currentUser, cart, addToCart, updateCartQuantity, _hasHydrated } = useStore()
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<string[]>([])
@@ -98,7 +101,7 @@ export default function ProductsPage() {
     }
 
     addToCart(cartProduct, quantity)
-    toast.success(`Added ${quantity} ${product.name} to cart!`)
+    toast.success(t('productsPage.addedToCart', { quantity, product: product.name }))
     setQuantities(prev => ({ ...prev, [product._id]: 1 }))
   }
 
@@ -115,11 +118,11 @@ export default function ProductsPage() {
 
   const getStockBadge = (quantity: number) => {
     if (quantity === 0) {
-      return <Badge className="bg-red-500 text-white">Out of Stock</Badge>
+      return <Badge className="bg-red-500 text-white">{t('productsPage.outOfStock')}</Badge>
     } else if (quantity < 10) {
-      return <Badge className="bg-orange-500 text-white">Low Stock</Badge>
+      return <Badge className="bg-orange-500 text-white">{t('productsPage.lowStock')}</Badge>
     } else {
-      return <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white">In Stock</Badge>
+      return <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white">{t('productsPage.inStock')}</Badge>
     }
   }
 
@@ -135,13 +138,13 @@ export default function ProductsPage() {
           <div className="mb-6">
             <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-100 to-green-100 dark:from-blue-900/50 dark:to-green-900/50 rounded-full border border-blue-200 dark:border-blue-700 mb-4">
               <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400 mr-2" />
-              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Premium Products Collection</span>
+              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">{t('productsPage.premiumCollection')}</span>
             </div>
           </div>
           
-          <h1 className="text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">Our Products</h1>
+          <h1 className="text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">{t('productsPage.title')}</h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Discover our range of fresh, organic, and traceable products from trusted partners
+            {t('productsPage.subtitle')}
           </p>
           
           {/* Cart Summary */}
@@ -154,15 +157,15 @@ export default function ProductsPage() {
                   </div>
                   <div>
                     <p className="text-blue-800 dark:text-blue-200 font-semibold text-lg">
-                      Cart: {cartItemsCount} items
+                      {t('productsPage.cartItems', { count: cartItemsCount })}
                     </p>
-                    <p className="text-blue-600 dark:text-blue-400 text-sm">Ready to checkout</p>
+                    <p className="text-blue-600 dark:text-blue-400 text-sm">{t('productsPage.readyCheckout')}</p>
                   </div>
                 </div>
                 <Link href="/cart">
                   <Button className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
                     <ShoppingCart className="h-4 w-4 mr-2" />
-                    View Cart
+                    {t('productsPage.viewCart')}
                   </Button>
                 </Link>
               </div>
@@ -177,15 +180,10 @@ export default function ProductsPage() {
                 </div>
                 <div>
                   <p className="text-blue-800 dark:text-blue-200 font-medium text-lg">
-                    Please{" "}
-                    <Link href="/login" className="underline hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                      login
-                    </Link>{" "}
-                    or{" "}
-                    <Link href="/register" className="underline hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                      create an account
-                    </Link>{" "}
-                    to add products to your cart and make purchases.
+                    {t('productsPage.loginMessage', {
+                      login: t('productsPage.login'),
+                      register: t('productsPage.register')
+                    })}
                   </p>
                 </div>
               </div>
@@ -339,7 +337,7 @@ export default function ProductsPage() {
 
                     <div className="flex justify-between items-center">
                       <div>
-                        <span className="text-3xl font-bold text-gradient">${product.price}</span>
+                        <span className="text-3xl font-bold text-gradient">{formatCurrency(product.price)}</span>
                         <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">Stock: {product.quantity}</div>
                       </div>
                     </div>

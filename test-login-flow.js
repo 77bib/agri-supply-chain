@@ -4,7 +4,7 @@ function testLoginFlow() {
   console.log('🧪 Testing Login Flow...\n');
   
   const loginData = {
-    email: 'admin@bifa.com',
+    email: 'admin@brijuice.com',
     password: 'admin123456'
   };
   
@@ -89,7 +89,7 @@ function testDashboardAccess() {
     console.log('\n💡 Next Steps:');
     console.log('   1. Start your development server: npm run dev');
     console.log('   2. Open browser: http://localhost:3000/login');
-    console.log('   3. Login with: admin@bifa.com / admin123456');
+    console.log('   3. Login with: admin@brijuice.com / admin123456');
     console.log('   4. Should redirect to: http://localhost:3000/dashboard');
   });
 }

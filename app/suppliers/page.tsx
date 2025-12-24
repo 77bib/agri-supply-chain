@@ -111,7 +111,7 @@ const orders = [
   {
     id: "ORD-001",
     supplier: "Green Valley Farm",
-    items: [{ name: "Oranges", quantity: "500 kg", price: "$750" }],
+    items: [{ name: "Oranges", quantity: "500 kg", price: "DZ 750" }],
     status: "delivered",
     orderDate: "2024-01-15",
     deliveryDate: "2024-01-20",
@@ -119,7 +119,7 @@ const orders = [
   {
     id: "ORD-002",
     supplier: "Mountain Orchards",
-    items: [{ name: "Apples", quantity: "300 kg", price: "$450" }],
+    items: [{ name: "Apples", quantity: "300 kg", price: "DZ 450" }],
     status: "in-transit",
     orderDate: "2024-01-18",
     deliveryDate: "2024-01-22",
@@ -128,8 +128,8 @@ const orders = [
     id: "ORD-003",
     supplier: "Berry Fresh Co",
     items: [
-      { name: "Strawberries", quantity: "100 kg", price: "$400" },
-      { name: "Blueberries", quantity: "50 kg", price: "$300" },
+      { name: "Strawberries", quantity: "100 kg", price: "DZ 400" },
+      { name: "Blueberries", quantity: "50 kg", price: "DZ 300" },
     ],
     status: "processing",
     orderDate: "2024-01-19",
@@ -139,8 +139,8 @@ const orders = [
     id: "ORD-004",
     supplier: "Packaging Solutions Inc",
     items: [
-      { name: "Glass Bottles", quantity: "1000 units", price: "$600" },
-      { name: "Labels", quantity: "1000 units", price: "$200" },
+      { name: "Glass Bottles", quantity: "1000 units", price: "DZ 600" },
+      { name: "Labels", quantity: "1000 units", price: "DZ 200" },
     ],
     status: "pending",
     orderDate: "2024-01-20",

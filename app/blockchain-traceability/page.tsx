@@ -49,7 +49,7 @@ const blockchainData = [
     blockId: "0x3c4d5e6f",
     timestamp: "2024-01-16 09:15:00",
     stage: "Processing",
-    actor: "AgriChain Processing",
+    actor: "BRIJUICE Processing",
     action: "Quality Check & Processing",
     details: {
       inspector: "Sarah Johnson",
@@ -65,7 +65,7 @@ const blockchainData = [
     blockId: "0x4d5e6f7g",
     timestamp: "2024-01-17 11:30:00",
     stage: "Packaging",
-    actor: "AgriChain Processing",
+    actor: "BRIJUICE Processing",
     action: "Package & Label",
     details: {
       packagingType: "Glass Bottles",

@@ -87,7 +87,7 @@ class AdminAPITester {
       method: 'POST',
       body: JSON.stringify({
         name: 'Admin User',
-        email: 'admin@agri.com',
+        email: 'admin@brijuice.com',
         password: 'admin123456',
         adminSecret: 'admin-secret-2024'
       })
@@ -118,7 +118,7 @@ class AdminAPITester {
     const response = await this.makeRequest('/auth/login', {
       method: 'POST',
       body: JSON.stringify({
-        email: 'admin@agri.com',
+        email: 'admin@brijuice.com',
         password: 'admin123456'
       })
     });
@@ -148,7 +148,7 @@ class AdminAPITester {
       method: 'POST',
       body: JSON.stringify({
         name: 'Regular User',
-        email: 'user@agri.com',
+        email: 'user@brijuice.com',
         password: 'user123456'
       })
     });
@@ -178,7 +178,7 @@ class AdminAPITester {
     const response = await this.makeRequest('/auth/login', {
       method: 'POST',
       body: JSON.stringify({
-        email: 'user@agri.com',
+        email: 'user@brijuice.com',
         password: 'user123456'
       })
     });

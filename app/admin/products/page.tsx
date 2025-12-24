@@ -24,7 +24,9 @@ import {
   RefreshCw
 } from "lucide-react"
 import AdminLayout from "@/components/admin-layout"
+import { useI18n } from "@/lib/i18n"
 import { getAllProducts, createProduct, updateProduct, deleteProduct } from "@/lib/product-service"
+import { formatCurrency } from "@/lib/utils"
 import { toast } from "sonner"
 
 interface Product {
@@ -48,6 +50,7 @@ interface ProductStats {
 }
 
 export default function AdminProductsPage() {
+  const { t } = useI18n()
   const [products, setProducts] = useState<Product[]>([])
   const [stats, setStats] = useState<ProductStats>({
     totalProducts: 0,
@@ -79,14 +82,14 @@ export default function AdminProductsPage() {
   })
 
   const categories = [
-    "Juices",
-    "Jams", 
+    "Jus",
+    "Confitures", 
     "Compotes",
-    "Fresh Produce",
-    "Dairy",
+    "Produits Frais",
+    "Produits Laitiers",
     "Grains",
-    "Beverages",
-    "Snacks"
+    "Boissons",
+    "Collations"
   ]
 
   // Fetch products
@@ -112,11 +115,11 @@ export default function AdminProductsPage() {
         })
         setTotalPages(response.pagination?.pages || 1)
       } else {
-        toast.error("Failed to fetch products")
+        toast.error("Échec de la récupération des produits")
       }
     } catch (error) {
-      console.error("Error fetching products:", error)
-      toast.error("Error fetching products")
+      console.error("Erreur de récupération des produits :", error)
+      toast.error("Erreur de récupération des produits")
     } finally {
       setLoading(false)
     }
@@ -145,52 +148,52 @@ export default function AdminProductsPage() {
         // Update existing product
         const response = await updateProduct(editingProduct._id, productData)
         if (response.success) {
-          toast.success("Product updated successfully")
+          toast.success("Produit mis à jour avec succès")
           setIsEditDialogOpen(false)
           setEditingProduct(null)
           resetForm()
           fetchProducts()
         } else {
-          toast.error(response.message || "Failed to update product")
+          toast.error(response.message || "Échec de la mise à jour du produit")
         }
       } else {
-        // Create new product
+        // Créer un nouveau produit
         const response = await createProduct(productData)
         if (response.success) {
-          toast.success("Product created successfully")
+          toast.success("Produit créé avec succès")
           setIsCreateDialogOpen(false)
           resetForm()
           fetchProducts()
         } else {
-          toast.error(response.message || "Failed to create product")
+          toast.error(response.message || "Échec de la création du produit")
         }
       }
     } catch (error) {
-      console.error("Error saving product:", error)
-      toast.error("Error saving product")
+      console.error("Erreur lors de l'enregistrement du produit :", error)
+      toast.error("Erreur lors de l'enregistrement du produit")
     }
   }
 
-  // Handle delete
+  // Gérer la suppression
   const handleDelete = async () => {
     if (!deletingProduct) return
 
     try {
       const response = await deleteProduct(deletingProduct._id)
       if (response.success) {
-        toast.success("Product deleted successfully")
+        toast.success("Produit supprimé avec succès")
         setDeletingProduct(null)
         fetchProducts()
       } else {
-        toast.error(response.message || "Failed to delete product")
+        toast.error(response.message || "Échec de la suppression du produit")
       }
     } catch (error) {
-      console.error("Error deleting product:", error)
-      toast.error("Error deleting product")
+      console.error("Erreur lors de la suppression du produit :", error)
+      toast.error("Erreur lors de la suppression du produit")
     }
   }
 
-  // Reset form
+  // Réinitialiser le formulaire
   const resetForm = () => {
     setFormData({
       name: "",
@@ -203,7 +206,7 @@ export default function AdminProductsPage() {
     })
   }
 
-  // Open edit dialog
+  // Ouvrir la boîte de dialogue d'édition
   const openEditDialog = (product: Product) => {
     setEditingProduct(product)
     setFormData({
@@ -218,59 +221,59 @@ export default function AdminProductsPage() {
     setIsEditDialogOpen(true)
   }
 
-  // Get stock status badge
+  // Obtenir le badge de statut du stock
   const getStockBadge = (quantity: number) => {
     if (quantity === 0) {
-      return <Badge variant="destructive">Out of Stock</Badge>
+      return <Badge variant="destructive">{t("admin.common.outOfStock")}</Badge>
     } else if (quantity < 10) {
-      return <Badge className="bg-orange-100 text-orange-800">Low Stock</Badge>
+      return <Badge className="bg-orange-100 text-orange-800">{t("admin.common.lowStock")}</Badge>
     } else {
-      return <Badge className="bg-green-100 text-green-800">In Stock</Badge>
+      return <Badge className="bg-green-100 text-green-800">{t("admin.common.inStock")}</Badge>
     }
   }
 
   return (
     <AdminLayout>
       <div className="space-y-6">
-        {/* Header */}
+        {/* En-tête */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Product Management</h1>
-            <p className="text-muted-foreground">Manage your product inventory and catalog</p>
+            <h1 className="text-3xl font-bold text-foreground">{t("admin.products.title")}</h1>
+            <p className="text-muted-foreground">{t("admin.products.subtitle")}</p>
           </div>
           <div className="flex space-x-2">
             <Button variant="outline" onClick={fetchProducts} disabled={loading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              Refresh
+              {t("admin.common.refresh")}
             </Button>
             <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
               <DialogTrigger asChild>
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Product
+                  {t("admin.products.add")}
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl">
                 <DialogHeader>
-                  <DialogTitle>Add New Product</DialogTitle>
-                  <DialogDescription>Create a new product for your catalog</DialogDescription>
+                  <DialogTitle>{t("admin.products.create.title")}</DialogTitle>
+                  <DialogDescription>{t("admin.products.create.subtitle")}</DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm font-medium">Product Name *</label>
+                      <label className="text-sm font-medium">{t("admin.form.productName")} *</label>
                       <Input
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
-                        placeholder="Enter product name"
+                        placeholder={t("admin.form.productName.placeholder")}
                         required
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-medium">Category *</label>
+                      <label className="text-sm font-medium">{t("admin.form.category")} *</label>
                       <Select value={formData.category} onValueChange={(value) => setFormData({...formData, category: value})}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select category" />
+                          <SelectValue placeholder={t("admin.form.category.placeholder")} />
                         </SelectTrigger>
                         <SelectContent>
                           {categories.map((category) => (
@@ -283,17 +286,17 @@ export default function AdminProductsPage() {
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Description</label>
+                    <label className="text-sm font-medium">{t("admin.form.description")}</label>
                     <Textarea
                       value={formData.description}
                       onChange={(e) => setFormData({...formData, description: e.target.value})}
-                      placeholder="Enter product description"
+                      placeholder={t("admin.form.description.placeholder")}
                       rows={3}
                     />
                   </div>
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <label className="text-sm font-medium">Price *</label>
+                      <label className="text-sm font-medium">{t("admin.form.price")} *</label>
                       <Input
                         type="number"
                         step="0.01"
@@ -305,7 +308,7 @@ export default function AdminProductsPage() {
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-medium">Quantity *</label>
+                      <label className="text-sm font-medium">{t("admin.form.quantity")} *</label>
                       <Input
                         type="number"
                         min="0"
@@ -316,17 +319,17 @@ export default function AdminProductsPage() {
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-medium">Supplier *</label>
+                      <label className="text-sm font-medium">{t("admin.form.supplier")} *</label>
                       <Input
                         value={formData.supplier}
                         onChange={(e) => setFormData({...formData, supplier: e.target.value})}
-                        placeholder="Enter supplier name"
+                        placeholder={t("admin.form.supplier.placeholder")}
                         required
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Image URL</label>
+                    <label className="text-sm font-medium">{t("admin.form.imageUrl")}</label>
                     <Input
                       value={formData.image}
                       onChange={(e) => setFormData({...formData, image: e.target.value})}
@@ -335,9 +338,9 @@ export default function AdminProductsPage() {
                   </div>
                   <DialogFooter>
                     <Button type="button" variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
-                    Cancel
+                    {t("cancel")}
                   </Button>
-                    <Button type="submit">Create Product</Button>
+                    <Button type="submit">{t("admin.products.create.submit")}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -345,61 +348,61 @@ export default function AdminProductsPage() {
           </div>
         </div>
 
-        {/* Stats Cards */}
+        {/* Cartes de Statistiques */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Products</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("admin.products.stats.total")}</CardTitle>
               <Package className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalProducts}</div>
-              <p className="text-xs text-muted-foreground">Products in catalog</p>
+              <p className="text-xs text-muted-foreground">{t("admin.products.stats.total.desc")}</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Value</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("admin.products.stats.value")}</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${stats.totalValue.toFixed(2)}</div>
-              <p className="text-xs text-muted-foreground">Inventory value</p>
+              <div className="text-2xl font-bold">{formatCurrency(stats.totalValue)}</div>
+              <p className="text-xs text-muted-foreground">{t("admin.products.stats.value.desc")}</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Average Price</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("admin.products.stats.avgPrice")}</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${stats.averagePrice.toFixed(2)}</div>
-              <p className="text-xs text-muted-foreground">Per product</p>
+              <div className="text-2xl font-bold">{formatCurrency(stats.averagePrice)}</div>
+              <p className="text-xs text-muted-foreground">{t("admin.products.stats.avgPrice.desc")}</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Low Stock</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("admin.products.stats.lowStock")}</CardTitle>
               <AlertTriangle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-600">{stats.lowStockCount}</div>
-              <p className="text-xs text-muted-foreground">Need restocking</p>
+              <p className="text-xs text-muted-foreground">{t("admin.products.stats.lowStock.desc")}</p>
             </CardContent>
           </Card>
         </div>
 
-            {/* Filters */}
+            {/* Filtres */}
             <Card>
           <CardHeader>
-            <CardTitle>Filters & Search</CardTitle>
+            <CardTitle>{t("admin.common.filtersSearch")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-4 gap-4">
                     <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                       <Input
-                        placeholder="Search products..."
+                        placeholder={t("admin.products.searchPlaceholder")}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -407,10 +410,10 @@ export default function AdminProductsPage() {
                     </div>
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Category" />
+                  <SelectValue placeholder={t("admin.form.category")} />
                       </SelectTrigger>
                       <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
+                  <SelectItem value="all">{t("admin.common.allCategories")}</SelectItem>
                         {categories.map((category) => (
                           <SelectItem key={category} value={category}>
                             {category}
@@ -420,39 +423,39 @@ export default function AdminProductsPage() {
                     </Select>
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Sort by" />
+                  <SelectValue placeholder={t("admin.common.sortBy")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="createdAt">Date Created</SelectItem>
-                  <SelectItem value="name">Name</SelectItem>
-                  <SelectItem value="price">Price</SelectItem>
-                  <SelectItem value="quantity">Stock</SelectItem>
+                  <SelectItem value="createdAt">{t("admin.common.sort.createdAt")}</SelectItem>
+                  <SelectItem value="name">{t("admin.common.sort.name")}</SelectItem>
+                  <SelectItem value="price">{t("admin.common.sort.price")}</SelectItem>
+                  <SelectItem value="quantity">{t("admin.common.sort.quantity")}</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={sortOrder} onValueChange={setSortOrder}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Order" />
+                  <SelectValue placeholder={t("admin.common.sortOrder")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="desc">Descending</SelectItem>
-                  <SelectItem value="asc">Ascending</SelectItem>
+                  <SelectItem value="desc">{t("admin.common.sortOrder.desc")}</SelectItem>
+                  <SelectItem value="asc">{t("admin.common.sortOrder.asc")}</SelectItem>
                 </SelectContent>
               </Select>
                 </div>
               </CardContent>
             </Card>
 
-        {/* Products Table */}
+        {/* Tableau des Produits */}
         <Card>
           <CardHeader>
-            <CardTitle>Products</CardTitle>
-            <CardDescription>Manage your product catalog</CardDescription>
+            <CardTitle>{t("admin.products.table.title")}</CardTitle>
+            <CardDescription>{t("admin.products.table.subtitle")}</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
               <div className="text-center py-8">
                 <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground">Loading products...</p>
+                <p className="text-muted-foreground">{t("admin.products.loading")}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -477,8 +480,8 @@ export default function AdminProductsPage() {
                     </div>
                     <div className="flex items-center space-x-4">
                       <div className="text-right">
-                        <div className="font-semibold">${product.price}</div>
-                        <div className="text-sm text-muted-foreground">Stock: {product.quantity}</div>
+                        <div className="font-semibold">{formatCurrency(product.price)}</div>
+                        <div className="text-sm text-muted-foreground">{t("admin.products.stockLabel")}: {product.quantity}</div>
                         {getStockBadge(product.quantity)}
                       </div>
                       <div className="flex space-x-2">
@@ -497,17 +500,17 @@ export default function AdminProductsPage() {
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
-                              <AlertDialogTitle>Delete Product</AlertDialogTitle>
+                              <AlertDialogTitle>{t("admin.products.delete.title")}</AlertDialogTitle>
                               <AlertDialogDescription>
-                                Are you sure you want to delete "{product.name}"? This action cannot be undone.
+                                {t("admin.products.delete.confirm", { name: product.name })}
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                               <AlertDialogCancel onClick={() => setDeletingProduct(null)}>
-                                Cancel
+                                {t("cancel")}
                               </AlertDialogCancel>
                               <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
-                                Delete
+                                {t("admin.common.delete")}
                               </AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>
@@ -520,7 +523,7 @@ export default function AdminProductsPage() {
                 {products.length === 0 && (
                   <div className="text-center py-8">
                     <Package className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                    <p className="text-muted-foreground">No products found</p>
+                    <p className="text-muted-foreground">Aucun produit trouvé</p>
                   </div>
                 )}
                   </div>
@@ -536,45 +539,45 @@ export default function AdminProductsPage() {
               onClick={() => setPage(page - 1)} 
               disabled={page === 1}
             >
-              Previous
+              Précédent
             </Button>
             <span className="flex items-center px-4">
-              Page {page} of {totalPages}
+              Page {page} sur {totalPages}
             </span>
             <Button 
               variant="outline" 
               onClick={() => setPage(page + 1)} 
               disabled={page === totalPages}
             >
-              Next
+              Suivant
             </Button>
                           </div>
         )}
             </div>
 
-      {/* Edit Dialog */}
+      {/* Boîte de Dialogue d'Édition */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Edit Product</DialogTitle>
-            <DialogDescription>Update product information</DialogDescription>
+            <DialogTitle>Modifier le Produit</DialogTitle>
+            <DialogDescription>Mettez à jour les informations du produit</DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium">Product Name *</label>
+                <label className="text-sm font-medium">Nom du Produit *</label>
                 <Input
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  placeholder="Enter product name"
+                  placeholder="Entrez le nom du produit"
                   required
                       />
                     </div>
                         <div>
-                <label className="text-sm font-medium">Category *</label>
+                <label className="text-sm font-medium">Catégorie *</label>
                 <Select value={formData.category} onValueChange={(value) => setFormData({...formData, category: value})}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
+                    <SelectValue placeholder="Sélectionnez une catégorie" />
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map((category) => (
@@ -591,13 +594,13 @@ export default function AdminProductsPage() {
                     <Textarea
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
-                placeholder="Enter product description"
+                placeholder="Entrez la description du produit"
                 rows={3}
               />
             </div>
             <div className="grid grid-cols-3 gap-4">
                       <div>
-                <label className="text-sm font-medium">Price *</label>
+                <label className="text-sm font-medium">Prix *</label>
                 <Input
                   type="number"
                   step="0.01"
@@ -609,7 +612,7 @@ export default function AdminProductsPage() {
                 />
                       </div>
                       <div>
-                <label className="text-sm font-medium">Quantity *</label>
+                <label className="text-sm font-medium">Quantité *</label>
                 <Input
                   type="number"
                   min="0"
@@ -620,17 +623,17 @@ export default function AdminProductsPage() {
                 />
                       </div>
                       <div>
-                <label className="text-sm font-medium">Supplier *</label>
+                <label className="text-sm font-medium">Fournisseur *</label>
                 <Input
                   value={formData.supplier}
                   onChange={(e) => setFormData({...formData, supplier: e.target.value})}
-                  placeholder="Enter supplier name"
+                  placeholder="Entrez le nom du fournisseur"
                   required
                 />
                 </div>
                             </div>
                             <div>
-              <label className="text-sm font-medium">Image URL</label>
+              <label className="text-sm font-medium">URL de l'Image</label>
               <Input
                 value={formData.image}
                 onChange={(e) => setFormData({...formData, image: e.target.value})}
@@ -639,9 +642,9 @@ export default function AdminProductsPage() {
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                Cancel
+                Annuler
               </Button>
-              <Button type="submit">Update Product</Button>
+              <Button type="submit">Mettre à Jour le Produit</Button>
             </DialogFooter>
           </form>
         </DialogContent>

@@ -20,8 +20,8 @@ export interface SavedShippingInfo {
 }
 
 // مفتاح التخزين المحلي
-const PAYMENT_STORAGE_KEY = 'agrichain-saved-payment'
-const SHIPPING_STORAGE_KEY = 'agrichain-saved-shipping'
+const PAYMENT_STORAGE_KEY = 'brijuice-saved-payment'
+const SHIPPING_STORAGE_KEY = 'brijuice-saved-shipping'
 
 // تشفير بسيط للبيانات (في الإنتاج يجب استخدام تشفير أقوى)
 const encrypt = (data: string): string => {

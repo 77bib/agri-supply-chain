@@ -268,7 +268,7 @@ async function checkDatabase() {
   console.log('\n🗄️ فحص قاعدة البيانات...');
   console.log('ℹ️ لفحص قاعدة البيانات مباشرة، استخدم:');
   console.log('   mongosh');
-  console.log('   use agrichain');
+  console.log('   use brijuice');
   console.log('   db.carts.find()');
   console.log('   db.carts.findOne({userId: "USER_ID"})');
 }

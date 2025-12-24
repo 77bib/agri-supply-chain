@@ -47,7 +47,7 @@ async function debugLogin() {
     console.log('✅ Connected to MongoDB Atlas!');
     
     // Test credentials
-    const testEmail = 'admin@bifa.com';
+    const testEmail = 'admin@brijuice.com';
     const testPassword = 'admin123456';
     
     console.log(`\n🔍 Testing login for: ${testEmail}`);

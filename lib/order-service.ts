@@ -1,4 +1,5 @@
 import { CreateOrderRequest, UpdateOrderStatusRequest, OrdersResponse, OrderResponse } from '../types/order';
+import { resetAuthState } from './auth-service';
 
 const API_BASE_URL = typeof window !== 'undefined' 
   ? window.location.origin
@@ -19,6 +20,9 @@ export async function createOrder(orderData: CreateOrderRequest): Promise<OrderR
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        resetAuthState();
+      }
       throw new Error(data.message || 'خطأ في إنشاء الطلب');
     }
 
@@ -51,6 +55,9 @@ export async function getMyOrders(page = 1, limit = 10, status?: string): Promis
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        resetAuthState();
+      }
       throw new Error(data.message || 'خطأ في جلب الطلبات');
     }
 
@@ -87,6 +94,9 @@ export async function getAllOrders(page = 1, limit = 20, status?: string, userId
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        resetAuthState();
+      }
       throw new Error(data.message || 'خطأ في جلب الطلبات');
     }
 
@@ -110,6 +120,9 @@ export async function getOrderById(orderId: string): Promise<OrderResponse> {
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        resetAuthState();
+      }
       throw new Error(data.message || 'خطأ في جلب الطلب');
     }
 
@@ -135,6 +148,9 @@ export async function updateOrderStatus(orderId: string, statusData: UpdateOrder
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        resetAuthState();
+      }
       throw new Error(data.message || 'خطأ في تحديث حالة الطلب');
     }
 
@@ -158,6 +174,9 @@ export async function deleteOrder(orderId: string): Promise<{ success: boolean; 
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        resetAuthState();
+      }
       throw new Error(data.message || 'خطأ في حذف الطلب');
     }
 

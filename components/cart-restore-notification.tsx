@@ -6,6 +6,7 @@ import { loadCart, loadCartFromLocalStorage, mergeCarts } from "@/lib/cart-servi
 import { toast } from "sonner"
 import { ShoppingCart, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { formatCurrency } from "@/lib/utils"
 
 export function CartRestoreNotification() {
   const { currentUser, cart, setCart } = useStore()
@@ -71,7 +72,7 @@ export function CartRestoreNotification() {
                 Saved Cart Found!
               </p>
               <p className="mt-1 text-sm text-gray-500">
-                {totalItems} items (${totalValue.toFixed(2)}) from your previous session
+                {totalItems} items ({formatCurrency(totalValue)}) from your previous session
               </p>
               <p className="mt-1 text-xs text-gray-400">
                 Source: {source === 'database' ? 'Cloud' : 'Local Storage'}

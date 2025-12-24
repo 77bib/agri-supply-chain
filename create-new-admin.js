@@ -58,7 +58,7 @@ async function createNewAdmin() {
       method: 'POST',
       body: {
         name: 'Super Admin',
-        email: 'superadmin@agri.com',
+        email: 'superadmin@brijuice.com',
         password: 'Admin123456',
         adminSecret: 'admin-secret-2024'
       }

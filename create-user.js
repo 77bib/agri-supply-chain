@@ -58,7 +58,7 @@ async function createUser() {
       method: 'POST',
       body: {
         name: 'Regular User',
-        email: 'user2@agri.com',
+        email: 'user2@brijuice.com',
         password: 'User123456' // تحديث كلمة المرور لتتوافق مع المتطلبات
       }
     });

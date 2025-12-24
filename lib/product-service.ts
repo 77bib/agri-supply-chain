@@ -1,4 +1,5 @@
 import { IProduct } from '../types/product';
+import { resetAuthState } from './auth-service';
 
 const API_BASE_URL = typeof window !== 'undefined' 
   ? window.location.origin
@@ -39,6 +40,9 @@ export async function getPublicProducts(page = 1, limit = 12, category?: string,
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        resetAuthState();
+      }
       throw new Error(data.message || 'خطأ في جلب المنتجات');
     }
 
@@ -145,6 +149,9 @@ export async function createProduct(productData: {
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        resetAuthState();
+      }
       throw new Error(data.message || 'خطأ في إنشاء المنتج');
     }
 
@@ -178,6 +185,9 @@ export async function updateProduct(productId: string, productData: Partial<{
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        resetAuthState();
+      }
       throw new Error(data.message || 'خطأ في تحديث المنتج');
     }
 
@@ -201,6 +211,9 @@ export async function deleteProduct(productId: string): Promise<{ success: boole
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        resetAuthState();
+      }
       throw new Error(data.message || 'خطأ في حذف المنتج');
     }
 

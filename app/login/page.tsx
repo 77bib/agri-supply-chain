@@ -91,9 +91,11 @@ export default function LoginPage() {
             <CardHeader className="text-center pb-6">
               <div className="flex justify-center mb-4">
                 <img 
-                  src="/bifa-logo.svg" 
-                  alt="Bifa Logo" 
-                  className="w-20 h-10 drop-shadow-lg"
+                  src="/brijuice-logo.png" 
+                  alt="Logo BRIJUICE" 
+                  className="h-24 w-auto drop-shadow-2xl"
+                  width={260}
+                  height={180}
                 />
               </div>
               <CardTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100">Welcome Back</CardTitle>

@@ -47,7 +47,7 @@ async function createAdminUser() {
     console.log('✅ Connected to MongoDB Atlas!');
     
     // Check if admin user already exists
-    const existingAdmin = await User.findOne({ email: 'admin@bifa.com' });
+    const existingAdmin = await User.findOne({ email: 'admin@brijuice.com' });
     
     if (existingAdmin) {
       console.log('ℹ️  Admin user already exists:');
@@ -63,8 +63,8 @@ async function createAdminUser() {
     
     const hashedPassword = await bcrypt.hash('admin123456', 12);
     const adminUser = new User({
-      name: 'Bifa Admin',
-      email: 'admin@bifa.com',
+      name: 'BRIJUICE Admin',
+      email: 'admin@brijuice.com',
       password: hashedPassword,
       role: 'admin'
     });
@@ -78,7 +78,7 @@ async function createAdminUser() {
     console.log(`   Password: admin123456`);
     
     console.log('\n🔐 You can now login with:');
-    console.log('   Email: admin@bifa.com');
+    console.log('   Email: admin@brijuice.com');
     console.log('   Password: admin123456');
     
   } catch (error) {

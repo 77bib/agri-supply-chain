@@ -8,22 +8,29 @@ import { Toaster } from "@/components/ui/toaster"
 import { CartAutoSave } from "@/components/cart-auto-save"
 import { CartRestoreNotification } from "@/components/cart-restore-notification"
 import { CartHydration } from "@/components/cart-hydration"
+import { I18nProvider } from "@/components/i18n-provider"
+import type { Locale } from "@/lib/i18n"
+import { cookies } from "next/headers"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "AgriChain - Smart Supply Chain Management",
-  description: "Complete supply chain optimization for agri-food companies",
+  title: "BRIJUICE",
+  description: "BRIJUICE",
   generator: 'v0.dev'
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const cookieLocale = cookies().get("locale")?.value
+  const locale: Locale = cookieLocale === "ar" ? "ar" : "fr"
+  const dir: "ltr" | "rtl" = locale === "ar" ? "rtl" : "ltr"
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} dir={dir} suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
@@ -32,11 +39,13 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <StoreProvider>
-            <CartHydration />
-            <CartAutoSave />
-            <CartRestoreNotification />
-            {children}
-            <Toaster />
+            <I18nProvider>
+              <CartHydration />
+              <CartAutoSave />
+              <CartRestoreNotification />
+              {children}
+              <Toaster />
+            </I18nProvider>
           </StoreProvider>
         </ThemeProvider>
       </body>

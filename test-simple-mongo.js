@@ -1,7 +1,7 @@
 // اختبار بسيط للاتصال بـ MongoDB Atlas
 const mongoose = require('mongoose');
 
-const MONGODB_URI = 'mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/agri-supply-chain?retryWrites=true&w=majority&appName=Cluster0';
+const MONGODB_URI = 'mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/brijuice?retryWrites=true&w=majority&appName=Cluster0';
 
 async function testSimpleConnection() {
   console.log('🚀 Testing Simple MongoDB Atlas Connection...');

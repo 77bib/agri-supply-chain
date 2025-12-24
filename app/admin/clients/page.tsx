@@ -29,10 +29,13 @@ import {
   Eye,
 } from "lucide-react"
 import AdminLayout from "@/components/admin-layout"
+import { useI18n } from "@/lib/i18n"
 import { usersAPI, User, authAPI } from "@/lib/api-service"
 import { toast } from "sonner"
+import { formatCurrency } from "@/lib/utils"
 
 export default function AdminClientsPage() {
+  const { t } = useI18n()
   const [clients, setClients] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
@@ -50,7 +53,7 @@ export default function AdminClientsPage() {
     role: "user" as "user" | "admin",
   })
 
-  // Fetch clients from API
+  // Récupérer les clients depuis l'API
   const fetchClients = async () => {
     try {
       setLoading(true)
@@ -59,11 +62,11 @@ export default function AdminClientsPage() {
       if (response.success && response.data) {
         setClients(response.data)
       } else {
-        toast.error(response.message || "Failed to fetch clients")
+        toast.error(response.message || "Échec de la récupération des clients")
       }
     } catch (error) {
-      console.error("Error fetching clients:", error)
-      toast.error("Failed to fetch clients")
+      console.error("Erreur lors de la récupération des clients :", error)
+      toast.error("Échec de la récupération des clients")
     } finally {
       setLoading(false)
     }
@@ -84,14 +87,10 @@ export default function AdminClientsPage() {
   const handleAddClient = async () => {
     try {
       if (newClient.role === 'admin') {
-        // For admin creation, we need admin secret
-        const adminSecret = prompt("Please enter admin secret:")
+        // Pour la création d'admin, nous avons besoin du secret administrateur
+        const adminSecret = prompt("Veuillez entrer le secret administrateur :")
         if (!adminSecret) {
-          toast({
-            title: "Error",
-            description: "Admin secret is required for creating admin users",
-            variant: "destructive",
-          })
+          toast.error("Le secret administrateur est requis pour créer des utilisateurs administrateurs")
           return
         }
         
@@ -103,15 +102,15 @@ export default function AdminClientsPage() {
         )
         
         if (response.success) {
-          toast.success("Admin user created successfully")
+          toast.success("Utilisateur administrateur créé avec succès")
           fetchClients()
           setNewClient({ name: "", email: "", password: "", role: "user" })
           setIsAddDialogOpen(false)
         } else {
-          toast.error(response.message || "Failed to create admin user")
+          toast.error(response.message || "Échec de la création de l'utilisateur administrateur")
         }
       } else {
-        // For regular user creation
+        // Pour la création d'utilisateur régulier
         const response = await authAPI.signup(
           newClient.name,
           newClient.email,
@@ -119,30 +118,30 @@ export default function AdminClientsPage() {
         )
         
         if (response.success) {
-          toast.success("User created successfully")
+          toast.success("Utilisateur créé avec succès")
           fetchClients()
           setNewClient({ name: "", email: "", password: "", role: "user" })
           setIsAddDialogOpen(false)
         } else {
-          toast.error(response.message || "Failed to create user")
+          toast.error(response.message || "Échec de la création de l'utilisateur")
         }
       }
     } catch (error) {
-      console.error("Error creating user:", error)
-      toast.error("Failed to create user")
+      console.error("Erreur lors de la création de l'utilisateur :", error)
+      toast.error("Échec de la création de l'utilisateur")
     }
   }
 
   const handleEditClient = () => {
-    // Note: User editing is not implemented in the backend yet
-    toast.info("User editing functionality is not yet implemented")
+    // Note : La modification d'utilisateur n'est pas encore implémentée dans le backend
+    toast.info("La fonctionnalité de modification d'utilisateur n'est pas encore implémentée")
     setIsEditDialogOpen(false)
     setSelectedClient(null)
   }
 
   const handleDeleteClient = (id: string) => {
-    // Note: User deletion is not implemented in the backend yet
-    toast.info("User deletion functionality is not yet implemented")
+    // Note : La suppression d'utilisateur n'est pas encore implémentée dans le backend
+    toast.info("La fonctionnalité de suppression d'utilisateur n'est pas encore implémentée")
   }
 
   const handleViewClient = async (client: User) => {
@@ -155,11 +154,11 @@ export default function AdminClientsPage() {
       if (response.success && response.data) {
         setSelectedClientDetails(response.data)
       } else {
-        toast.error(response.message || "Failed to fetch client details")
+        toast.error(response.message || "Échec de la récupération des détails du client")
       }
     } catch (error) {
-      console.error("Error fetching client details:", error)
-      toast.error("Failed to fetch client details")
+      console.error("Erreur lors de la récupération des détails du client :", error)
+      toast.error("Échec de la récupération des détails du client")
     } finally {
       setLoadingClientDetails(false)
     }
@@ -178,9 +177,9 @@ export default function AdminClientsPage() {
 
   const getRoleBadge = (role: string) => {
     return role === "admin" ? (
-      <Badge className="bg-purple-100 text-purple-800">Admin</Badge>
+      <Badge className="bg-purple-100 text-purple-800">{t('admin.role.admin')}</Badge>
     ) : (
-      <Badge className="bg-blue-100 text-blue-800">User</Badge>
+      <Badge className="bg-blue-100 text-blue-800">{t('admin.role.user')}</Badge>
     )
   }
 
@@ -199,61 +198,61 @@ export default function AdminClientsPage() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        {/* Header */}
+        {/* En-tête */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Client Management</h1>
-            <p className="text-muted-foreground">Manage user accounts and relationships</p>
+            <h1 className="text-3xl font-bold text-foreground">{t('admin.clients.title')}</h1>
+            <p className="text-muted-foreground">{t('admin.clients.subtitle')}</p>
           </div>
           <div className="flex space-x-2">
             <Button variant="outline" onClick={fetchClients} disabled={loading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              Refresh
+              {t('admin.common.refresh')}
             </Button>
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
                 <Button>
                   <UserPlus className="h-4 w-4 mr-2" />
-                  Add User
+                  {t('admin.clients.addUser')}
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Add New User</DialogTitle>
-                  <DialogDescription>Create a new user account</DialogDescription>
+                  <DialogTitle>{t('admin.clients.addUser.title')}</DialogTitle>
+                  <DialogDescription>{t('admin.clients.addUser.desc')}</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="name">Full Name</Label>
+                    <Label htmlFor="name">{t('admin.form.fullName')}</Label>
                     <Input
                       id="name"
                       value={newClient.name}
                       onChange={(e) => setNewClient({ ...newClient, name: e.target.value })}
-                      placeholder="Enter full name"
+                      placeholder={t('admin.form.fullName')}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">{t('admin.form.email')}</Label>
                     <Input
                       id="email"
                       type="email"
                       value={newClient.email}
                       onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
-                      placeholder="Enter email address"
+                      placeholder={t('admin.form.email')}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password">{t('admin.form.password')}</Label>
                     <Input
                       id="password"
                       type="password"
                       value={newClient.password}
                       onChange={(e) => setNewClient({ ...newClient, password: e.target.value })}
-                      placeholder="Enter password"
+                      placeholder={t('admin.form.password')}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="role">Role</Label>
+                    <Label htmlFor="role">{t('admin.form.role')}</Label>
                     <Select
                       value={newClient.role}
                       onValueChange={(value: "user" | "admin") => setNewClient({ ...newClient, role: value })}
@@ -262,13 +261,13 @@ export default function AdminClientsPage() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="user">User</SelectItem>
-                        <SelectItem value="admin">Admin</SelectItem>
+                        <SelectItem value="user">{t('admin.role.user')}</SelectItem>
+                        <SelectItem value="admin">{t('admin.role.admin')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <Button onClick={handleAddClient} className="w-full">
-                    Add User
+                    {t('admin.clients.addUser.submit')}
                   </Button>
                 </div>
               </DialogContent>
@@ -276,11 +275,11 @@ export default function AdminClientsPage() {
           </div>
         </div>
 
-        {/* Stats Cards */}
+        {/* Cartes de statistiques */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('admin.stats.totalUsers')}</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -289,7 +288,7 @@ export default function AdminClientsPage() {
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Admins</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('admin.stats.admins')}</CardTitle>
               <Users className="h-4 w-4 text-purple-600" />
             </CardHeader>
             <CardContent>
@@ -298,7 +297,7 @@ export default function AdminClientsPage() {
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Regular Users</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('admin.stats.regularUsers')}</CardTitle>
               <Users className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
@@ -307,7 +306,7 @@ export default function AdminClientsPage() {
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Recent Registrations</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('admin.stats.recentRegistrations')}</CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -316,7 +315,7 @@ export default function AdminClientsPage() {
           </Card>
         </div>
 
-        {/* Filters */}
+        {/* Filtres */}
         <Card>
           <CardContent className="pt-6">
             <div className="flex space-x-4">
@@ -324,7 +323,7 @@ export default function AdminClientsPage() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input
-                    placeholder="Search users..."
+                    placeholder={t('admin.filters.searchUsers')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -333,34 +332,34 @@ export default function AdminClientsPage() {
               </div>
               <Select value={roleFilter} onValueChange={setRoleFilter}>
                 <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Filter by role" />
+                  <SelectValue placeholder={t('admin.filters.filterByRole')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Roles</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="user">User</SelectItem>
+                  <SelectItem value="all">{t('admin.filters.allRoles')}</SelectItem>
+                  <SelectItem value="admin">{t('admin.role.admin')}</SelectItem>
+                  <SelectItem value="user">{t('admin.role.user')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </CardContent>
         </Card>
 
-        {/* Users Table */}
+        {/* Table des utilisateurs */}
         <Card>
           <CardHeader>
-            <CardTitle>User Directory</CardTitle>
-            <CardDescription>Manage all user accounts and information</CardDescription>
+            <CardTitle>{t('admin.table.userDirectory')}</CardTitle>
+            <CardDescription>{t('admin.table.userDirectory.desc')}</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
               <div className="text-center py-8">
                 <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground">Loading users...</p>
+                <p className="text-muted-foreground">{t('admin.loading.users')}</p>
               </div>
             ) : filteredClients.length === 0 ? (
               <div className="text-center py-8">
                 <AlertCircle className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground">No users found matching your criteria.</p>
+                <p className="text-muted-foreground">{t('admin.empty.noUsers')}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -371,7 +370,7 @@ export default function AdminClientsPage() {
                         <div className="flex items-center justify-between">
                           <div>
                             <h3 className="font-semibold text-lg">{client.name}</h3>
-                            <p className="text-sm text-gray-500">User ID: {client._id}</p>
+                            <p className="text-sm text-gray-500">{t('admin.user.userId')}: {client._id}</p>
                           </div>
                           {getRoleBadge(client.role)}
                         </div>
@@ -383,11 +382,11 @@ export default function AdminClientsPage() {
                           </div>
                           <div className="flex items-center space-x-2">
                             <Calendar className="h-4 w-4 text-gray-500" />
-                            <span>Joined {new Date(client.createdAt).toLocaleDateString()}</span>
+                            <span>{t('admin.user.joinedOn', {date: new Date(client.createdAt).toLocaleDateString()})}</span>
                           </div>
                           <div className="flex items-center space-x-2">
                             <Users className="h-4 w-4 text-gray-500" />
-                            <span className="capitalize">{client.role}</span>
+                            <span className="capitalize">{client.role === 'admin' ? t('admin.role.admin') : t('admin.role.user')}</span>
                           </div>
                         </div>
                       </div>
@@ -413,20 +412,20 @@ export default function AdminClientsPage() {
 
         {/* Enhanced Client Details Dialog */}
         <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
+                  <DialogTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-blue-600" />
-                Client Details - {selectedClient?.name}
+                    {t('admin.view.details.title', {name: selectedClient?.name || ''})}
               </DialogTitle>
-              <DialogDescription>
-                Complete client information and account details
-              </DialogDescription>
+                  <DialogDescription>
+                    {t('admin.view.details.desc')}
+                  </DialogDescription>
             </DialogHeader>
             {loadingClientDetails ? (
               <div className="flex items-center justify-center py-8">
                 <RefreshCw className="h-8 w-8 animate-spin text-blue-600" />
-                <span className="ml-2">Loading client details...</span>
+                    <span className="ml-2">{t('admin.loading.clientDetails')}</span>
               </div>
             ) : selectedClient && (
               <div className="space-y-6">
@@ -438,14 +437,14 @@ export default function AdminClientsPage() {
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold">{selectedClient.name}</h3>
-                      <p className="text-sm text-muted-foreground">Client ID: {selectedClient._id.slice(-8)}</p>
+                      <p className="text-sm text-muted-foreground">{t('admin.user.userId')}: {selectedClient._id.slice(-8)}</p>
                       <div className="flex items-center space-x-2 mt-1">
                         {getRoleBadge(selectedClient.role)}
                       </div>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm text-muted-foreground">Member since</div>
+                    <div className="text-sm text-muted-foreground">{t('admin.client.memberSince')}</div>
                     <div className="font-semibold">{new Date(selectedClient.createdAt).toLocaleDateString()}</div>
                   </div>
                 </div>
@@ -455,44 +454,44 @@ export default function AdminClientsPage() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Users className="h-5 w-5 text-blue-600" />
-                      Basic Information
+                      {t('admin.client.basicInfo')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span className="font-medium">Full Name:</span>
+                          <span className="font-medium">{t('admin.form.fullName')}:</span>
                           <span className="font-semibold">{selectedClient.name}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="font-medium">Email Address:</span>
+                          <span className="font-medium">{t('admin.client.emailAddress')}:</span>
                           <span className="text-blue-600">{selectedClient.email}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="font-medium">User Role:</span>
+                          <span className="font-medium">{t('admin.client.userRole')}:</span>
                           <span>{getRoleBadge(selectedClient.role)}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="font-medium">Account Status:</span>
-                          <Badge className="bg-green-100 text-green-800">Active</Badge>
+                          <span className="font-medium">{t('admin.client.accountStatus')}:</span>
+                          <Badge className="bg-green-100 text-green-800">{t('admin.status.active')}</Badge>
                         </div>
                       </div>
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span className="font-medium">User ID:</span>
+                          <span className="font-medium">{t('admin.client.userId')}:</span>
                           <span className="font-mono text-xs">{selectedClient._id}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="font-medium">Registration Date:</span>
+                          <span className="font-medium">{t('admin.client.registrationDate')}:</span>
                           <span>{new Date(selectedClient.createdAt).toLocaleDateString()}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="font-medium">Registration Time:</span>
+                          <span className="font-medium">{t('admin.client.registrationTime')}:</span>
                           <span>{new Date(selectedClient.createdAt).toLocaleTimeString()}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="font-medium">Last Updated:</span>
+                          <span className="font-medium">{t('admin.client.lastUpdated')}:</span>
                           <span>{new Date(selectedClient.updatedAt).toLocaleDateString()}</span>
                         </div>
                       </div>
@@ -505,7 +504,7 @@ export default function AdminClientsPage() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Calendar className="h-5 w-5 text-green-600" />
-                      Account Statistics
+                      {t('admin.client.accountStats')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -514,25 +513,25 @@ export default function AdminClientsPage() {
                         <div className="text-2xl font-bold text-blue-600">
                           {Math.floor((Date.now() - new Date(selectedClient.createdAt).getTime()) / (1000 * 60 * 60 * 24))}
                         </div>
-                        <div className="text-sm text-muted-foreground">Days as Member</div>
+                        <div className="text-sm text-muted-foreground">{t('admin.client.daysAsMember')}</div>
                       </div>
                       <div className="text-center p-4 bg-green-50 rounded-lg">
                         <div className="text-2xl font-bold text-green-600">
-                          {selectedClient.role === 'admin' ? 'Admin' : 'Regular'}
+                          {selectedClient.role === 'admin' ? t('admin.role.admin') : t('admin.role.user')}
                         </div>
-                        <div className="text-sm text-muted-foreground">Account Type</div>
+                        <div className="text-sm text-muted-foreground">{t('admin.client.accountType')}</div>
                       </div>
                       <div className="text-center p-4 bg-purple-50 rounded-lg">
                         <div className="text-2xl font-bold text-purple-600">
                           {selectedClientDetails?.statistics?.total || 0}
                         </div>
-                        <div className="text-sm text-muted-foreground">Total Orders</div>
+                        <div className="text-sm text-muted-foreground">{t('admin.client.totalOrders')}</div>
                       </div>
                       <div className="text-center p-4 bg-orange-50 rounded-lg">
                         <div className="text-2xl font-bold text-orange-600">
-                          ${selectedClientDetails?.statistics?.totalSpent?.toFixed(2) || '0.00'}
+                          {formatCurrency(selectedClientDetails?.statistics?.totalSpent ?? 0)}
                         </div>
-                        <div className="text-sm text-muted-foreground">Total Spent</div>
+                        <div className="text-sm text-muted-foreground">{t('admin.client.totalSpent')}</div>
                       </div>
                     </div>
                   </CardContent>
@@ -543,7 +542,7 @@ export default function AdminClientsPage() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Calendar className="h-5 w-5 text-blue-600" />
-                      Recent Orders ({selectedClientDetails?.orders?.length || 0})
+                      {t('admin.client.recentOrders', {count: selectedClientDetails?.orders?.length || 0})}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -560,7 +559,7 @@ export default function AdminClientsPage() {
                                   {order.productId?.name || 'Product Name'}
                                 </div>
                                 <div className="text-sm text-muted-foreground">
-                                  Quantity: {order.quantity} | ${order.totalPrice}
+                                  Quantity: {order.quantity} | {formatCurrency(order.totalPrice)}
                                 </div>
                               </div>
                             </div>
@@ -572,7 +571,7 @@ export default function AdminClientsPage() {
                                 order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
                                 'bg-red-100 text-red-800'
                               }>
-                                {order.status}
+                                {t(`status.${order.status}`)}
                               </Badge>
                               <div className="text-xs text-muted-foreground mt-1">
                                 {new Date(order.createdAt).toLocaleDateString()}
@@ -584,7 +583,7 @@ export default function AdminClientsPage() {
                     ) : (
                       <div className="text-center py-8">
                         <Calendar className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
-                        <p className="text-muted-foreground">No orders found for this client.</p>
+                        <p className="text-muted-foreground">{t('admin.client.noOrders')}</p>
                       </div>
                     )}
                   </CardContent>
@@ -595,7 +594,7 @@ export default function AdminClientsPage() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Calendar className="h-5 w-5 text-green-600" />
-                      Current Cart ({selectedClientDetails?.cart?.items?.length || 0} items)
+                      {t('admin.client.currentCart', {count: selectedClientDetails?.cart?.items?.length || 0})}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -612,28 +611,32 @@ export default function AdminClientsPage() {
                                   {item.product?.name || 'Product Name'}
                                 </div>
                                 <div className="text-sm text-muted-foreground">
-                                  Quantity: {item.quantity} | ${item.price}
+                                  Quantity: {item.quantity} | {formatCurrency(item.price)}
                                 </div>
                               </div>
                             </div>
                             <div className="text-right">
-                              <div className="font-medium">${(item.quantity * item.price).toFixed(2)}</div>
-                              <div className="text-xs text-muted-foreground">In Cart</div>
+                              <div className="font-medium">{formatCurrency(item.quantity * item.price)}</div>
+                              <div className="text-xs text-muted-foreground">{t('admin.client.inCart')}</div>
                             </div>
                           </div>
                         ))}
                         <div className="flex justify-between items-center pt-4 border-t">
-                          <span className="font-medium">Cart Total:</span>
+                          <span className="font-medium">{t('admin.client.cartTotal')}:</span>
                           <span className="font-bold text-lg">
-                            ${selectedClientDetails.cart.items.reduce((total: number, item: any) => 
-                              total + (item.quantity * item.price), 0).toFixed(2)}
+                            {formatCurrency(
+                              selectedClientDetails.cart.items.reduce(
+                                (total: number, item: any) => total + item.quantity * item.price,
+                                0,
+                              ),
+                            )}
                           </span>
                         </div>
                       </div>
                     ) : (
                       <div className="text-center py-8">
                         <Calendar className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
-                        <p className="text-muted-foreground">No items in cart for this client.</p>
+                        <p className="text-muted-foreground">{t('admin.client.noCartItems')}</p>
                       </div>
                     )}
                   </CardContent>
@@ -644,29 +647,29 @@ export default function AdminClientsPage() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <AlertCircle className="h-5 w-5 text-red-600" />
-                      Security Information
+                      {t('admin.client.securityInfo')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span className="font-medium">Password Status:</span>
-                          <Badge className="bg-green-100 text-green-800">Secure</Badge>
+                          <span className="font-medium">{t('admin.client.passwordStatus')}:</span>
+                          <Badge className="bg-green-100 text-green-800">{t('admin.security.secure')}</Badge>
                         </div>
                         <div className="flex justify-between">
-                          <span className="font-medium">Email Verified:</span>
-                          <Badge className="bg-green-100 text-green-800">Yes</Badge>
+                          <span className="font-medium">{t('admin.client.emailVerified')}:</span>
+                          <Badge className="bg-green-100 text-green-800">{t('admin.common.yes')}</Badge>
                         </div>
                       </div>
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span className="font-medium">Last Login:</span>
-                          <span>Recently</span>
+                          <span className="font-medium">{t('admin.client.lastLogin')}:</span>
+                          <span>{t('admin.security.recently')}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="font-medium">Account Locked:</span>
-                          <Badge className="bg-green-100 text-green-800">No</Badge>
+                          <span className="font-medium">{t('admin.client.accountLocked')}:</span>
+                          <Badge className="bg-green-100 text-green-800">{t('admin.common.no')}</Badge>
                         </div>
                       </div>
                     </div>
@@ -676,7 +679,7 @@ export default function AdminClientsPage() {
             )}
             <DialogFooter className="flex space-x-2">
               <Button type="button" variant="outline" onClick={() => setIsViewDialogOpen(false)}>
-                Close
+                {t('admin.view.close')}
               </Button>
               <Button 
                 onClick={() => {
@@ -686,7 +689,7 @@ export default function AdminClientsPage() {
                 className="bg-blue-600 hover:bg-blue-700"
               >
                 <Edit className="h-4 w-4 mr-2" />
-                Edit Client
+                {t('admin.view.editClient')}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -696,12 +699,12 @@ export default function AdminClientsPage() {
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Edit User</DialogTitle>
-              <DialogDescription>Update user information</DialogDescription>
+              <DialogTitle>{t('admin.edit.title')}</DialogTitle>
+              <DialogDescription>{t('admin.edit.desc')}</DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="edit-name">Full Name</Label>
+                <Label htmlFor="edit-name">{t('admin.form.fullName')}</Label>
                 <Input
                   id="edit-name"
                   value={newClient.name}
@@ -709,7 +712,7 @@ export default function AdminClientsPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="edit-email">Email</Label>
+                <Label htmlFor="edit-email">{t('admin.form.email')}</Label>
                 <Input
                   id="edit-email"
                   type="email"
@@ -718,7 +721,7 @@ export default function AdminClientsPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="edit-role">Role</Label>
+                <Label htmlFor="edit-role">{t('admin.form.role')}</Label>
                 <Select
                   value={newClient.role}
                   onValueChange={(value: "user" | "admin") => setNewClient({ ...newClient, role: value })}
@@ -727,13 +730,13 @@ export default function AdminClientsPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="user">User</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="user">{t('admin.role.user')}</SelectItem>
+                    <SelectItem value="admin">{t('admin.role.admin')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <Button onClick={handleEditClient} className="w-full">
-                Update User
+                {t('admin.edit.updateUser')}
               </Button>
             </div>
           </DialogContent>

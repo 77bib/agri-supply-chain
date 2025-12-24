@@ -22,6 +22,33 @@ export interface LoginResponse {
   message: string;
 }
 
+// Helper to fully reset client-side auth state when token is invalid
+export function resetAuthState() {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('auth-token') : null;
+  if (typeof window !== 'undefined') {
+    if (token) {
+      try {
+        clearCartFromLocalStorage();
+      } catch (error) {
+        console.error('Failed to clear cart cache while resetting auth state:', error);
+      }
+    }
+
+    localStorage.removeItem('auth-token');
+
+    try {
+      clearOtherUsersData();
+    } catch (error) {
+      console.error('Failed to clear cached user data while resetting auth state:', error);
+    }
+  }
+
+  const { setCurrentUser, setIsAdmin, clearCart } = useStore.getState();
+  setCurrentUser(null);
+  setIsAdmin(false);
+  clearCart();
+}
+
 // دالة تسجيل الدخول
 export async function loginUser(email: string, password: string): Promise<LoginResponse> {
   try {
@@ -99,18 +126,8 @@ export async function logoutUser() {
   } catch (error) {
     console.error('Error during logout:', error);
   } finally {
-    // مسح بيانات السلة من localStorage أولاً
-    clearCartFromLocalStorage();
-    
-    // حذف التوكن من localStorage
-    localStorage.removeItem('auth-token');
-    
-    // إعادة تعيين حالة المستخدم في المتجر
-    const { setCurrentUser, setIsAdmin, clearCart } = useStore.getState();
-    setCurrentUser(null);
-    setIsAdmin(false);
-    clearCart(); // تنظيف السلة أيضاً
-    
+    resetAuthState();
+
     // إعادة التوجيه إلى الصفحة الرئيسية
     if (typeof window !== 'undefined') {
       window.location.href = '/';
@@ -124,6 +141,7 @@ export async function checkAuthStatus() {
     const token = localStorage.getItem('auth-token');
     
     if (!token) {
+      resetAuthState();
       return { isAuthenticated: false, user: null };
     }
 
@@ -150,12 +168,13 @@ export async function checkAuthStatus() {
         isAdmin: result.data.role === 'admin'
       };
     } else {
-      // التوكن غير صالح، حذفه
-      localStorage.removeItem('auth-token');
+      // التوكن غير صالح أو منتهي، تنظيف حالة المصادقة بالكامل
+      resetAuthState();
       return { isAuthenticated: false, user: null };
     }
   } catch (error) {
     console.error('خطأ في التحقق من حالة المصادقة:', error);
+    resetAuthState();
     return { isAuthenticated: false, user: null };
   }
 }

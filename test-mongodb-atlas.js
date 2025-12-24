@@ -7,7 +7,7 @@ const connections = [
   'mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
   
   // With database name
-  'mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/agri-supply-chain?retryWrites=true&w=majority&appName=Cluster0',
+  'mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/brijuice?retryWrites=true&w=majority&appName=Cluster0',
   
   // Alternative with test database
   'mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/test?retryWrites=true&w=majority&appName=Cluster0'

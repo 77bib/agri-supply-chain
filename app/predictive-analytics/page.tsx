@@ -32,6 +32,7 @@ import {
   AreaChart,
   Area,
 } from "recharts"
+import { formatCurrency } from "@/lib/utils"
 
 const demandForecastData = [
   { month: "Jan", actual: 4200, predicted: 4100, accuracy: 97.6 },
@@ -153,7 +154,7 @@ export default function PredictiveAnalyticsPage() {
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-600">$125K</div>
+              <div className="text-2xl font-bold text-blue-600">{formatCurrency(125000)}</div>
               <p className="text-xs text-muted-foreground">Monthly optimization savings</p>
             </CardContent>
           </Card>

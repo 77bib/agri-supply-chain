@@ -26,6 +26,7 @@ import { createOrder } from "@/lib/order-service"
 import Link from "next/link"
 import { useRouter, useParams } from "next/navigation"
 import { toast } from "sonner"
+import { formatCurrency } from "@/lib/utils"
 
 interface Product {
   _id: string
@@ -228,7 +229,7 @@ export default function ProductDetailPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-3xl font-bold text-green-600">${product.price}</span>
+                  <span className="text-3xl font-bold text-green-600">{formatCurrency(product.price)}</span>
                   <span className="text-sm text-gray-500 ml-2">per unit</span>
                 </div>
                 {getStockBadge(product.quantity)}
@@ -279,7 +280,7 @@ export default function ProductDetailPage() {
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <span className="font-medium">Total:</span>
                 <span className="text-xl font-bold text-green-600">
-                  ${(product.price * quantity).toFixed(2)}
+                  {formatCurrency(product.price * quantity)}
                 </span>
               </div>
 
@@ -355,7 +356,7 @@ export default function ProductDetailPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Price:</span>
-                    <span className="font-medium">${product.price}</span>
+                    <span className="font-medium">{formatCurrency(product.price)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Stock:</span>
@@ -377,7 +378,7 @@ export default function ProductDetailPage() {
                 <CardContent className="space-y-4">
                   <div className="flex items-center space-x-2">
                     <Truck className="h-4 w-4 text-green-600" />
-                    <span className="text-sm">Free shipping on orders over $50</span>
+                    <span className="text-sm">Free shipping on orders over DZ 50</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Package className="h-4 w-4 text-blue-600" />
@@ -407,7 +408,7 @@ export default function ProductDetailPage() {
                   </div>
                   <CardContent className="p-4">
                     <h3 className="font-medium">Related Product {i}</h3>
-                    <p className="text-sm text-gray-600 mt-1">$0.00</p>
+                    <p className="text-sm text-gray-600 mt-1">{formatCurrency(0)}</p>
                   </CardContent>
                 </Card>
               ))}

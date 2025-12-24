@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useStore } from "@/lib/store"
-import { checkAuthStatus, saveUserToStore } from "@/lib/auth-service"
+import { checkAuthStatus, saveUserToStore, resetAuthState } from "@/lib/auth-service"
 import { Loader2 } from "lucide-react"
 
 interface AuthGuardProps {
@@ -53,6 +53,7 @@ export function AuthGuard({
         setIsChecking(false)
       } catch (error) {
         console.error("خطأ في التحقق من المصادقة:", error)
+        resetAuthState()
         if (requireAuth) {
           router.push(redirectTo)
         }

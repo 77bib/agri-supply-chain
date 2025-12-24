@@ -33,7 +33,7 @@ if (allGood) {
   console.log('\n📝 Create a .env.local file with:');
   console.log(`
 MONGODB_URI=mongodb+srv://habib19092004:DnpishnxhAeX7ujf@cluster0.xgnc41h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-JWT_SECRET=bifa-agri-supply-chain-super-secret-jwt-key-2024-production-ready
+JWT_SECRET=brijuice-supply-chain-super-secret-jwt-key-2024-production-ready
 JWT_EXPIRES_IN=7d
 NODE_ENV=development
   `);

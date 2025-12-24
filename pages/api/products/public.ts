@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import dbConnect from '../../../lib/mongodb';
+import dbConnect, { MongoConnectionError } from '../../../lib/mongodb';
 import Product from '../../../models/Product';
 
 export default async function handler(
@@ -22,6 +22,15 @@ export default async function handler(
     await dbConnect();
   } catch (error) {
     console.error('خطأ في الاتصال بقاعدة البيانات:', error);
+
+    if (error instanceof MongoConnectionError) {
+      return res.status(503).json({
+        success: false,
+        message: 'قاعدة البيانات غير متاحة حالياً. يرجى التحقق من إعدادات MongoDB Atlas أو المحاولة لاحقاً.',
+        hint: 'تأكد من إضافة عنوان IP الحالي إلى قائمة العناوين المسموح بها في MongoDB Atlas.'
+      });
+    }
+
     return res.status(500).json({ 
       success: false, 
       message: 'خطأ في الاتصال بقاعدة البيانات',

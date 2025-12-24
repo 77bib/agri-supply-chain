@@ -4,7 +4,7 @@ function testLoginAPI() {
   console.log('🧪 Testing Login API Endpoint with curl...\n');
   
   const loginData = {
-    email: 'admin@bifa.com',
+    email: 'admin@brijuice.com',
     password: 'admin123456'
   };
   

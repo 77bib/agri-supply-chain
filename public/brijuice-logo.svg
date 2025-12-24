@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 220" role="img" aria-labelledby="title desc">
+  <title id="title">BRIJUICE Logo</title>
+  <desc id="desc">Logo showing a stylised bridge next to a juice glass with fruit garnish and the word BRIJUICE</desc>
+  <defs>
+    <linearGradient id="juice" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f8cc47" />
+      <stop offset="100%" stop-color="#f28b1e" />
+    </linearGradient>
+    <linearGradient id="straw" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2f8349" />
+      <stop offset="100%" stop-color="#27653a" />
+    </linearGradient>
+  </defs>
+  <rect width="420" height="220" rx="28" fill="#f6ecdd" />
+  <g transform="translate(30 40)">
+    <g fill="#214f31">
+      <path d="M0 120h28V36c0-10 6-18 18-18s18 8 18 18v84h26V36c0-10 7-18 19-18s18 8 18 18v84h26V20c0-11 8-20 19-20s19 9 19 20v100h28V120c0-26-4-60-34-86-24-21-57-32-86-32S42 13 18 34C3 48-1 68 0 86v34Z" />
+      <path d="M0 118h320v12H0z" />
+    </g>
+    <g transform="translate(230 -10)">
+      <path d="M80 12c3-6 10-9 16-6s9 10 6 16c-3 6-16 16-16 16S77 18 80 12Z" fill="#f47a2c" />
+      <path d="M48 20c-3-6-1-13 5-16s13-1 16 5c3 6-5 20-5 20S51 26 48 20Z" fill="#57397f" />
+      <path d="M94 40c-5-4-6-12-2-17 4-5 12-6 17-2 5 4 5 18 5 18s-15-1-20-6Z" fill="#ef3f50" />
+      <path d="M36 152h88l16-116H20l16 116Z" fill="#24683b" />
+      <path d="M44 144h72l12-100H32l12 100Z" fill="#f4f1e9" />
+      <path d="M54 136h52l9-80H45l9 80Z" fill="url(#juice)" />
+      <path d="M102 36h20c6 0 10-5 10-10s-4-10-10-10H92l10 20Z" fill="url(#straw)" />
+      <path d="M108 12c2-4 7-6 11-4s6 7 4 11l-6 12-15-7 6-12Z" fill="#214f31" />
+      <circle cx="70" cy="86" r="6" fill="#f5f1db" opacity="0.45" />
+      <circle cx="90" cy="110" r="5" fill="#f5f1db" opacity="0.45" />
+      <circle cx="64" cy="120" r="4" fill="#f5f1db" opacity="0.45" />
+    </g>
+  </g>
+  <text x="210" y="200" font-family="'Poppins', 'Segoe UI', Arial, sans-serif" font-size="64" font-weight="700" fill="#214f31" text-anchor="middle" letter-spacing="6">BRIJUICE</text>
+</svg>

@@ -15,6 +15,11 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
+  // Basic locale declaration (App Router doesn't auto-handle routing yet, used for metadata/lang hints)
+  i18n: {
+    locales: ['fr', 'ar'],
+    defaultLocale: 'fr'
+  },
   // إضافة دعم لـ Node.js 16
   webpack: (config, { isServer }) => {
     if (!isServer) {

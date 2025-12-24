@@ -3,7 +3,7 @@ async function testLoginAPI() {
     console.log('🧪 Testing Login API Endpoint...');
     
     const loginData = {
-      email: 'admin@bifa.com',
+      email: 'admin@brijuice.com',
       password: 'admin123456'
     };
     

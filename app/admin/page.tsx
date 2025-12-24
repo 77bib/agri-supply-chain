@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useMemo, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -58,9 +58,7 @@ import {
   Truck as TruckIcon,
   Sun,
   Cloud,
-  Rain,
   Wind,
-  ThermometerSunny,
   Droplets,
   Gauge,
   Timer,
@@ -95,9 +93,36 @@ import {
   Zap,
 } from "lucide-react"
 import AdminLayout from "@/components/admin-layout"
+import { useI18n } from "@/lib/i18n"
 import { toast } from "sonner"
 
-// Mock data for demonstration
+const monthlyProductionData = [
+  { monthKey: "common.months.short.jan", production: 1200, objective: 1000 },
+  { monthKey: "common.months.short.feb", production: 1350, objective: 1100 },
+  { monthKey: "common.months.short.mar", production: 1100, objective: 1200 },
+  { monthKey: "common.months.short.apr", production: 1400, objective: 1300 },
+  { monthKey: "common.months.short.may", production: 1600, objective: 1400 },
+  { monthKey: "common.months.short.jun", production: 1800, objective: 1500 },
+] as const
+
+const stockMinimumData = [
+  { monthKey: "common.months.short.jan", stock: 95, minimum: 70 },
+  { monthKey: "common.months.short.feb", stock: 88, minimum: 70 },
+  { monthKey: "common.months.short.mar", stock: 72, minimum: 70 },
+  { monthKey: "common.months.short.apr", stock: 110, minimum: 70 },
+  { monthKey: "common.months.short.may", stock: 84, minimum: 70 },
+  { monthKey: "common.months.short.jun", stock: 76, minimum: 70 },
+] as const
+
+const inventoryCategoryColors = {
+  grains: "#10b981",
+  vegetables: "#3b82f6",
+  fruits: "#f59e0b",
+} as const
+
+type InventoryCategoryKey = keyof typeof inventoryCategoryColors
+
+// Données simulées pour la démonstration
 const mockData = {
   farmers: {
     total: 156,
@@ -105,9 +130,9 @@ const mockData = {
     newThisMonth: 12,
     averageYield: 85.6,
     topPerformers: [
-      { name: "Ahmed Benali", farm: "Green Valley", yield: 95.2, quality: 92 },
-      { name: "Fatima Zohra", farm: "Sunrise Farm", yield: 93.8, quality: 89 },
-      { name: "Mohammed Kaci", farm: "Golden Fields", yield: 91.5, quality: 94 },
+      { name: "Ahmed Benali", farm: "Vallée Verte", yield: 95.2, quality: 92 },
+      { name: "Fatima Zohra", farm: "Ferme de l'Aube", yield: 93.8, quality: 89 },
+      { name: "Mohammed Kaci", farm: "Champs Dorés", yield: 91.5, quality: 94 },
     ]
   },
   logistics: {
@@ -116,8 +141,8 @@ const mockData = {
     delayed: 3,
     totalVehicles: 45,
     alerts: [
-      { type: "temperature", severity: "high", message: "Temp deviation in Truck-023" },
-      { type: "delay", severity: "medium", message: "Delivery delayed by 2 hours" },
+      { type: "temperature", severity: "high", messageKey: "admin.logistics.alerts.temperatureMessage" },
+      { type: "delay", severity: "medium", messageKey: "admin.logistics.alerts.delayMessage" },
     ]
   },
   inventory: {
@@ -126,19 +151,19 @@ const mockData = {
     expiringSoon: 8,
     totalValue: 1250000,
     categories: [
-      { name: "Grains", quantity: 45, value: 450000 },
-      { name: "Vegetables", quantity: 23, value: 320000 },
-      { name: "Fruits", quantity: 21, value: 480000 },
+      { key: "grains" as InventoryCategoryKey, quantity: 45, value: 450000 },
+      { key: "vegetables" as InventoryCategoryKey, quantity: 23, value: 320000 },
+      { key: "fruits" as InventoryCategoryKey, quantity: 21, value: 480000 },
     ]
   },
   forecasts: {
     accuracy: 87.3,
-    demandTrend: "increasing",
+    demandTrendKey: "admin.forecasting.trend.up",
     nextMonthPrediction: 1250000,
     recommendations: [
-      "Increase wheat production by 15%",
-      "Optimize storage for seasonal crops",
-      "Prepare for Ramadan demand spike",
+      "admin.forecasting.recommendations.increaseWheat",
+      "admin.forecasting.recommendations.optimizeStorage",
+      "admin.forecasting.recommendations.prepareRamadan",
     ]
   },
   traceability: {
@@ -152,12 +177,13 @@ const mockData = {
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview")
   const [loading, setLoading] = useState(false)
+  const { t } = useI18n()
 
   const handleRefresh = async () => {
     setLoading(true)
-    // Simulate API call
+    // Simule un appel API
     await new Promise(resolve => setTimeout(resolve, 1000))
-    toast.success("Dashboard data refreshed successfully!")
+    toast.success(t("admin.dashboard.refreshSuccess"))
     setLoading(false)
   }
 
@@ -169,7 +195,18 @@ export default function AdminDashboard() {
       processing: "bg-blue-100 text-blue-800",
       completed: "bg-green-100 text-green-800"
     }
-    return <Badge className={variants[status as keyof typeof variants] || "bg-gray-100 text-gray-800"}>{status}</Badge>
+    const labels = {
+      active: t("admin.status.active"),
+      inactive: t("admin.status.inactive"),
+      delayed: t("admin.status.delayed"),
+      processing: t("admin.status.processing"),
+      completed: t("admin.status.completed"),
+    }
+    return (
+      <Badge className={variants[status as keyof typeof variants] || "bg-gray-100 text-gray-800"}>
+        {labels[status as keyof typeof labels] || status}
+      </Badge>
+    )
   }
 
   const getSeverityBadge = (severity: string) => {
@@ -179,126 +216,179 @@ export default function AdminDashboard() {
       high: "bg-orange-100 text-orange-800",
       critical: "bg-red-100 text-red-800"
     }
-    return <Badge className={variants[severity as keyof typeof variants] || "bg-gray-100 text-gray-800"}>{severity}</Badge>
+    const labels = {
+      low: t("admin.severity.low"),
+      medium: t("admin.severity.medium"),
+      high: t("admin.severity.high"),
+      critical: t("admin.severity.critical"),
+    }
+    return (
+      <Badge className={variants[severity as keyof typeof variants] || "bg-gray-100 text-gray-800"}>
+        {labels[severity as keyof typeof labels] || severity}
+      </Badge>
+    )
   }
+
+  const localizedProductionData = useMemo(
+    () =>
+      monthlyProductionData.map((entry) => ({
+        ...entry,
+        month: t(entry.monthKey),
+      })),
+    [t]
+  )
+
+  const localizedStockMinimumData = useMemo(
+    () =>
+      stockMinimumData.map((entry) => ({
+        ...entry,
+        month: t(entry.monthKey),
+      })),
+    [t]
+  )
+
+  const localizedCategories = useMemo(
+    () =>
+      mockData.inventory.categories.map((cat) => ({
+        ...cat,
+        label: t(`admin.inventory.category.${cat.key}`),
+        color: inventoryCategoryColors[cat.key],
+      })),
+    [t]
+  )
 
   return (
     <AdminLayout>
       <div className="space-y-6">
-        {/* Header */}
+        {/* En-tête */}
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
               <BarChart3 className="h-8 w-8 text-green-600" />
-              BIFA Algeria - Supply Chain Dashboard
+              {t('admin.dashboard.title')}
             </h1>
-            <p className="text-muted-foreground">Comprehensive agricultural supply chain management system</p>
+            <p className="text-muted-foreground">{t('admin.dashboard.subtitle')}</p>
           </div>
           <div className="flex space-x-2">
             <Button variant="outline">
               <Download className="h-4 w-4 mr-2" />
-              Export Report
+              {t('admin.common.export')}
             </Button>
             <Button onClick={handleRefresh} disabled={loading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              Refresh
+              {t('admin.common.refresh')}
             </Button>
           </div>
         </div>
 
-        {/* Main Dashboard Tabs */}
+        {/* Onglets principaux du tableau de bord */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="farmers">Farmers</TabsTrigger>
-            <TabsTrigger value="logistics">Logistics</TabsTrigger>
-            <TabsTrigger value="inventory">Inventory</TabsTrigger>
-            <TabsTrigger value="forecasting">Forecasting</TabsTrigger>
-            <TabsTrigger value="traceability">Traceability</TabsTrigger>
+            <TabsTrigger value="overview">{t('admin.tabs.overview')}</TabsTrigger>
+            <TabsTrigger value="farmers">{t('admin.tabs.farmers')}</TabsTrigger>
+            <TabsTrigger value="logistics">{t('admin.tabs.logistics')}</TabsTrigger>
+            <TabsTrigger value="inventory">{t('admin.tabs.inventory')}</TabsTrigger>
+            <TabsTrigger value="forecasting">{t('admin.tabs.forecasting')}</TabsTrigger>
+            <TabsTrigger value="traceability">{t('admin.tabs.traceability')}</TabsTrigger>
           </TabsList>
 
-          {/* Overview Tab */}
+          {/* Onglet Vue d'ensemble */}
           <TabsContent value="overview" className="space-y-6">
-            {/* KPI Cards */}
+            {/* Cartes d'indicateurs */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card className="hover:shadow-lg transition-shadow border-green-200">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Active Farmers</CardTitle>
+                  <CardTitle className="text-sm font-medium">{t('admin.kpi.activeFarmers')}</CardTitle>
                   <Users className="h-4 w-4 text-green-600" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-green-600">{mockData.farmers.active}</div>
                   <p className="text-xs text-muted-foreground">
-                    <span className="text-green-600">+{mockData.farmers.newThisMonth}</span> new this month
+                    <span className="text-green-600">+{mockData.farmers.newThisMonth}</span> {t('admin.kpi.newThisMonth', {count: mockData.farmers.newThisMonth})}
                   </p>
                 </CardContent>
               </Card>
 
               <Card className="hover:shadow-lg transition-shadow border-blue-200">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Active Shipments</CardTitle>
+                  <CardTitle className="text-sm font-medium">{t('admin.kpi.activeShipments')}</CardTitle>
                   <Truck className="h-4 w-4 text-blue-600" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-blue-600">{mockData.logistics.activeShipments}</div>
                   <p className="text-xs text-muted-foreground">
-                    <span className="text-red-600">{mockData.logistics.delayed}</span> delayed
+                    <span className="text-red-600">{mockData.logistics.delayed}</span> {t('admin.kpi.delayed', {count: mockData.logistics.delayed})}
                   </p>
                 </CardContent>
               </Card>
 
               <Card className="hover:shadow-lg transition-shadow border-purple-200">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Inventory Value</CardTitle>
+                  <CardTitle className="text-sm font-medium">{t('admin.kpi.inventoryValue')}</CardTitle>
                   <Package className="h-4 w-4 text-purple-600" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-purple-600">${(mockData.inventory.totalValue / 1000000).toFixed(1)}M</div>
+                  <div className="text-2xl font-bold text-purple-600">{`DZ ${(mockData.inventory.totalValue / 1000000).toFixed(1)}M`}</div>
                   <p className="text-xs text-muted-foreground">
-                    <span className="text-orange-600">{mockData.inventory.lowStock}</span> low stock alerts
+                    <span className="text-orange-600">{mockData.inventory.lowStock}</span> {t('admin.kpi.lowStockAlerts', {count: mockData.inventory.lowStock})}
                   </p>
                 </CardContent>
               </Card>
 
               <Card className="hover:shadow-lg transition-shadow border-orange-200">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Forecast Accuracy</CardTitle>
+                  <CardTitle className="text-sm font-medium">{t('admin.kpi.forecastAccuracy')}</CardTitle>
                   <TrendingUp className="h-4 w-4 text-orange-600" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-orange-600">{mockData.forecasts.accuracy}%</div>
                   <p className="text-xs text-muted-foreground">
-                    <span className="text-green-600">{mockData.forecasts.demandTrend}</span> trend
+                    <span className="text-green-600">{t(mockData.forecasts.demandTrendKey)}</span> {t('admin.kpi.trend')}
                   </p>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Ligne de graphiques */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TrendingUp className="h-5 w-5 text-green-600" />
-                    Monthly Production Trends
+                    {t('admin.charts.monthlyProduction')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
-                    <AreaChart data={[
-                      { month: "Jan", production: 1200, target: 1000 },
-                      { month: "Feb", production: 1350, target: 1100 },
-                      { month: "Mar", production: 1100, target: 1200 },
-                      { month: "Apr", production: 1400, target: 1300 },
-                      { month: "May", production: 1600, target: 1400 },
-                      { month: "Jun", production: 1800, target: 1500 },
-                    ]}>
+                    <AreaChart data={localizedProductionData}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="month" />
                       <YAxis />
-                      <Tooltip />
-                      <Area type="monotone" dataKey="production" stroke="#10b981" fill="#10b981" fillOpacity={0.3} />
-                      <Area type="monotone" dataKey="target" stroke="#6b7280" fill="#6b7280" fillOpacity={0.1} />
+                      <Tooltip
+                        labelFormatter={(label) => label}
+                        formatter={(value, name) => [
+                          value,
+                          name === "production"
+                            ? t("admin.charts.series.production")
+                            : t("admin.charts.series.objective"),
+                        ]}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="production"
+                        name={t("admin.charts.series.production")}
+                        stroke="#10b981"
+                        fill="#10b981"
+                        fillOpacity={0.3}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="objective"
+                        name={t("admin.charts.series.objective")}
+                        stroke="#6b7280"
+                        fill="#6b7280"
+                        fillOpacity={0.1}
+                      />
                     </AreaChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -307,43 +397,87 @@ export default function AdminDashboard() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
+                    <Package className="h-5 w-5 text-orange-600" />
+                    {t("admin.charts.stockMinimum")}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={localizedStockMinimumData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip
+                        labelFormatter={(label) => label}
+                        formatter={(value, name) => [
+                          value,
+                          name === "stock"
+                            ? t("admin.charts.series.stock")
+                            : t("admin.charts.series.minimum"),
+                        ]}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="stock"
+                        name={t("admin.charts.series.stock")}
+                        stroke="#10b981"
+                        strokeWidth={2}
+                        dot={false}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="minimum"
+                        name={t("admin.charts.series.minimum")}
+                        stroke="#f59e0b"
+                        strokeWidth={2}
+                        strokeDasharray="6 6"
+                        dot={false}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
                     <PieChart className="h-5 w-5 text-blue-600" />
-                    Product Categories Distribution
+                    {t('admin.charts.categories')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
                       <Pie
-                        data={mockData.inventory.categories.map(cat => ({
-                          name: cat.name,
-                          value: cat.quantity,
-                          color: cat.name === "Grains" ? "#10b981" : cat.name === "Vegetables" ? "#3b82f6" : "#f59e0b"
-                        }))}
+                        data={localizedCategories}
                         cx="50%"
                         cy="50%"
                         innerRadius={60}
                         outerRadius={100}
                         paddingAngle={5}
-                        dataKey="value"
+                        dataKey="quantity"
+                        nameKey="label"
                       >
-                        {mockData.inventory.categories.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.name === "Grains" ? "#10b981" : entry.name === "Vegetables" ? "#3b82f6" : "#f59e0b"} />
+                        {localizedCategories.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip
+                        formatter={(value: number | string) => [value, t("admin.charts.quantityLabel")]}
+                        labelFormatter={(label) => label as string}
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Alerts Section */}
+            {/* Section alertes */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <AlertTriangle className="h-5 w-5 text-red-600" />
-                  Active Alerts
+                  {t('admin.alerts.title')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -353,8 +487,8 @@ export default function AdminDashboard() {
                       <div className="flex items-center space-x-3">
                         <AlertTriangle className="h-5 w-5 text-red-600" />
                         <div>
-                          <p className="font-medium">{alert.message}</p>
-                          <p className="text-sm text-muted-foreground">Logistics Alert</p>
+                          <p className="font-medium">{t(alert.messageKey)}</p>
+                          <p className="text-sm text-muted-foreground">{t('admin.alerts.logistics')}</p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
@@ -370,7 +504,7 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          {/* Farmers Tab */}
+          {/* Onglet Agriculteurs */}
           <TabsContent value="farmers" className="space-y-6">
             <Card>
               <CardHeader>
@@ -378,13 +512,13 @@ export default function AdminDashboard() {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       <Users className="h-5 w-5 text-green-600" />
-                      Farmers Management
+                      {t('admin.farmers.title')}
                     </CardTitle>
-                    <CardDescription>Manage farmer profiles, performance, and certifications</CardDescription>
+                    <CardDescription>{t('admin.farmers.subtitle')}</CardDescription>
                   </div>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Farmer
+                    {t('admin.farmers.add')}
                   </Button>
                 </div>
               </CardHeader>
@@ -401,18 +535,18 @@ export default function AdminDashboard() {
                       </div>
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
-                          <span>Yield:</span>
+                          <span>{t('admin.farmers.yield')}:</span>
                           <span className="font-medium">{farmer.yield}%</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span>Quality:</span>
+                          <span>{t('admin.farmers.quality')}:</span>
                           <span className="font-medium">{farmer.quality}%</span>
                         </div>
                       </div>
                       <div className="flex space-x-2 mt-3">
                         <Button size="sm" variant="outline" className="flex-1">
                           <Eye className="h-3 w-3 mr-1" />
-                          View
+                          {t('admin.common.view')}
                         </Button>
                         <Button size="sm" variant="outline">
                           <Edit className="h-3 w-3" />
@@ -425,7 +559,7 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          {/* Logistics Tab */}
+          {/* Onglet Logistique */}
           <TabsContent value="logistics" className="space-y-6">
             <Card>
               <CardHeader>
@@ -433,13 +567,13 @@ export default function AdminDashboard() {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       <Truck className="h-5 w-5 text-blue-600" />
-                      Transport & Logistics
+                      {t('admin.logistics.title')}
                     </CardTitle>
-                    <CardDescription>Track shipments, vehicles, and delivery status</CardDescription>
+                    <CardDescription>{t('admin.logistics.subtitle')}</CardDescription>
                   </div>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
-                    New Shipment
+                    {t('admin.logistics.newShipment')}
                   </Button>
                 </div>
               </CardHeader>
@@ -449,17 +583,17 @@ export default function AdminDashboard() {
                     <div className="flex items-center space-x-3 mb-3">
                       <Truck className="h-6 w-6 text-blue-600" />
                       <div>
-                        <h3 className="font-semibold">Active Shipments</h3>
+                        <h3 className="font-semibold">{t('admin.logistics.activeShipments')}</h3>
                         <p className="text-2xl font-bold text-blue-600">{mockData.logistics.activeShipments}</p>
                       </div>
                     </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span>Delivered Today:</span>
+                        <span>{t('admin.logistics.deliveredToday')}:</span>
                         <span className="font-medium text-green-600">{mockData.logistics.deliveredToday}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Delayed:</span>
+                        <span>{t('admin.logistics.delayed')}:</span>
                         <span className="font-medium text-red-600">{mockData.logistics.delayed}</span>
                       </div>
                     </div>
@@ -469,17 +603,17 @@ export default function AdminDashboard() {
                     <div className="flex items-center space-x-3 mb-3">
                       <MapPin className="h-6 w-6 text-green-600" />
                       <div>
-                        <h3 className="font-semibold">Fleet Status</h3>
+                        <h3 className="font-semibold">{t('admin.logistics.fleetStatus')}</h3>
                         <p className="text-2xl font-bold text-green-600">{mockData.logistics.totalVehicles}</p>
                       </div>
                     </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span>Available:</span>
+                        <span>{t('admin.logistics.available')}:</span>
                         <span className="font-medium text-green-600">32</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>In Transit:</span>
+                        <span>{t('admin.logistics.inTransit')}:</span>
                         <span className="font-medium text-blue-600">13</span>
                       </div>
                     </div>
@@ -489,17 +623,17 @@ export default function AdminDashboard() {
                     <div className="flex items-center space-x-3 mb-3">
                       <Thermometer className="h-6 w-6 text-orange-600" />
                       <div>
-                        <h3 className="font-semibold">Cold Chain</h3>
+                        <h3 className="font-semibold">{t('admin.logistics.coldChain')}</h3>
                         <p className="text-2xl font-bold text-orange-600">98.5%</p>
                       </div>
                     </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span>Compliance:</span>
+                        <span>{t('admin.logistics.compliance')}:</span>
                         <span className="font-medium text-green-600">98.5%</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Alerts:</span>
+                        <span>{t('admin.logistics.alerts')}:</span>
                         <span className="font-medium text-red-600">2</span>
                       </div>
                     </div>
@@ -509,7 +643,7 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          {/* Inventory Tab */}
+          {/* Onglet Inventaire */}
           <TabsContent value="inventory" className="space-y-6">
             <Card>
               <CardHeader>
@@ -517,13 +651,13 @@ export default function AdminDashboard() {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       <Package className="h-5 w-5 text-purple-600" />
-                      Inventory & Batch Management
+                      {t('admin.inventory.title')}
                     </CardTitle>
-                    <CardDescription>Track inventory levels, batch quality, and storage conditions</CardDescription>
+                    <CardDescription>{t('admin.inventory.subtitle')}</CardDescription>
                   </div>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Batch
+                    {t('admin.inventory.addBatch')}
                   </Button>
                 </div>
               </CardHeader>
@@ -533,7 +667,7 @@ export default function AdminDashboard() {
                     <div className="flex items-center space-x-3 mb-3">
                       <Warehouse className="h-6 w-6 text-purple-600" />
                       <div>
-                        <h3 className="font-semibold">Total Batches</h3>
+                        <h3 className="font-semibold">{t('admin.inventory.totalBatches')}</h3>
                         <p className="text-2xl font-bold text-purple-600">{mockData.inventory.totalBatches}</p>
                       </div>
                     </div>
@@ -543,7 +677,7 @@ export default function AdminDashboard() {
                     <div className="flex items-center space-x-3 mb-3">
                       <AlertTriangle className="h-6 w-6 text-red-600" />
                       <div>
-                        <h3 className="font-semibold">Low Stock</h3>
+                        <h3 className="font-semibold">{t('admin.inventory.lowStock')}</h3>
                         <p className="text-2xl font-bold text-red-600">{mockData.inventory.lowStock}</p>
                       </div>
                     </div>
@@ -553,7 +687,7 @@ export default function AdminDashboard() {
                     <div className="flex items-center space-x-3 mb-3">
                       <Clock className="h-6 w-6 text-orange-600" />
                       <div>
-                        <h3 className="font-semibold">Expiring Soon</h3>
+                        <h3 className="font-semibold">{t('admin.inventory.expiringSoon')}</h3>
                         <p className="text-2xl font-bold text-orange-600">{mockData.inventory.expiringSoon}</p>
                       </div>
                     </div>
@@ -563,8 +697,8 @@ export default function AdminDashboard() {
                     <div className="flex items-center space-x-3 mb-3">
                       <DollarSign className="h-6 w-6 text-green-600" />
                       <div>
-                        <h3 className="font-semibold">Total Value</h3>
-                        <p className="text-2xl font-bold text-green-600">${(mockData.inventory.totalValue / 1000000).toFixed(1)}M</p>
+                        <h3 className="font-semibold">{t('admin.inventory.totalValue')}</h3>
+                        <p className="text-2xl font-bold text-green-600">{`DZ ${(mockData.inventory.totalValue / 1000000).toFixed(1)}M`}</p>
                       </div>
                     </div>
                   </Card>
@@ -573,7 +707,7 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          {/* Forecasting Tab */}
+          {/* Onglet Prévisions */}
           <TabsContent value="forecasting" className="space-y-6">
             <Card>
               <CardHeader>
@@ -581,13 +715,13 @@ export default function AdminDashboard() {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       <TrendingUp className="h-5 w-5 text-orange-600" />
-                      Predictive Analytics & Forecasting
+                      {t('admin.forecasting.title')}
                     </CardTitle>
-                    <CardDescription>Demand forecasting and production planning</CardDescription>
+                    <CardDescription>{t('admin.forecasting.subtitle')}</CardDescription>
                   </div>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
-                    New Forecast
+                    {t('admin.forecasting.newForecast')}
                   </Button>
                 </div>
               </CardHeader>
@@ -595,24 +729,24 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <Card>
                     <CardHeader>
-                      <CardTitle>Forecast Accuracy</CardTitle>
+                      <CardTitle>{t('admin.forecasting.accuracy')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-center">
                         <div className="text-4xl font-bold text-orange-600 mb-2">{mockData.forecasts.accuracy}%</div>
-                        <p className="text-muted-foreground">Overall accuracy rate</p>
+                        <p className="text-muted-foreground">{t('admin.forecasting.overallAccuracy')}</p>
                       </div>
                     </CardContent>
                   </Card>
 
                   <Card>
                     <CardHeader>
-                      <CardTitle>Next Month Prediction</CardTitle>
+                      <CardTitle>{t('admin.forecasting.nextMonthPrediction')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-center">
-                        <div className="text-4xl font-bold text-green-600 mb-2">${(mockData.forecasts.nextMonthPrediction / 1000000).toFixed(1)}M</div>
-                        <p className="text-muted-foreground">Expected revenue</p>
+                        <div className="text-4xl font-bold text-green-600 mb-2">{`DZ ${(mockData.forecasts.nextMonthPrediction / 1000000).toFixed(1)}M`}</div>
+                        <p className="text-muted-foreground">{t('admin.forecasting.expectedRevenue')}</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -620,14 +754,14 @@ export default function AdminDashboard() {
 
                 <Card className="mt-6">
                   <CardHeader>
-                    <CardTitle>Recommendations</CardTitle>
+                    <CardTitle>{t('admin.forecasting.recommendations')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
                       {mockData.forecasts.recommendations.map((rec, index) => (
                         <div key={index} className="flex items-center space-x-3 p-3 border rounded-lg">
                           <Target className="h-5 w-5 text-blue-600" />
-                          <span>{rec}</span>
+                          <span>{t(rec)}</span>
                         </div>
                       ))}
                     </div>
@@ -637,7 +771,7 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          {/* Traceability Tab */}
+          {/* Onglet Traçabilité */}
           <TabsContent value="traceability" className="space-y-6">
             <Card>
               <CardHeader>
@@ -645,13 +779,13 @@ export default function AdminDashboard() {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       <Shield className="h-5 w-5 text-green-600" />
-                      Blockchain Traceability
+                      {t('admin.traceability.title')}
                     </CardTitle>
-                    <CardDescription>Product journey tracking and verification</CardDescription>
+                    <CardDescription>{t('admin.traceability.subtitle')}</CardDescription>
                   </div>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
-                    New Product
+                    {t('admin.traceability.newProduct')}
                   </Button>
                 </div>
               </CardHeader>
@@ -661,7 +795,7 @@ export default function AdminDashboard() {
                     <div className="flex items-center space-x-3 mb-3">
                       <Package className="h-6 w-6 text-green-600" />
                       <div>
-                        <h3 className="font-semibold">Active Products</h3>
+                        <h3 className="font-semibold">{t('admin.traceability.activeProducts')}</h3>
                         <p className="text-2xl font-bold text-green-600">{mockData.traceability.activeProducts}</p>
                       </div>
                     </div>
@@ -671,7 +805,7 @@ export default function AdminDashboard() {
                     <div className="flex items-center space-x-3 mb-3">
                       <CheckCircle className="h-6 w-6 text-blue-600" />
                       <div>
-                        <h3 className="font-semibold">Verified Today</h3>
+                        <h3 className="font-semibold">{t('admin.traceability.verifiedToday')}</h3>
                         <p className="text-2xl font-bold text-blue-600">{mockData.traceability.verifiedToday}</p>
                       </div>
                     </div>
@@ -681,7 +815,7 @@ export default function AdminDashboard() {
                     <div className="flex items-center space-x-3 mb-3">
                       <Hash className="h-6 w-6 text-purple-600" />
                       <div>
-                        <h3 className="font-semibold">Blockchain TX</h3>
+                        <h3 className="font-semibold">{t('admin.traceability.blockchainTx')}</h3>
                         <p className="text-2xl font-bold text-purple-600">{mockData.traceability.blockchainTransactions}</p>
                       </div>
                     </div>
@@ -691,7 +825,7 @@ export default function AdminDashboard() {
                     <div className="flex items-center space-x-3 mb-3">
                       <QrCode className="h-6 w-6 text-orange-600" />
                       <div>
-                        <h3 className="font-semibold">QR Scans</h3>
+                        <h3 className="font-semibold">{t('admin.traceability.qrScans')}</h3>
                         <p className="text-2xl font-bold text-orange-600">{mockData.traceability.qrScans}</p>
                       </div>
                     </div>
@@ -706,7 +840,7 @@ export default function AdminDashboard() {
   )
 }
 
-// QrCode component for traceability
+// Composant QrCode pour la traçabilité
 const QrCode = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />

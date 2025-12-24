@@ -45,7 +45,7 @@ export default function TracePage() {
         },
         {
           stage: "Processing",
-          location: "AgriChain Factory, Los Angeles",
+          location: "BRIJUICE Factory, Los Angeles",
           operator: "Processing Team A",
           date: "2024-01-17",
           temperature: "18°C",

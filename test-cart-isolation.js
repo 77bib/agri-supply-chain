@@ -3,7 +3,7 @@ const { exec } = require('child_process');
 console.log('🧪 Testing Cart Isolation Between Users...\n');
 
 // Test data
-const user1 = { email: "admin@bifa.com", password: "admin123456" };
+const user1 = { email: "admin@brijuice.com", password: "admin123456" };
 
 const testCartIsolation = () => {
   // Test 1: Login with user and check empty cart
@@ -69,7 +69,7 @@ const testCartLoad = (token, userName) => {
     
     console.log('\n🎯 Testing Instructions:');
     console.log('1. Open browser to http://localhost:3000/login');
-    console.log('2. Login with admin@bifa.com / admin123456');
+    console.log('2. Login with admin@brijuice.com / admin123456');
     console.log('3. Add some products to cart');
     console.log('4. Logout from user menu');
     console.log('5. Login again');

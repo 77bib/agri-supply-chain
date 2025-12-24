@@ -259,7 +259,7 @@ export default function BlockchainPage() {
       blockHash: batch.blockHash,
       farmer: batch.farmer,
       timestamp: batch.timestamp,
-      traceUrl: `https://agrichain.com/trace/${batch.batchId}`,
+      traceUrl: `https://brijuice.com/trace/${batch.batchId}`,
     })
     setQrCodeData(qrData)
   }
@@ -677,7 +677,7 @@ export default function BlockchainPage() {
                             batchId: batch.batchId,
                             productName: batch.productName,
                             blockHash: batch.blockHash,
-                            traceUrl: `https://agrichain.com/trace/${batch.batchId}`,
+                            traceUrl: `https://brijuice.com/trace/${batch.batchId}`,
                           })}
                           size={100}
                         />

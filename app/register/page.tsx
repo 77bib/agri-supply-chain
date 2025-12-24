@@ -135,7 +135,7 @@ export default function RegisterPage() {
               </div>
               <CardTitle className="text-3xl font-bold text-gray-900 mb-2">Create Account</CardTitle>
               <CardDescription className="text-gray-600 text-lg">
-                Join Bifa to access our premium organic products and track your orders
+                Join BRIJUICE to access our premium organic products and track your orders
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">

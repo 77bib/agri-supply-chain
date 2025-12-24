@@ -21,6 +21,7 @@ import { useStore } from "@/lib/store"
 import { saveCart, loadCart, saveCartToLocalStorage, loadCartFromLocalStorage } from "@/lib/cart-service"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { formatCurrency } from "@/lib/utils"
 
 export default function SavedInfoPage() {
   const router = useRouter()
@@ -178,7 +179,7 @@ export default function SavedInfoPage() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-medium text-sm">${(item.product.price * item.quantity).toFixed(2)}</p>
+                          <p className="font-medium text-sm">{formatCurrency(item.product.price * item.quantity)}</p>
                         </div>
                       </div>
                     ))}
@@ -187,7 +188,7 @@ export default function SavedInfoPage() {
                   <div className="flex justify-between items-center">
                     <span className="font-medium">Total:</span>
                     <span className="text-lg font-bold text-green-600">
-                      ${calculateTotal(cart).toFixed(2)}
+                      {formatCurrency(calculateTotal(cart))}
                     </span>
                   </div>
                   <Button 
@@ -250,7 +251,7 @@ export default function SavedInfoPage() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-medium text-sm">${(item.product.price * item.quantity).toFixed(2)}</p>
+                          <p className="font-medium text-sm">{formatCurrency(item.product.price * item.quantity)}</p>
                         </div>
                       </div>
                     ))}
@@ -259,7 +260,7 @@ export default function SavedInfoPage() {
                   <div className="flex justify-between items-center">
                     <span className="font-medium">Total:</span>
                     <span className="text-lg font-bold text-green-600">
-                      ${calculateTotal(savedCart).toFixed(2)}
+                      {formatCurrency(calculateTotal(savedCart))}
                     </span>
                   </div>
                   <div className="flex space-x-2">

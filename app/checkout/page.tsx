@@ -40,6 +40,7 @@ import {
   hasSavedPaymentInfo,
   hasSavedShippingInfo
 } from "@/lib/payment-storage"
+import { formatCurrency } from "@/lib/utils"
 
 interface ShippingInfo {
   firstName: string
@@ -521,11 +522,11 @@ export default function CheckoutPage() {
                           {item.product.name}
                         </h4>
                         <p className="text-xs text-gray-500">
-                          Qty: {item.quantity} × ${item.product.price}
+                          Qty: {item.quantity} × {formatCurrency(item.product.price)}
                         </p>
                       </div>
                       <div className="text-sm font-medium">
-                        ${(item.product.price * item.quantity).toFixed(2)}
+                        {formatCurrency(item.product.price * item.quantity)}
                       </div>
                     </div>
                   ))}
@@ -537,20 +538,20 @@ export default function CheckoutPage() {
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Subtotal ({totalItems} items)</span>
-                    <span className="font-medium">${calculateSubtotal().toFixed(2)}</span>
+                    <span className="font-medium">{formatCurrency(calculateSubtotal())}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Shipping</span>
-                    <span className="font-medium">${calculateShipping().toFixed(2)}</span>
+                    <span className="font-medium">{formatCurrency(calculateShipping())}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Tax (15%)</span>
-                    <span className="font-medium">${calculateTax().toFixed(2)}</span>
+                    <span className="font-medium">{formatCurrency(calculateTax())}</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
-                    <span className="text-green-600">${calculateTotal().toFixed(2)}</span>
+                    <span className="text-green-600">{formatCurrency(calculateTotal())}</span>
                   </div>
                 </div>
 
@@ -558,7 +559,7 @@ export default function CheckoutPage() {
                 <div className="space-y-3 pt-4">
                   <div className="flex items-center space-x-3 text-sm text-gray-600">
                     <Truck className="h-4 w-4 text-green-600" />
-                    <span>Free shipping on orders over $50</span>
+                    <span>Free shipping on orders over DZ 50</span>
                   </div>
                   <div className="flex items-center space-x-3 text-sm text-gray-600">
                     <Shield className="h-4 w-4 text-green-600" />
@@ -578,7 +579,7 @@ export default function CheckoutPage() {
                   disabled={loading}
                 >
                   <Lock className="h-5 w-5 mr-2" />
-                  {loading ? "Processing..." : `Place Order - $${calculateTotal().toFixed(2)}`}
+                  {loading ? "Processing..." : `Place Order - ${formatCurrency(calculateTotal())}`}
                 </Button>
 
                 {/* Back to Cart */}

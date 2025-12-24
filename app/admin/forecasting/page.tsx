@@ -32,90 +32,92 @@ import {
   Thermometer,
 } from "lucide-react"
 import AdminLayout from "@/components/admin-layout"
+import { useI18n } from "@/lib/i18n"
 
-// Dummy forecasting data
+// Données de prévision fictives
 const demandForecastData = [
   { month: "Jan", actual: 4200, predicted: 4100, demand: 4300 },
-  { month: "Feb", actual: 3800, predicted: 3900, demand: 3750 },
+  { month: "Fév", actual: 3800, predicted: 3900, demand: 3750 },
   { month: "Mar", actual: 4500, predicted: 4400, demand: 4600 },
-  { month: "Apr", actual: 5200, predicted: 5100, demand: 5300 },
-  { month: "May", actual: 5800, predicted: 5900, demand: 5750 },
+  { month: "Avr", actual: 5200, predicted: 5100, demand: 5300 },
+  { month: "Mai", actual: 5800, predicted: 5900, demand: 5750 },
   { month: "Jun", actual: 6200, predicted: 6100, demand: 6400 },
   { month: "Jul", predicted: 6800, demand: 6900 },
-  { month: "Aug", predicted: 7200, demand: 7100 },
+  { month: "Aoû", predicted: 7200, demand: 7100 },
   { month: "Sep", predicted: 6500, demand: 6600 },
   { month: "Oct", predicted: 5800, demand: 5900 },
   { month: "Nov", predicted: 5200, demand: 5100 },
-  { month: "Dec", predicted: 5600, demand: 5700 },
+  { month: "Déc", predicted: 5600, demand: 5700 },
 ]
 
 const seasonalTrends = [
-  { season: "Spring", orangeJuice: 85, strawberryJam: 120, appleCompote: 75 },
-  { season: "Summer", orangeJuice: 150, strawberryJam: 180, appleCompote: 60 },
-  { season: "Fall", orangeJuice: 95, strawberryJam: 90, appleCompote: 140 },
-  { season: "Winter", orangeJuice: 110, strawberryJam: 70, appleCompote: 120 },
+  { season: "Printemps", orangeJuice: 85, strawberryJam: 120, appleCompote: 75 },
+  { season: "Été", orangeJuice: 150, strawberryJam: 180, appleCompote: 60 },
+  { season: "Automne", orangeJuice: 95, strawberryJam: 90, appleCompote: 140 },
+  { season: "Hiver", orangeJuice: 110, strawberryJam: 70, appleCompote: 120 },
 ]
 
 const productDemandData = [
-  { name: "Orange Juice", current: 145, forecast: 162, growth: 11.7 },
-  { name: "Strawberry Jam", current: 89, forecast: 98, growth: 10.1 },
-  { name: "Apple Compote", current: 67, forecast: 71, growth: 6.0 },
-  { name: "Mixed Berry Juice", current: 45, forecast: 52, growth: 15.6 },
-  { name: "Peach Preserves", current: 23, forecast: 28, growth: 21.7 },
+  { name: "Jus d'Orange", current: 145, forecast: 162, growth: 11.7 },
+  { name: "Confiture de Fraise", current: 89, forecast: 98, growth: 10.1 },
+  { name: "Compote de Pomme", current: 67, forecast: 71, growth: 6.0 },
+  { name: "Jus de Baies Mélangées", current: 45, forecast: 52, growth: 15.6 },
+  { name: "Conserves de Pêche", current: 23, forecast: 28, growth: 21.7 },
 ]
 
 const weatherImpactData = [
-  { week: "Week 1", temperature: 18, rainfall: 5, demand: 4200 },
-  { week: "Week 2", temperature: 22, rainfall: 12, demand: 4500 },
-  { week: "Week 3", temperature: 25, rainfall: 8, demand: 5100 },
-  { week: "Week 4", temperature: 28, rainfall: 2, demand: 5800 },
-  { week: "Week 5", temperature: 31, rainfall: 0, demand: 6200 },
-  { week: "Week 6", temperature: 29, rainfall: 15, demand: 5900 },
+  { week: "Semaine 1", temperature: 18, rainfall: 5, demand: 4200 },
+  { week: "Semaine 2", temperature: 22, rainfall: 12, demand: 4500 },
+  { week: "Semaine 3", temperature: 25, rainfall: 8, demand: 5100 },
+  { week: "Semaine 4", temperature: 28, rainfall: 2, demand: 5800 },
+  { week: "Semaine 5", temperature: 31, rainfall: 0, demand: 6200 },
+  { week: "Semaine 6", temperature: 29, rainfall: 15, demand: 5900 },
 ]
 
 const alerts = [
   {
     id: 1,
     type: "seasonal",
-    message: "Summer peak approaching - 40% increase in juice demand expected",
+    message: "Le pic d'été approche - augmentation de 40% attendue dans la demande de jus",
     priority: "high",
-    impact: "Increase production capacity by 25%",
-    timeframe: "Next 2 weeks",
+    impact: "Augmenter la capacité de production de 25%",
+    timeframe: "Deux prochaines semaines",
   },
   {
     id: 2,
     type: "weather",
-    message: "Heat wave forecast - Orange juice demand may spike by 30%",
+    message: "Vague de chaleur prévue - la demande de jus d'orange pourrait augmenter de 30%",
     priority: "medium",
-    impact: "Secure additional raw materials",
-    timeframe: "Next week",
+    impact: "Sécuriser des matières premières supplémentaires",
+    timeframe: "Prochaine semaine",
   },
   {
     id: 3,
     type: "trend",
-    message: "Apple compote showing declining trend (-5% over 3 months)",
+    message: "La compote de pomme montre une tendance baissière (-5% sur 3 mois)",
     priority: "low",
-    impact: "Consider promotional campaigns",
-    timeframe: "Next month",
+    impact: "Envisager des campagnes promotionnelles",
+    timeframe: "Mois prochain",
   },
   {
     id: 4,
     type: "supply",
-    message: "Strawberry harvest delayed - potential supply shortage",
+    message: "Récolte de fraises retardée - risque de pénurie d'approvisionnement",
     priority: "high",
-    impact: "Find alternative suppliers",
-    timeframe: "Immediate",
+    impact: "Trouver des fournisseurs alternatifs",
+    timeframe: "Immédiat",
   },
 ]
 
 const accuracyMetrics = [
-  { model: "Demand Forecasting", accuracy: 92.5, trend: "up" },
-  { model: "Seasonal Prediction", accuracy: 88.3, trend: "stable" },
-  { model: "Weather Impact", accuracy: 76.8, trend: "up" },
-  { model: "Supply Planning", accuracy: 94.1, trend: "up" },
+  { model: "Prévision de la Demande", accuracy: 92.5, trend: "up" },
+  { model: "Prédiction Saisonnière", accuracy: 88.3, trend: "stable" },
+  { model: "Impact Météorologique", accuracy: 76.8, trend: "up" },
+  { model: "Planification d'Approvisionnement", accuracy: 94.1, trend: "up" },
 ]
 
 export default function ForecastingPage() {
+  const { t } = useI18n()
   const [selectedTab, setSelectedTab] = useState("overview")
   const [timeRange, setTimeRange] = useState("6months")
   const [selectedProduct, setSelectedProduct] = useState("all")
@@ -138,24 +140,24 @@ export default function ForecastingPage() {
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
       case "high":
-        return <Badge variant="destructive">High</Badge>
+        return <Badge variant="destructive">{t("admin.forecasting.priority.high")}</Badge>
       case "medium":
-        return <Badge className="bg-yellow-100 text-yellow-800">Medium</Badge>
+        return <Badge className="bg-yellow-100 text-yellow-800">{t("admin.forecasting.priority.medium")}</Badge>
       case "low":
-        return <Badge variant="outline">Low</Badge>
+        return <Badge variant="outline">{t("admin.forecasting.priority.low")}</Badge>
       default:
-        return <Badge variant="outline">Unknown</Badge>
+        return <Badge variant="outline">{t("admin.forecasting.priority.unknown")}</Badge>
     }
   }
 
   return (
     <AdminLayout>
       <div className="space-y-6">
-        {/* Header */}
+        {/* En-tête */}
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Forecasting & Analytics</h1>
-            <p className="text-muted-foreground">AI-powered demand forecasting and market analysis</p>
+            <h1 className="text-3xl font-bold text-foreground">{t("admin.forecasting.title")}</h1>
+            <p className="text-muted-foreground">{t("admin.forecasting.subtitle")}</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-2">
             <Select value={timeRange} onValueChange={setTimeRange}>
@@ -163,77 +165,77 @@ export default function ForecastingPage() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="3months">3 Months</SelectItem>
-                <SelectItem value="6months">6 Months</SelectItem>
-                <SelectItem value="1year">1 Year</SelectItem>
-                <SelectItem value="2years">2 Years</SelectItem>
+                <SelectItem value="3months">{t("admin.forecasting.timeRange.3months")}</SelectItem>
+                <SelectItem value="6months">{t("admin.forecasting.timeRange.6months")}</SelectItem>
+                <SelectItem value="1year">{t("admin.forecasting.timeRange.1year")}</SelectItem>
+                <SelectItem value="2years">{t("admin.forecasting.timeRange.2years")}</SelectItem>
               </SelectContent>
             </Select>
-            <Button>Generate Report</Button>
+            <Button>{t("admin.forecasting.generateReport")}</Button>
           </div>
         </div>
 
-        {/* Key Metrics */}
+        {/* Métriques Clés */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Forecast Accuracy</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("admin.forecasting.metrics.accuracy")}</CardTitle>
               <Target className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">92.5%</div>
               <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">+2.3%</span> from last month
+                <span className="text-green-600">+2.3%</span> {t("admin.forecasting.metrics.vsLastMonth")}
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Demand Growth</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("admin.forecasting.metrics.demandGrowth")}</CardTitle>
               <TrendingUp className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">+12.8%</div>
-              <p className="text-xs text-muted-foreground">Projected next quarter</p>
+              <p className="text-xs text-muted-foreground">{t("admin.forecasting.metrics.projectedNextQuarter")}</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Seasonal Peak</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("admin.forecasting.metrics.seasonalPeak")}</CardTitle>
               <Sun className="h-4 w-4 text-orange-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">14 Days</div>
-              <p className="text-xs text-muted-foreground">Until summer peak demand</p>
+              <div className="text-2xl font-bold">14 Jours</div>
+              <p className="text-xs text-muted-foreground">{t("admin.forecasting.metrics.untilSummerPeak")}</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Alerts</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("admin.forecasting.metrics.activeAlerts")}</CardTitle>
               <AlertTriangle className="h-4 w-4 text-red-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{alerts.filter((a) => a.priority === "high").length}</div>
-              <p className="text-xs text-muted-foreground">High priority alerts</p>
+              <p className="text-xs text-muted-foreground">{t("admin.forecasting.metrics.highPriorityAlerts")}</p>
             </CardContent>
           </Card>
         </div>
 
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-4">
           <TabsList>
-            <TabsTrigger value="overview">Forecast Overview</TabsTrigger>
-            <TabsTrigger value="seasonal">Seasonal Analysis</TabsTrigger>
-            <TabsTrigger value="products">Product Forecasts</TabsTrigger>
-            <TabsTrigger value="weather">Weather Impact</TabsTrigger>
-            <TabsTrigger value="alerts">Alerts & Insights</TabsTrigger>
+            <TabsTrigger value="overview">{t("admin.forecasting.tabs.overview")}</TabsTrigger>
+            <TabsTrigger value="seasonal">{t("admin.forecasting.tabs.seasonal")}</TabsTrigger>
+            <TabsTrigger value="products">{t("admin.forecasting.tabs.products")}</TabsTrigger>
+            <TabsTrigger value="weather">{t("admin.forecasting.tabs.weather")}</TabsTrigger>
+            <TabsTrigger value="alerts">{t("admin.forecasting.tabs.alerts")}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
             <div className="grid lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Demand Forecast vs Actual</CardTitle>
-                  <CardDescription>6-month trend analysis with predictions</CardDescription>
+                  <CardTitle>{t("admin.forecasting.charts.demand.title")}</CardTitle>
+                  <CardDescription>{t("admin.forecasting.charts.demand.desc")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={350}>
@@ -242,16 +244,28 @@ export default function ForecastingPage() {
                       <XAxis dataKey="month" />
                       <YAxis />
                       <Tooltip />
-                      <Line type="monotone" dataKey="actual" stroke="#10b981" strokeWidth={2} name="Actual Demand" />
+                      <Line
+                        type="monotone"
+                        dataKey="actual"
+                        stroke="#10b981"
+                        strokeWidth={2}
+                        name={t("admin.forecasting.charts.demand.actual")}
+                      />
                       <Line
                         type="monotone"
                         dataKey="predicted"
                         stroke="#3b82f6"
                         strokeWidth={2}
                         strokeDasharray="5 5"
-                        name="Predicted"
+                        name={t("admin.forecasting.charts.demand.predicted")}
                       />
-                      <Line type="monotone" dataKey="demand" stroke="#f59e0b" strokeWidth={2} name="Market Demand" />
+                      <Line
+                        type="monotone"
+                        dataKey="demand"
+                        stroke="#f59e0b"
+                        strokeWidth={2}
+                        name={t("admin.forecasting.charts.demand.market")}
+                      />
                     </LineChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -259,8 +273,8 @@ export default function ForecastingPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Model Accuracy</CardTitle>
-                  <CardDescription>Performance of forecasting models</CardDescription>
+                  <CardTitle>Précision des Modèles</CardTitle>
+                  <CardDescription>Performance des modèles de prévision</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
@@ -294,8 +308,8 @@ export default function ForecastingPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Product Demand Growth Forecast</CardTitle>
-                <CardDescription>Expected growth rates for next quarter</CardDescription>
+                <CardTitle>Prévision de Croissance de la Demande Produits</CardTitle>
+                <CardDescription>Taux de croissance attendus pour le prochain trimestre</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -304,8 +318,8 @@ export default function ForecastingPage() {
                     <XAxis dataKey="name" />
                     <YAxis />
                     <Tooltip />
-                    <Bar dataKey="current" fill="#e5e7eb" name="Current Demand" />
-                    <Bar dataKey="forecast" fill="#10b981" name="Forecasted Demand" />
+                    <Bar dataKey="current" fill="#e5e7eb" name="Demande Actuelle" />
+                    <Bar dataKey="forecast" fill="#10b981" name="Demande Prévue" />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -316,8 +330,8 @@ export default function ForecastingPage() {
             <div className="grid lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Seasonal Demand Patterns</CardTitle>
-                  <CardDescription>Product demand by season</CardDescription>
+                  <CardTitle>Modèles de Demande Saisonnière</CardTitle>
+                  <CardDescription>Demande produits par saison</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={350}>
@@ -326,9 +340,9 @@ export default function ForecastingPage() {
                       <XAxis dataKey="season" />
                       <YAxis />
                       <Tooltip />
-                      <Bar dataKey="orangeJuice" fill="#f97316" name="Orange Juice" />
-                      <Bar dataKey="strawberryJam" fill="#ef4444" name="Strawberry Jam" />
-                      <Bar dataKey="appleCompote" fill="#10b981" name="Apple Compote" />
+                      <Bar dataKey="orangeJuice" fill="#f97316" name="Jus d'Orange" />
+                      <Bar dataKey="strawberryJam" fill="#ef4444" name="Confiture Fraise" />
+                      <Bar dataKey="appleCompote" fill="#10b981" name="Compote Pomme" />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -336,39 +350,39 @@ export default function ForecastingPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Seasonal Insights</CardTitle>
-                  <CardDescription>Key seasonal trends and recommendations</CardDescription>
+                  <CardTitle>Insights Saisonniers</CardTitle>
+                  <CardDescription>Tendances saisonnières clés et recommandations</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
                     <div className="flex items-start space-x-3">
                       <Sun className="h-5 w-5 text-orange-600 mt-1" />
                       <div>
-                        <h4 className="font-medium">Summer Peak (Jun-Aug)</h4>
+                        <h4 className="font-medium">Pic d'Été (Juin-Août)</h4>
                         <p className="text-sm text-muted-foreground mt-1">
-                          Orange and berry juices see 60% increase. Prepare additional cold storage capacity.
+                          Les jus d'orange et de baies voient une augmentation de 60%. Préparer une capacité de stockage froid supplémentaire.
                         </p>
-                        <Badge className="bg-orange-100 text-orange-800 mt-2">Action Required</Badge>
+                        <Badge className="bg-orange-100 text-orange-800 mt-2">{t("admin.forecasting.seasonal.actionRequired")}</Badge>
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Leaf className="h-5 w-5 text-green-600 mt-1" />
                       <div>
-                        <h4 className="font-medium">Fall Harvest (Sep-Nov)</h4>
+                        <h4 className="font-medium">Récolte d'Automne (Sep-Nov)</h4>
                         <p className="text-sm text-muted-foreground mt-1">
                           Apple compote demand peaks. Coordinate with apple orchards for bulk purchasing.
                         </p>
-                        <Badge className="bg-green-100 text-green-800 mt-2">Optimal</Badge>
+                        <Badge className="bg-green-100 text-green-800 mt-2">{t("admin.forecasting.seasonal.optimal")}</Badge>
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
                       <Snowflake className="h-5 w-5 text-blue-600 mt-1" />
                       <div>
-                        <h4 className="font-medium">Winter Holiday (Dec-Feb)</h4>
+                        <h4 className="font-medium">Vacances d'Hiver (Déc-Fév)</h4>
                         <p className="text-sm text-muted-foreground mt-1">
                           Preserve and jam sales increase for gift season. Plan promotional campaigns.
                         </p>
-                        <Badge className="bg-blue-100 text-blue-800 mt-2">Plan Ahead</Badge>
+                        <Badge className="bg-blue-100 text-blue-800 mt-2">{t("admin.forecasting.seasonal.planAhead")}</Badge>
                       </div>
                     </div>
                   </div>
@@ -378,8 +392,8 @@ export default function ForecastingPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Monthly Seasonality Calendar</CardTitle>
-                <CardDescription>Plan production and inventory based on seasonal patterns</CardDescription>
+                <CardTitle>{t("admin.forecasting.seasonalityCalendar.title")}</CardTitle>
+                <CardDescription>{t("admin.forecasting.seasonalityCalendar.desc")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-12 gap-2">
@@ -418,7 +432,7 @@ export default function ForecastingPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Products</SelectItem>
+                  <SelectItem value="all">Tous les Produits</SelectItem>
                   <SelectItem value="orange-juice">Orange Juice</SelectItem>
                   <SelectItem value="strawberry-jam">Strawberry Jam</SelectItem>
                   <SelectItem value="apple-compote">Apple Compote</SelectItem>
@@ -434,7 +448,9 @@ export default function ForecastingPage() {
                     <div className="flex justify-between items-start">
                       <div>
                         <CardTitle className="text-lg">{product.name}</CardTitle>
-                        <CardDescription>Current: {product.current} units/month</CardDescription>
+                        <CardDescription>
+                          {t("admin.forecasting.products.currentLabel", { value: product.current })}
+                        </CardDescription>
                       </div>
                       <Badge
                         className={
@@ -466,7 +482,7 @@ export default function ForecastingPage() {
                         </div>
                         <div className="grid grid-cols-2 gap-4 text-sm">
                           <div>
-                            <span className="text-muted-foreground">Current Demand:</span>
+                            <span className="text-muted-foreground">Demande Actuelle :</span>
                             <p className="font-medium">{product.current} units</p>
                           </div>
                           <div>
@@ -476,7 +492,7 @@ export default function ForecastingPage() {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <h4 className="font-medium">Recommendations:</h4>
+                        <h4 className="font-medium">Recommandations :</h4>
                         <ul className="text-sm text-muted-foreground space-y-1">
                           {product.growth > 15 && (
                             <>
@@ -511,8 +527,8 @@ export default function ForecastingPage() {
           <TabsContent value="weather" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Weather Impact Analysis</CardTitle>
-                <CardDescription>How weather patterns affect product demand</CardDescription>
+                <CardTitle>{t("admin.forecasting.weather.title")}</CardTitle>
+                <CardDescription>{t("admin.forecasting.weather.subtitle")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={400}>
@@ -532,7 +548,7 @@ export default function ForecastingPage() {
                       name="Demand"
                     />
                     <Line yAxisId="temp" type="monotone" dataKey="temperature" stroke="#f59e0b" name="Temperature °C" />
-                    <Bar yAxisId="temp" dataKey="rainfall" fill="#3b82f6" name="Rainfall mm" />
+                    <Bar yAxisId="temp" dataKey="rainfall" fill="#3b82f6" name="Précipitations mm" />
                   </AreaChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -541,8 +557,8 @@ export default function ForecastingPage() {
             <div className="grid md:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Temperature Correlation</CardTitle>
-                  <CardDescription>Impact of temperature on juice demand</CardDescription>
+                  <CardTitle>{t("admin.forecasting.weather.tempCorrelation.title")}</CardTitle>
+                  <CardDescription>{t("admin.forecasting.weather.tempCorrelation.desc")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -573,8 +589,8 @@ export default function ForecastingPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Weather Forecast Impact</CardTitle>
-                  <CardDescription>Next 7 days prediction</CardDescription>
+                  <CardTitle>{t("admin.forecasting.weather.forecastImpact.title")}</CardTitle>
+                  <CardDescription>{t("admin.forecasting.weather.forecastImpact.desc")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
@@ -611,8 +627,8 @@ export default function ForecastingPage() {
           <TabsContent value="alerts" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Active Alerts & Insights</CardTitle>
-                <CardDescription>AI-generated insights and recommendations</CardDescription>
+                <CardTitle>{t("admin.forecasting.alerts.title")}</CardTitle>
+                <CardDescription>{t("admin.forecasting.alerts.subtitle")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
@@ -634,7 +650,7 @@ export default function ForecastingPage() {
                               <Button size="sm" variant="outline">
                                 Dismiss
                               </Button>
-                              <Button size="sm">Take Action</Button>
+                              <Button size="sm">{t("admin.forecasting.alerts.takeAction")}</Button>
                             </div>
                           </div>
                         </div>
@@ -648,8 +664,8 @@ export default function ForecastingPage() {
             <div className="grid md:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Alert Summary</CardTitle>
-                  <CardDescription>Alert distribution by priority</CardDescription>
+                  <CardTitle>{t("admin.forecasting.alertSummary.title")}</CardTitle>
+                  <CardDescription>{t("admin.forecasting.alertSummary.desc")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -677,8 +693,8 @@ export default function ForecastingPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Recommended Actions</CardTitle>
-                  <CardDescription>Immediate actions to optimize operations</CardDescription>
+                  <CardTitle>{t("admin.forecasting.recommendedActions.title")}</CardTitle>
+                  <CardDescription>{t("admin.forecasting.recommendedActions.desc")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">

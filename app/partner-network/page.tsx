@@ -292,7 +292,7 @@ export default function PartnerNetworkPage() {
                   <CardContent className="space-y-4">
                     <div className="border-l-4 border-l-green-500 pl-4">
                       <p className="text-gray-600 italic">
-                        "Partnering with AgriChain has transformed our business. The guaranteed pricing and direct
+                        "Partnering with BRIJUICE has transformed our business. The guaranteed pricing and direct
                         market access have increased our revenue by 40% while maintaining our commitment to sustainable
                         farming practices."
                       </p>

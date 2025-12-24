@@ -112,7 +112,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-blue-800 dark:text-blue-300 mb-1">Email</p>
-                    <p className="text-gray-700 dark:text-gray-300">contact@bifa.com</p>
+                    <p className="text-gray-700 dark:text-gray-300">contact@brijuice.com</p>
                   </div>
                 </div>
 
@@ -148,7 +148,7 @@ export default function ContactPage() {
                 <div className="h-80 relative overflow-hidden rounded-lg">
                   <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10256.123456789!2d3.0588!3d36.7538!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x128fad679562fc5f%3A0x1b3b3b3b3b3b3b3b!2sAlger%20Centre%2C%20Algeria!5e0!3m2!1sen!2sus!4v1234567890123"
-                    title="Bifa Location - Algeria Center"
+                    title="BRIJUICE Location - Algeria Center"
                     className="w-full h-full border-0"
                     style={{ border: 0 }}
                     allowFullScreen
@@ -158,7 +158,7 @@ export default function ContactPage() {
                   <div className="absolute top-4 right-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center space-x-2">
                       <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-green-500 rounded-full"></div>
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Bifa Office</span>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">BRIJUICE Office</span>
                     </div>
                   </div>
                 </div>

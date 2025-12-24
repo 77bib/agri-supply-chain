@@ -60,7 +60,7 @@ async function testDatabaseConnection() {
     console.log('\n👤 Testing user creation...');
     
     // Check if test user already exists
-    const existingUser = await User.findOne({ email: 'test@bifa.com' });
+    const existingUser = await User.findOne({ email: 'test@brijuice.com' });
     
     if (existingUser) {
       console.log('ℹ️  Test user already exists, skipping creation');
@@ -69,7 +69,7 @@ async function testDatabaseConnection() {
       const hashedPassword = await bcrypt.hash('12345678', 12);
       const testUser = new User({
         name: 'Test User',
-        email: 'test@bifa.com',
+        email: 'test@brijuice.com',
         password: hashedPassword,
         role: 'user'
       });
@@ -81,7 +81,7 @@ async function testDatabaseConnection() {
     // Test user login
     console.log('\n🔐 Testing user login...');
     
-    const user = await User.findOne({ email: 'test@bifa.com' }).select('+password');
+    const user = await User.findOne({ email: 'test@brijuice.com' }).select('+password');
     
     if (!user) {
       console.log('❌ Test user not found!');
