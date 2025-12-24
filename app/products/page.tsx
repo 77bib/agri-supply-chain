@@ -162,12 +162,7 @@ export default function ProductsPage() {
                     <p className="text-blue-600 dark:text-blue-400 text-sm">{t('productsPage.readyCheckout')}</p>
                   </div>
                 </div>
-                <Link href="/cart">
-                  <Button className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
-                    <ShoppingCart className="h-4 w-4 mr-2" />
-                    {t('productsPage.viewCart')}
-                  </Button>
-                </Link>
+                
               </div>
             </div>
           )}
@@ -370,15 +365,7 @@ export default function ProductsPage() {
                     )}
 
                     <div className="flex space-x-3">
-                      <Link href={`/products/${product._id}`} className="flex-1">
-                        <Button 
-                          variant="outline" 
-                          className="w-full border-blue-200 dark:border-blue-600 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950 hover:border-blue-300 dark:hover:border-blue-500 transition-all duration-300"
-                        >
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Details
-                        </Button>
-                      </Link>
+                      
                       <Button 
                         onClick={() => handleAddToCart(product)} 
                         className="flex-1 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 btn-animate"

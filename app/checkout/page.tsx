@@ -77,7 +77,7 @@ export default function CheckoutPage() {
     city: '',
     state: '',
     zipCode: '',
-    country: 'United States'
+    country: 'Algeria'
   })
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
     cardNumber: '',
@@ -293,7 +293,7 @@ export default function CheckoutPage() {
                       id="firstName"
                       value={shippingInfo.firstName}
                       onChange={(e) => handleShippingChange('firstName', e.target.value)}
-                      placeholder="John"
+                      placeholder="Ahmed"
                     />
                   </div>
                   <div>
@@ -302,7 +302,7 @@ export default function CheckoutPage() {
                       id="lastName"
                       value={shippingInfo.lastName}
                       onChange={(e) => handleShippingChange('lastName', e.target.value)}
-                      placeholder="Doe"
+                      placeholder="Benali"
                     />
                   </div>
                 </div>
@@ -324,7 +324,7 @@ export default function CheckoutPage() {
                       id="phone"
                       value={shippingInfo.phone}
                       onChange={(e) => handleShippingChange('phone', e.target.value)}
-                      placeholder="+1 (555) 123-4567"
+                      placeholder="+213 5 12 34 56 78"
                     />
                   </div>
                 </div>
@@ -335,7 +335,7 @@ export default function CheckoutPage() {
                     id="address"
                     value={shippingInfo.address}
                     onChange={(e) => handleShippingChange('address', e.target.value)}
-                    placeholder="123 Main Street, Apt 4B"
+                    placeholder="Cité 5 Juillet, Immeuble 12, Appartement 4"
                     rows={3}
                   />
                 </div>
@@ -347,25 +347,25 @@ export default function CheckoutPage() {
                       id="city"
                       value={shippingInfo.city}
                       onChange={(e) => handleShippingChange('city', e.target.value)}
-                      placeholder="New York"
+                      placeholder="Oran"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="state">State</Label>
+                    <Label htmlFor="state">Wilaya</Label>
                     <Input
                       id="state"
                       value={shippingInfo.state}
                       onChange={(e) => handleShippingChange('state', e.target.value)}
-                      placeholder="NY"
+                      placeholder="Alger (16)"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="zipCode">ZIP Code</Label>
+                    <Label htmlFor="zipCode">Postal Code</Label>
                     <Input
                       id="zipCode"
                       value={shippingInfo.zipCode}
                       onChange={(e) => handleShippingChange('zipCode', e.target.value)}
-                      placeholder="10001"
+                      placeholder="16000"
                     />
                   </div>
                 </div>
@@ -377,11 +377,7 @@ export default function CheckoutPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="United States">United States</SelectItem>
-                      <SelectItem value="Canada">Canada</SelectItem>
-                      <SelectItem value="United Kingdom">United Kingdom</SelectItem>
-                      <SelectItem value="Germany">Germany</SelectItem>
-                      <SelectItem value="France">France</SelectItem>
+                      <SelectItem value="Algeria">Algeria</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
