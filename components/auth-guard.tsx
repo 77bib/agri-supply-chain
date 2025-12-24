@@ -26,7 +26,7 @@ export function AuthGuard({
   useEffect(() => {
     const checkAuth = async () => {
       if (!_hasHydrated) {
-        return // انتظار حتى يتم hydration
+        return 
       }
 
       try {
