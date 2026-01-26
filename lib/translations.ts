@@ -70,7 +70,7 @@ export const translations = {
     
     // Footer
     allRightsReserved: "Tous les droits réservés",
-    copyright: "© 2024 BRIJUICE",
+    copyright: "© 2026 BRIJUICE",
     securePayment: "Paiement Sécurisé",
     fastDelivery: "Livraison Rapide",
     qualityAssured: "Qualité Assurée",
@@ -155,7 +155,7 @@ export const translations = {
     
     // Footer
     allRightsReserved: "جميع الحقوق محفوظة",
-    copyright: "© 2024 BRIJUICE",
+    copyright: "© 2026 BRIJUICE",
     securePayment: "الدفع الآمن",
     fastDelivery: "التوصيل السريع",
     qualityAssured: "الجودة مضمونة",

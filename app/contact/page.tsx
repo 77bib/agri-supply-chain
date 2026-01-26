@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { MapPin, Phone, Mail, Clock, Send, MessageCircle, CheckCircle } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { SocialLinks } from "@/components/social-links"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -131,6 +132,21 @@ export default function ContactPage() {
                     </p>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Social Links */}
+            <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl flex items-center text-gray-900 dark:text-gray-100">
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-green-500 rounded-lg flex items-center justify-center mr-3">
+                    <MessageCircle className="h-4 w-4 text-white" />
+                  </div>
+                  Follow Us
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <SocialLinks className="gap-4" iconClassName="text-gray-900 dark:text-gray-100" />
               </CardContent>
             </Card>
 

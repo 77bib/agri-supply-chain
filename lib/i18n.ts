@@ -226,7 +226,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "footer.dashboard": "Tableau de Bord",
     "footer.admin": "Panneau Admin",
     "footer.api": "Documentation API",
-    "footer.copyright": "© 2024 BRIJUICE. Tous droits réservés.",
+    "footer.followUs": "Suivez-nous",
+    "footer.copyright": "© 2026 BRIJUICE. Tous droits réservés.",
 
     // General
     "price": "Prix",
@@ -1312,6 +1313,7 @@ const translations: Record<Locale, Record<string, string>> = {
     // Footer
     "footer.tagline": "سلسلة التوريد الذكية",
     "footer.description": "ثورة إدارة سلسلة التوريد الزراعية الغذائية بتكنولوجيا متقدمة، مما يضمن الشفافية والكفاءة والاستدامة من المزرعة إلى الطاولة.",
+    "footer.followUs": "تابعونا",
     "footer.contact": "contact@brijuice.com",
     "footer.phone": "+1 (555) 123-4567",
     "footer.address": "123 Innovation Drive, Tech City",

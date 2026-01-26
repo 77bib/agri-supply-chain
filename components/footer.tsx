@@ -5,6 +5,7 @@ import { Mail, Phone, MapPin, Globe, Shield, Truck } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { useI18n } from "@/lib/i18n"
 import { useEffect, useState } from "react"
+import { SocialLinks } from "@/components/social-links"
 
 export function Footer() {
   const [mounted, setMounted] = useState(false)
@@ -45,6 +46,11 @@ export function Footer() {
               <p className="text-gray-300 leading-relaxed">
                 {t('footer.description')}
               </p>
+
+              <div className="space-y-3">
+                <div className="text-sm font-medium text-gray-200">{t("footer.followUs")}</div>
+                <SocialLinks />
+              </div>
               
               <div className="space-y-3">
                 <div className="flex items-center space-x-3 text-gray-300">
