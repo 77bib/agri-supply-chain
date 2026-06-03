@@ -98,7 +98,7 @@ export function Header() {
                   onClick={() => setLocale("fr")}
                   className={locale === "fr" ? "bg-blue-50 dark:bg-blue-900" : ""}
                 >
-                  🇫🇷 Français
+                  🇬🇧 English
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => setLocale("ar")}
@@ -221,7 +221,7 @@ export function Header() {
                   onClick={() => setLocale("fr")}
                   className={locale === "fr" ? "bg-blue-50 dark:bg-blue-900" : ""}
                 >
-                  🇫🇷 Français
+                  🇬🇧 English
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => setLocale("ar")}

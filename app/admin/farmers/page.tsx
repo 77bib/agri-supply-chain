@@ -27,7 +27,7 @@ import AdminLayout from "@/components/admin-layout"
 import { toast } from "sonner"
 import { useI18n } from "@/lib/i18n"
 
-// Données fictives pour démonstration - 28 agriculteurs algériens avec images de fermes
+// Mock data for demonstration - 28 Algerian farmers with farm images
 const mockFarmers = [
   {
     _id: "1",
@@ -42,8 +42,8 @@ const mockFarmers = [
       state: "Wilaya de Blida",
       coordinates: { lat: 36.4700, lng: 2.8300 }
     },
-    certifications: ["Bio", "GlobalG.A.P.", "ISO 22000"],
-    crops: ["Tomates", "Poivrons", "Concombres"],
+    certifications: ["Organic", "GlobalG.A.P.", "ISO 22000"],
+    crops: ["Tomatoes", "Peppers", "Cucumbers"],
     performance: {
       totalHarvested: 25000,
       averageYield: 85,
@@ -56,8 +56,8 @@ const mockFarmers = [
     rating: 4.8,
     totalOrders: 156,
     revenue: 45000,
-    farmType: "Serre",
-    irrigationSystem: "Goutte-à-goutte",
+    farmType: "Greenhouse",
+    irrigationSystem: "Drip irrigation",
     soilType: "Limon sableux",
     elevation: 120,
     annualRainfall: 650
@@ -75,8 +75,8 @@ const mockFarmers = [
       state: "Wilaya de Tipaza",
       coordinates: { lat: 36.5897, lng: 2.4477 }
     },
-    certifications: ["Bio", "Commerce équitable", "Alliance pour les forêts tropicales"],
-    crops: ["Fraises", "Framboises", "Myrtilles"],
+    certifications: ["Organic", "Fair Trade", "Rainforest Alliance"],
+    crops: ["Strawberries", "Raspberries", "Blueberries"],
     performance: {
       totalHarvested: 18000,
       averageYield: 78,
@@ -89,8 +89,8 @@ const mockFarmers = [
     rating: 4.9,
     totalOrders: 203,
     revenue: 52000,
-    farmType: "Ferme de baies",
-    irrigationSystem: "Aspersion",
+    farmType: "Berry farm",
+    irrigationSystem: "Sprinkler irrigation",
     soilType: "Limon argileux",
     elevation: 85,
     annualRainfall: 720
@@ -109,7 +109,7 @@ const mockFarmers = [
       coordinates: { lat: 36.3650, lng: 6.6147 }
     },
     certifications: ["ISO 22000", "HACCP", "GlobalG.A.P."],
-    crops: ["Blé", "Orge", "Avoine"],
+    crops: ["Wheat", "Barley", "Oats"],
     performance: {
       totalHarvested: 45000,
       averageYield: 82,
@@ -122,7 +122,7 @@ const mockFarmers = [
     rating: 4.7,
     totalOrders: 189,
     revenue: 38000,
-    farmType: "Ferme céréalière",
+    farmType: "Grain farm",
     irrigationSystem: "Pivot central",
     soilType: "Argile limoneuse",
     elevation: 650,
@@ -141,8 +141,8 @@ const mockFarmers = [
       state: "Wilaya d'Oran",
       coordinates: { lat: 35.6971, lng: -0.6337 }
     },
-    certifications: ["Bio", "AOP", "Spécialité traditionnelle garantie"],
-    crops: ["Olives", "Amandes", "Figues"],
+    certifications: ["Organic", "PDO", "Traditional Speciality Guaranteed"],
+    crops: ["Olives", "Almonds", "Figs"],
     performance: {
       totalHarvested: 12000,
       averageYield: 90,
@@ -155,8 +155,8 @@ const mockFarmers = [
     rating: 5.0,
     totalOrders: 245,
     revenue: 65000,
-    farmType: "Verger",
-    irrigationSystem: "Micro-aspersion",
+    farmType: "Orchard",
+    irrigationSystem: "Micro-sprinkler",
     soilType: "Calcaire",
     elevation: 200,
     annualRainfall: 450
@@ -174,8 +174,8 @@ const mockFarmers = [
       state: "Wilaya d'Annaba",
       coordinates: { lat: 36.9000, lng: 7.7667 }
     },
-    certifications: ["Bio", "Biodynamique", "Végane"],
-    crops: ["Raisins", "Poires", "Pommes"],
+    certifications: ["Organic", "Biodynamic", "Vegan"],
+    crops: ["Grapes", "Pears", "Apples"],
     performance: {
       totalHarvested: 22000,
       averageYield: 87,
@@ -188,7 +188,7 @@ const mockFarmers = [
     rating: 4.6,
     totalOrders: 134,
     revenue: 42000,
-    farmType: "Vignoble",
+    farmType: "Vineyard",
     irrigationSystem: "Palissage",
     soilType: "Volcanique",
     elevation: 320,
@@ -207,8 +207,8 @@ const mockFarmers = [
       state: "Wilaya de Tlemcen",
       coordinates: { lat: 34.8828, lng: -1.3167 }
     },
-    certifications: ["Bio", "Commerce équitable"],
-    crops: ["Roses", "Lavande", "Menthe"],
+    certifications: ["Organic", "Fair Trade"],
+    crops: ["Roses", "Lavender", "Mint"],
     performance: {
       totalHarvested: 8000,
       averageYield: 88,
@@ -221,8 +221,8 @@ const mockFarmers = [
     rating: 4.9,
     totalOrders: 98,
     revenue: 28000,
-    farmType: "Ferme florale",
-    irrigationSystem: "Brumisation",
+    farmType: "Flower farm",
+    irrigationSystem: "Misting",
     soilType: "Sablonneux",
     elevation: 150,
     annualRainfall: 550
@@ -254,9 +254,9 @@ const mockFarmers = [
     rating: 4.7,
     totalOrders: 167,
     revenue: 55000,
-    farmType: "Ferme oasis",
-    irrigationSystem: "Traditionnel",
-  soilType: "Sable désertique",
+    farmType: "Oasis farm",
+    irrigationSystem: "Traditional",
+  soilType: "Desert sand",
     elevation: 80,
     annualRainfall: 180
   },
@@ -273,7 +273,7 @@ const mockFarmers = [
       state: "Wilaya de Béjaïa",
       coordinates: { lat: 36.7500, lng: 5.0833 }
     },
-    certifications: ["Bio", "Spécialité traditionnelle garantie"],
+    certifications: ["Organic", "Traditional Speciality Guaranteed"],
     crops: ["Thym", "Romarin", "Sauge"],
     performance: {
       totalHarvested: 12000,

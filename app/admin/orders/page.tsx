@@ -133,7 +133,7 @@ export default function AdminOrdersPage() {
     [t]
   )
 
-  // Récupérer les commandes
+  // Fetch orders
   const fetchOrders = async () => {
     try {
       setLoading(true)
@@ -159,7 +159,7 @@ export default function AdminOrdersPage() {
         toast.error(t("admin.orders.toast.fetchFailed"))
       }
     } catch (error) {
-      console.error("Erreur lors de la récupération des commandes :", error)
+      console.error("Error while fetching orders:", error)
       toast.error(t("admin.orders.toast.fetchError"))
     } finally {
       setLoading(false)
@@ -170,7 +170,7 @@ export default function AdminOrdersPage() {
     fetchOrders()
   }, [page, selectedStatus, selectedUserId, selectedProductId, sortBy, sortOrder])
 
-  // Gestion de la mise à jour du statut
+  // Handle status updates
   const handleStatusUpdate = async () => {
     if (!selectedOrder || !newStatus) return
 
@@ -186,12 +186,12 @@ export default function AdminOrdersPage() {
         toast.error(response.message || t("admin.orders.toast.updateFailed"))
       }
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du statut :", error)
+      console.error("Error while updating status:", error)
       toast.error(t("admin.orders.toast.updateError"))
     }
   }
 
-  // Obtenir le badge de statut
+  // Get the status badge
   const getStatusBadge = (status: string) => {
     const statusOption = statusOptions.find(s => s.value === status)
     if (statusOption) {
@@ -200,7 +200,7 @@ export default function AdminOrdersPage() {
     return <Badge variant="outline">{t("admin.orders.status.generic", { status })}</Badge>
   }
 
-  // Obtenir l'icône de statut
+  // Get the status icon
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "pending":
@@ -218,7 +218,7 @@ export default function AdminOrdersPage() {
     }
   }
 
-  // Ouvrir le dialogue de mise à jour du statut
+  // Open the status update dialog
   const openStatusDialog = (order: Order) => {
     setSelectedOrder(order)
     setNewStatus(order.status)
@@ -232,7 +232,7 @@ export default function AdminOrdersPage() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        {/* En-tête */}
+        {/* Header */}
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-foreground">{t("admin.orders.title")}</h1>

@@ -1,14 +1,7 @@
-// lib/db.ts
-import mongoose from "mongoose"
-
-const MONGODB_URI = process.env.MONGODB_URI!
+import dbConnect, { MongoConnectionError } from './mongodb';
 
 export async function connectToDB() {
-  if (mongoose.connection.readyState >= 1) return
-  try {
-    await mongoose.connect(MONGODB_URI)
-    console.log("✅ Connected to MongoDB")
-  } catch (err) {
-    console.error("❌ DB connection error", err)
-  }
+  return dbConnect();
 }
+
+export { MongoConnectionError } from './mongodb';

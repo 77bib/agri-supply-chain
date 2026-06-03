@@ -99,36 +99,36 @@ const statusConfig: Record<RawMaterialStatus, { className: string; labels: Local
   },
   warning: {
     className: "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-100",
-    labels: { fr: "Sous surveillance", ar: "تحت المراقبة" },
+    labels: { fr: "Under monitoring", ar: "تحت المراقبة" },
   },
   critical: {
     className: "bg-rose-100 text-rose-700 dark:bg-rose-900 dark:text-rose-100",
-    labels: { fr: "Critique", ar: "حرج" },
+    labels: { fr: "Critical", ar: "حرج" },
   },
 }
 
 const deliveryStatusConfig: Record<DeliveryStatus, { className: string; labels: LocalizedText }> = {
   onSchedule: {
     className: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-100",
-    labels: { fr: "À l'heure", ar: "في الموعد" },
+    labels: { fr: "On time", ar: "في الموعد" },
   },
   delayed: {
     className: "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-100",
-    labels: { fr: "Retard léger", ar: "تأخير طفيف" },
+    labels: { fr: "Slight delay", ar: "تأخير طفيف" },
   },
   requiresInspection: {
     className: "bg-rose-100 text-rose-700 dark:bg-rose-900 dark:text-rose-100",
-    labels: { fr: "Inspection requise", ar: "يتطلب تفتيش" },
+    labels: { fr: "Inspection required", ar: "يتطلب تفتيش" },
   },
 }
 
 const unitOptions: Array<{ value: string; label: LocalizedText }> = [
-  { value: "tonnes", label: { fr: "Tonnes", ar: "طن" } },
-  { value: "kg", label: { fr: "Kilogrammes", ar: "كيلوغرام" } },
-  { value: "litres", label: { fr: "Litres", ar: "لتر" } },
-  { value: "caisses", label: { fr: "Caisses", ar: "صناديق" } },
-  { value: "plateaux", label: { fr: "Plateaux", ar: "صواني" } },
-  { value: "sacs", label: { fr: "Sacs", ar: "أكياس" } },
+  { value: "tonnes", label: { fr: "Tons", ar: "طن" } },
+  { value: "kg", label: { fr: "Kilograms", ar: "كيلوغرام" } },
+  { value: "litres", label: { fr: "Liters", ar: "لتر" } },
+  { value: "caisses", label: { fr: "Crates", ar: "صناديق" } },
+  { value: "plateaux", label: { fr: "Trays", ar: "صواني" } },
+  { value: "sacs", label: { fr: "Bags", ar: "أكياس" } },
 ]
 
 const defaultRawMaterials: RawMaterial[] = [
@@ -136,7 +136,7 @@ const defaultRawMaterials: RawMaterial[] = [
     id: "material-1",
     name: { fr: "Oranges Valencia", ar: "برتقال فالنسيا" },
     category: { fr: "Fruits", ar: "فاكهة" },
-    unit: { fr: "Caisses", ar: "صناديق" },
+    unit: { fr: "Crates", ar: "صناديق" },
     stock: 360,
     safetyStock: 300,
     location: { fr: "Chambre froide A", ar: "غرفة التبريد أ" },
@@ -150,7 +150,7 @@ const defaultRawMaterials: RawMaterial[] = [
     id: "material-2",
     name: { fr: "Fraises Gariguette", ar: "فراولة غاريغيت" },
     category: { fr: "Fruits", ar: "فاكهة" },
-    unit: { fr: "Plateaux", ar: "صواني" },
+    unit: { fr: "Trays", ar: "صواني" },
     stock: 180,
     safetyStock: 220,
     location: { fr: "Tunnel frais · Nord", ar: "نفق التبريد · الشمال" },
@@ -164,7 +164,7 @@ const defaultRawMaterials: RawMaterial[] = [
     id: "material-3",
     name: { fr: "Dattes Deglet Nour", ar: "تمر دقلة نور" },
     category: { fr: "Fruits", ar: "فاكهة" },
-    unit: { fr: "Caisses", ar: "صناديق" },
+    unit: { fr: "Crates", ar: "صناديق" },
     stock: 420,
     safetyStock: 350,
     location: { fr: "Réserve sud", ar: "المستودع الجنوبي" },
@@ -178,7 +178,7 @@ const defaultRawMaterials: RawMaterial[] = [
     id: "material-4",
     name: { fr: "Abricots secs", ar: "مشمش مجفف" },
     category: { fr: "Fruits", ar: "فاكهة" },
-    unit: { fr: "Sacs", ar: "أكياس" },
+    unit: { fr: "Bags", ar: "أكياس" },
     stock: 95,
     safetyStock: 150,
     location: { fr: "Entrepôt ouest", ar: "مستودع الغرب" },
@@ -225,7 +225,7 @@ const upcomingDeliveries: Delivery[] = [
     status: "onSchedule",
     origin: { fr: "Blida", ar: "البليدة" },
     quantity: 120,
-    unit: { fr: "Caisses", ar: "صناديق" },
+    unit: { fr: "Crates", ar: "صناديق" },
     temperature: "4°C",
   },
   {
@@ -235,7 +235,7 @@ const upcomingDeliveries: Delivery[] = [
     status: "delayed",
     origin: { fr: "Tizi Ouzou", ar: "تيزي وزو" },
     quantity: 90,
-    unit: { fr: "Plateaux", ar: "صواني" },
+    unit: { fr: "Trays", ar: "صواني" },
     temperature: "2°C",
   },
   {
@@ -245,7 +245,7 @@ const upcomingDeliveries: Delivery[] = [
     status: "requiresInspection",
     origin: { fr: "Ghardaïa", ar: "غرداية" },
     quantity: 60,
-    unit: { fr: "Sacs", ar: "أكياس" },
+    unit: { fr: "Bags", ar: "أكياس" },
     temperature: "8°C",
   },
 ]

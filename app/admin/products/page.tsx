@@ -115,11 +115,11 @@ export default function AdminProductsPage() {
         })
         setTotalPages(response.pagination?.pages || 1)
       } else {
-        toast.error("Échec de la récupération des produits")
+        toast.error("Failed to fetch products")
       }
     } catch (error) {
-      console.error("Erreur de récupération des produits :", error)
-      toast.error("Erreur de récupération des produits")
+      console.error("Error fetching products:", error)
+      toast.error("Error fetching products")
     } finally {
       setLoading(false)
     }
@@ -157,7 +157,7 @@ export default function AdminProductsPage() {
           toast.error(response.message || "Échec de la mise à jour du produit")
         }
       } else {
-        // Créer un nouveau produit
+          // Create a new product
         const response = await createProduct(productData)
         if (response.success) {
           toast.success("Produit créé avec succès")
@@ -169,31 +169,31 @@ export default function AdminProductsPage() {
         }
       }
     } catch (error) {
-      console.error("Erreur lors de l'enregistrement du produit :", error)
-      toast.error("Erreur lors de l'enregistrement du produit")
+    console.error("Error while saving the product:", error)
+    toast.error("Error while saving the product")
     }
   }
 
-  // Gérer la suppression
+  // Handle deletion
   const handleDelete = async () => {
     if (!deletingProduct) return
 
     try {
       const response = await deleteProduct(deletingProduct._id)
       if (response.success) {
-        toast.success("Produit supprimé avec succès")
+        toast.success("Product deleted successfully")
         setDeletingProduct(null)
         fetchProducts()
       } else {
-        toast.error(response.message || "Échec de la suppression du produit")
+        toast.error(response.message || "Failed to delete product")
       }
     } catch (error) {
-      console.error("Erreur lors de la suppression du produit :", error)
-      toast.error("Erreur lors de la suppression du produit")
+      console.error("Error while deleting the product:", error)
+      toast.error("Error while deleting the product")
     }
   }
 
-  // Réinitialiser le formulaire
+  // Reset the form
   const resetForm = () => {
     setFormData({
       name: "",
@@ -206,7 +206,7 @@ export default function AdminProductsPage() {
     })
   }
 
-  // Ouvrir la boîte de dialogue d'édition
+  // Open the edit dialog
   const openEditDialog = (product: Product) => {
     setEditingProduct(product)
     setFormData({
@@ -235,7 +235,7 @@ export default function AdminProductsPage() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        {/* En-tête */}
+        {/* Header */}
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-foreground">{t("admin.products.title")}</h1>
@@ -523,7 +523,7 @@ export default function AdminProductsPage() {
                 {products.length === 0 && (
                   <div className="text-center py-8">
                     <Package className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                    <p className="text-muted-foreground">Aucun produit trouvé</p>
+                    <p className="text-muted-foreground">No products found</p>
                   </div>
                 )}
                   </div>
@@ -539,10 +539,10 @@ export default function AdminProductsPage() {
               onClick={() => setPage(page - 1)} 
               disabled={page === 1}
             >
-              Précédent
+              Previous
             </Button>
             <span className="flex items-center px-4">
-              Page {page} sur {totalPages}
+              Page {page} of {totalPages}
             </span>
             <Button 
               variant="outline" 
@@ -555,17 +555,17 @@ export default function AdminProductsPage() {
         )}
             </div>
 
-      {/* Boîte de Dialogue d'Édition */}
+      {/* Edit dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Modifier le Produit</DialogTitle>
-            <DialogDescription>Mettez à jour les informations du produit</DialogDescription>
+            <DialogTitle>Edit product</DialogTitle>
+            <DialogDescription>Update the product information</DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium">Nom du Produit *</label>
+                <label className="text-sm font-medium">Product name *</label>
                 <Input
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -574,10 +574,10 @@ export default function AdminProductsPage() {
                       />
                     </div>
                         <div>
-                <label className="text-sm font-medium">Catégorie *</label>
+                <label className="text-sm font-medium">Category *</label>
                 <Select value={formData.category} onValueChange={(value) => setFormData({...formData, category: value})}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Sélectionnez une catégorie" />
+                    <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map((category) => (
@@ -600,7 +600,7 @@ export default function AdminProductsPage() {
             </div>
             <div className="grid grid-cols-3 gap-4">
                       <div>
-                <label className="text-sm font-medium">Prix *</label>
+                <label className="text-sm font-medium">Price *</label>
                 <Input
                   type="number"
                   step="0.01"
@@ -612,7 +612,7 @@ export default function AdminProductsPage() {
                 />
                       </div>
                       <div>
-                <label className="text-sm font-medium">Quantité *</label>
+                <label className="text-sm font-medium">Quantity *</label>
                 <Input
                   type="number"
                   min="0"
@@ -623,7 +623,7 @@ export default function AdminProductsPage() {
                 />
                       </div>
                       <div>
-                <label className="text-sm font-medium">Fournisseur *</label>
+                <label className="text-sm font-medium">Supplier *</label>
                 <Input
                   value={formData.supplier}
                   onChange={(e) => setFormData({...formData, supplier: e.target.value})}
@@ -633,7 +633,7 @@ export default function AdminProductsPage() {
                 </div>
                             </div>
                             <div>
-              <label className="text-sm font-medium">URL de l'Image</label>
+              <label className="text-sm font-medium">Image URL</label>
               <Input
                 value={formData.image}
                 onChange={(e) => setFormData({...formData, image: e.target.value})}
@@ -642,9 +642,9 @@ export default function AdminProductsPage() {
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                Annuler
+                Cancel
               </Button>
-              <Button type="submit">Mettre à Jour le Produit</Button>
+              <Button type="submit">Update product</Button>
             </DialogFooter>
           </form>
         </DialogContent>

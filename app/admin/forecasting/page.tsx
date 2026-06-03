@@ -34,86 +34,86 @@ import {
 import AdminLayout from "@/components/admin-layout"
 import { useI18n } from "@/lib/i18n"
 
-// Données de prévision fictives
+// Mock forecast data
 const demandForecastData = [
   { month: "Jan", actual: 4200, predicted: 4100, demand: 4300 },
-  { month: "Fév", actual: 3800, predicted: 3900, demand: 3750 },
+  { month: "Feb", actual: 3800, predicted: 3900, demand: 3750 },
   { month: "Mar", actual: 4500, predicted: 4400, demand: 4600 },
-  { month: "Avr", actual: 5200, predicted: 5100, demand: 5300 },
-  { month: "Mai", actual: 5800, predicted: 5900, demand: 5750 },
+  { month: "Apr", actual: 5200, predicted: 5100, demand: 5300 },
+  { month: "May", actual: 5800, predicted: 5900, demand: 5750 },
   { month: "Jun", actual: 6200, predicted: 6100, demand: 6400 },
   { month: "Jul", predicted: 6800, demand: 6900 },
-  { month: "Aoû", predicted: 7200, demand: 7100 },
+  { month: "Aug", predicted: 7200, demand: 7100 },
   { month: "Sep", predicted: 6500, demand: 6600 },
   { month: "Oct", predicted: 5800, demand: 5900 },
   { month: "Nov", predicted: 5200, demand: 5100 },
-  { month: "Déc", predicted: 5600, demand: 5700 },
+  { month: "Dec", predicted: 5600, demand: 5700 },
 ]
 
 const seasonalTrends = [
-  { season: "Printemps", orangeJuice: 85, strawberryJam: 120, appleCompote: 75 },
-  { season: "Été", orangeJuice: 150, strawberryJam: 180, appleCompote: 60 },
-  { season: "Automne", orangeJuice: 95, strawberryJam: 90, appleCompote: 140 },
-  { season: "Hiver", orangeJuice: 110, strawberryJam: 70, appleCompote: 120 },
+  { season: "Spring", orangeJuice: 85, strawberryJam: 120, appleCompote: 75 },
+  { season: "Summer", orangeJuice: 150, strawberryJam: 180, appleCompote: 60 },
+  { season: "Autumn", orangeJuice: 95, strawberryJam: 90, appleCompote: 140 },
+  { season: "Winter", orangeJuice: 110, strawberryJam: 70, appleCompote: 120 },
 ]
 
 const productDemandData = [
-  { name: "Jus d'Orange", current: 145, forecast: 162, growth: 11.7 },
-  { name: "Confiture de Fraise", current: 89, forecast: 98, growth: 10.1 },
-  { name: "Compote de Pomme", current: 67, forecast: 71, growth: 6.0 },
-  { name: "Jus de Baies Mélangées", current: 45, forecast: 52, growth: 15.6 },
-  { name: "Conserves de Pêche", current: 23, forecast: 28, growth: 21.7 },
+  { name: "Orange Juice", current: 145, forecast: 162, growth: 11.7 },
+  { name: "Strawberry Jam", current: 89, forecast: 98, growth: 10.1 },
+  { name: "Apple Compote", current: 67, forecast: 71, growth: 6.0 },
+  { name: "Mixed Berry Juice", current: 45, forecast: 52, growth: 15.6 },
+  { name: "Peach Preserves", current: 23, forecast: 28, growth: 21.7 },
 ]
 
 const weatherImpactData = [
-  { week: "Semaine 1", temperature: 18, rainfall: 5, demand: 4200 },
-  { week: "Semaine 2", temperature: 22, rainfall: 12, demand: 4500 },
-  { week: "Semaine 3", temperature: 25, rainfall: 8, demand: 5100 },
-  { week: "Semaine 4", temperature: 28, rainfall: 2, demand: 5800 },
-  { week: "Semaine 5", temperature: 31, rainfall: 0, demand: 6200 },
-  { week: "Semaine 6", temperature: 29, rainfall: 15, demand: 5900 },
+  { week: "Week 1", temperature: 18, rainfall: 5, demand: 4200 },
+  { week: "Week 2", temperature: 22, rainfall: 12, demand: 4500 },
+  { week: "Week 3", temperature: 25, rainfall: 8, demand: 5100 },
+  { week: "Week 4", temperature: 28, rainfall: 2, demand: 5800 },
+  { week: "Week 5", temperature: 31, rainfall: 0, demand: 6200 },
+  { week: "Week 6", temperature: 29, rainfall: 15, demand: 5900 },
 ]
 
 const alerts = [
   {
     id: 1,
     type: "seasonal",
-    message: "Le pic d'été approche - augmentation de 40% attendue dans la demande de jus",
+    message: "The summer peak is approaching - a 40% increase in juice demand is expected",
     priority: "high",
-    impact: "Augmenter la capacité de production de 25%",
-    timeframe: "Deux prochaines semaines",
+    impact: "Increase production capacity by 25%",
+    timeframe: "Next two weeks",
   },
   {
     id: 2,
     type: "weather",
-    message: "Vague de chaleur prévue - la demande de jus d'orange pourrait augmenter de 30%",
+    message: "Heatwave expected - orange juice demand could increase by 30%",
     priority: "medium",
-    impact: "Sécuriser des matières premières supplémentaires",
-    timeframe: "Prochaine semaine",
+    impact: "Secure additional raw materials",
+    timeframe: "Next week",
   },
   {
     id: 3,
     type: "trend",
-    message: "La compote de pomme montre une tendance baissière (-5% sur 3 mois)",
+    message: "Apple compote shows a downward trend (-5% over 3 months)",
     priority: "low",
-    impact: "Envisager des campagnes promotionnelles",
-    timeframe: "Mois prochain",
+    impact: "Consider promotional campaigns",
+    timeframe: "Next month",
   },
   {
     id: 4,
     type: "supply",
-    message: "Récolte de fraises retardée - risque de pénurie d'approvisionnement",
+    message: "Delayed strawberry harvest - risk of supply shortage",
     priority: "high",
-    impact: "Trouver des fournisseurs alternatifs",
-    timeframe: "Immédiat",
+    impact: "Find alternative suppliers",
+    timeframe: "Immediate",
   },
 ]
 
 const accuracyMetrics = [
-  { model: "Prévision de la Demande", accuracy: 92.5, trend: "up" },
-  { model: "Prédiction Saisonnière", accuracy: 88.3, trend: "stable" },
-  { model: "Impact Météorologique", accuracy: 76.8, trend: "up" },
-  { model: "Planification d'Approvisionnement", accuracy: 94.1, trend: "up" },
+  { model: "Demand Forecast", accuracy: 92.5, trend: "up" },
+  { model: "Seasonal Prediction", accuracy: 88.3, trend: "stable" },
+  { model: "Weather Impact", accuracy: 76.8, trend: "up" },
+  { model: "Supply Planning", accuracy: 94.1, trend: "up" },
 ]
 
 export default function ForecastingPage() {
@@ -153,7 +153,7 @@ export default function ForecastingPage() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        {/* En-tête */}
+        {/* Header */}
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           <div>
             <h1 className="text-3xl font-bold text-foreground">{t("admin.forecasting.title")}</h1>
@@ -175,7 +175,7 @@ export default function ForecastingPage() {
           </div>
         </div>
 
-        {/* Métriques Clés */}
+        {/* Key metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -273,8 +273,8 @@ export default function ForecastingPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Précision des Modèles</CardTitle>
-                  <CardDescription>Performance des modèles de prévision</CardDescription>
+                  <CardTitle>Model accuracy</CardTitle>
+                  <CardDescription>Forecast model performance</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
@@ -308,8 +308,8 @@ export default function ForecastingPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Prévision de Croissance de la Demande Produits</CardTitle>
-                <CardDescription>Taux de croissance attendus pour le prochain trimestre</CardDescription>
+                <CardTitle>Product demand growth forecast</CardTitle>
+                <CardDescription>Expected growth rates for the next quarter</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -318,8 +318,8 @@ export default function ForecastingPage() {
                     <XAxis dataKey="name" />
                     <YAxis />
                     <Tooltip />
-                    <Bar dataKey="current" fill="#e5e7eb" name="Demande Actuelle" />
-                    <Bar dataKey="forecast" fill="#10b981" name="Demande Prévue" />
+                    <Bar dataKey="current" fill="#e5e7eb" name="Current demand" />
+                    <Bar dataKey="forecast" fill="#10b981" name="Forecast demand" />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -330,8 +330,8 @@ export default function ForecastingPage() {
             <div className="grid lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Modèles de Demande Saisonnière</CardTitle>
-                  <CardDescription>Demande produits par saison</CardDescription>
+                  <CardTitle>Seasonal demand patterns</CardTitle>
+                  <CardDescription>Product demand by season</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={350}>
@@ -340,9 +340,9 @@ export default function ForecastingPage() {
                       <XAxis dataKey="season" />
                       <YAxis />
                       <Tooltip />
-                      <Bar dataKey="orangeJuice" fill="#f97316" name="Jus d'Orange" />
-                      <Bar dataKey="strawberryJam" fill="#ef4444" name="Confiture Fraise" />
-                      <Bar dataKey="appleCompote" fill="#10b981" name="Compote Pomme" />
+                      <Bar dataKey="orangeJuice" fill="#f97316" name="Orange Juice" />
+                      <Bar dataKey="strawberryJam" fill="#ef4444" name="Strawberry Jam" />
+                      <Bar dataKey="appleCompote" fill="#10b981" name="Apple Compote" />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -350,17 +350,17 @@ export default function ForecastingPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Insights Saisonniers</CardTitle>
-                  <CardDescription>Tendances saisonnières clés et recommandations</CardDescription>
+                  <CardTitle>Seasonal insights</CardTitle>
+                  <CardDescription>Key seasonal trends and recommendations</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
                     <div className="flex items-start space-x-3">
                       <Sun className="h-5 w-5 text-orange-600 mt-1" />
                       <div>
-                        <h4 className="font-medium">Pic d'Été (Juin-Août)</h4>
+                        <h4 className="font-medium">Summer peak (Jun-Aug)</h4>
                         <p className="text-sm text-muted-foreground mt-1">
-                          Les jus d'orange et de baies voient une augmentation de 60%. Préparer une capacité de stockage froid supplémentaire.
+                          Orange and berry juices see a 60% increase. Prepare additional cold storage capacity.
                         </p>
                         <Badge className="bg-orange-100 text-orange-800 mt-2">{t("admin.forecasting.seasonal.actionRequired")}</Badge>
                       </div>
@@ -368,7 +368,7 @@ export default function ForecastingPage() {
                     <div className="flex items-start space-x-3">
                       <Leaf className="h-5 w-5 text-green-600 mt-1" />
                       <div>
-                        <h4 className="font-medium">Récolte d'Automne (Sep-Nov)</h4>
+                        <h4 className="font-medium">Autumn harvest (Sep-Nov)</h4>
                         <p className="text-sm text-muted-foreground mt-1">
                           Apple compote demand peaks. Coordinate with apple orchards for bulk purchasing.
                         </p>
@@ -378,9 +378,9 @@ export default function ForecastingPage() {
                     <div className="flex items-start space-x-3">
                       <Snowflake className="h-5 w-5 text-blue-600 mt-1" />
                       <div>
-                        <h4 className="font-medium">Vacances d'Hiver (Déc-Fév)</h4>
+                        <h4 className="font-medium">Winter holidays (Dec-Feb)</h4>
                         <p className="text-sm text-muted-foreground mt-1">
-                          Preserve and jam sales increase for gift season. Plan promotional campaigns.
+                          Preserve and jam sales increase during the gift season. Plan promotional campaigns.
                         </p>
                         <Badge className="bg-blue-100 text-blue-800 mt-2">{t("admin.forecasting.seasonal.planAhead")}</Badge>
                       </div>
@@ -548,7 +548,7 @@ export default function ForecastingPage() {
                       name="Demand"
                     />
                     <Line yAxisId="temp" type="monotone" dataKey="temperature" stroke="#f59e0b" name="Temperature °C" />
-                    <Bar yAxisId="temp" dataKey="rainfall" fill="#3b82f6" name="Précipitations mm" />
+                    <Bar yAxisId="temp" dataKey="rainfall" fill="#3b82f6" name="Rainfall mm" />
                   </AreaChart>
                 </ResponsiveContainer>
               </CardContent>

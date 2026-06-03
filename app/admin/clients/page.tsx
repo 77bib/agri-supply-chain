@@ -87,10 +87,10 @@ export default function AdminClientsPage() {
   const handleAddClient = async () => {
     try {
       if (newClient.role === 'admin') {
-        // Pour la création d'admin, nous avons besoin du secret administrateur
-        const adminSecret = prompt("Veuillez entrer le secret administrateur :")
+        // Creating an admin account requires the administrator secret
+        const adminSecret = prompt("Please enter the administrator secret:")
         if (!adminSecret) {
-          toast.error("Le secret administrateur est requis pour créer des utilisateurs administrateurs")
+          toast.error("Administrator secret is required to create admin users")
           return
         }
         
@@ -102,15 +102,15 @@ export default function AdminClientsPage() {
         )
         
         if (response.success) {
-          toast.success("Utilisateur administrateur créé avec succès")
+          toast.success("Administrator user created successfully")
           fetchClients()
           setNewClient({ name: "", email: "", password: "", role: "user" })
           setIsAddDialogOpen(false)
         } else {
-          toast.error(response.message || "Échec de la création de l'utilisateur administrateur")
+          toast.error(response.message || "Failed to create the administrator user")
         }
       } else {
-        // Pour la création d'utilisateur régulier
+        // Creating a regular user
         const response = await authAPI.signup(
           newClient.name,
           newClient.email,
@@ -118,30 +118,30 @@ export default function AdminClientsPage() {
         )
         
         if (response.success) {
-          toast.success("Utilisateur créé avec succès")
+          toast.success("User created successfully")
           fetchClients()
           setNewClient({ name: "", email: "", password: "", role: "user" })
           setIsAddDialogOpen(false)
         } else {
-          toast.error(response.message || "Échec de la création de l'utilisateur")
+          toast.error(response.message || "Failed to create the user")
         }
       }
     } catch (error) {
-      console.error("Erreur lors de la création de l'utilisateur :", error)
-      toast.error("Échec de la création de l'utilisateur")
+      console.error("Error while creating the user:", error)
+      toast.error("Failed to create the user")
     }
   }
 
   const handleEditClient = () => {
-    // Note : La modification d'utilisateur n'est pas encore implémentée dans le backend
-    toast.info("La fonctionnalité de modification d'utilisateur n'est pas encore implémentée")
+    // User editing is not implemented in the backend yet
+    toast.info("User editing is not implemented yet")
     setIsEditDialogOpen(false)
     setSelectedClient(null)
   }
 
   const handleDeleteClient = (id: string) => {
-    // Note : La suppression d'utilisateur n'est pas encore implémentée dans le backend
-    toast.info("La fonctionnalité de suppression d'utilisateur n'est pas encore implémentée")
+    // User deletion is not implemented in the backend yet
+    toast.info("User deletion is not implemented yet")
   }
 
   const handleViewClient = async (client: User) => {
@@ -154,11 +154,11 @@ export default function AdminClientsPage() {
       if (response.success && response.data) {
         setSelectedClientDetails(response.data)
       } else {
-        toast.error(response.message || "Échec de la récupération des détails du client")
+        toast.error(response.message || "Failed to fetch client details")
       }
     } catch (error) {
-      console.error("Erreur lors de la récupération des détails du client :", error)
-      toast.error("Échec de la récupération des détails du client")
+      console.error("Error while fetching client details:", error)
+      toast.error("Failed to fetch client details")
     } finally {
       setLoadingClientDetails(false)
     }
