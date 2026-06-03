@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useStore } from "@/lib/store"
+import { useI18n } from "@/lib/i18n"
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { Button } from "@/components/ui/button"
@@ -30,6 +31,7 @@ import { formatCurrency } from "@/lib/utils"
 export default function CartPage() {
   const router = useRouter()
   const { cart, updateCartQuantity, removeFromCart, clearCart, currentUser, _hasHydrated } = useStore()
+  const { t } = useI18n()
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -102,7 +104,7 @@ export default function CartPage() {
             <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
               <RefreshCw className="h-8 w-8 text-white animate-spin" />
             </div>
-            <p className="text-gray-600 dark:text-gray-300 text-lg">Loading your cart...</p>
+            <p className="text-gray-600 dark:text-gray-300 text-lg">{t("cart.loading")}</p>
           </div>
         </div>
         <Footer />
@@ -119,7 +121,7 @@ export default function CartPage() {
             <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
               <RefreshCw className="h-8 w-8 text-white animate-spin" />
             </div>
-            <p className="text-gray-600 text-lg">Redirecting to login...</p>
+            <p className="text-gray-600 text-lg">{t("cart.redirecting")}</p>
           </div>
         </div>
         <Footer />
@@ -142,14 +144,14 @@ export default function CartPage() {
                 className="border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300 transition-all duration-300"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Continue Shopping
+                {t("cart.continue")}
               </Button>
             </Link>
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center">
                 <ShoppingCart className="h-5 w-5 text-white" />
               </div>
-              <h1 className="text-4xl font-bold text-gray-900">Shopping Cart</h1>
+              <h1 className="text-4xl font-bold text-gray-900">{t("cart.title")}</h1>
             </div>
           </div>
           
@@ -158,7 +160,7 @@ export default function CartPage() {
               <div className="flex items-center space-x-3">
                 <Sparkles className="h-5 w-5 text-blue-600" />
                 <p className="text-blue-800 font-medium">
-                  {totalItems} {totalItems === 1 ? 'item' : 'items'} in your cart
+                  {totalItems} {totalItems === 1 ? t("cart.item") : t("cart.items")} {t("nav.myCart")}
                 </p>
               </div>
               <Button 
@@ -168,7 +170,7 @@ export default function CartPage() {
                 className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 transition-all duration-300"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
-                Clear Cart
+                {t("cart.clear")}
               </Button>
             </div>
           )}
@@ -179,9 +181,9 @@ export default function CartPage() {
             <div className="w-24 h-24 bg-gradient-to-r from-blue-100 to-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <ShoppingCart className="h-12 w-12 text-gray-400" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Your cart is empty</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">{t("cart.empty.title")}</h2>
             <p className="text-gray-600 text-lg mb-8 max-w-md mx-auto">
-              Looks like you haven't added any products to your cart yet. Start exploring our premium products!
+              {t("cart.empty.message")}
             </p>
             <Link href="/products">
               <Button 
@@ -189,7 +191,7 @@ export default function CartPage() {
                 className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 btn-animate"
               >
                 <Package className="h-5 w-5 mr-2" />
-                Start Shopping
+                {t("cart.empty.button")}
               </Button>
             </Link>
           </div>

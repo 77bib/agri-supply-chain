@@ -12,8 +12,10 @@ import { MapPin, Phone, Mail, Clock, Send, MessageCircle, CheckCircle } from "lu
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { SocialLinks } from "@/components/social-links"
+import { useI18n } from "@/lib/i18n"
 
 export default function ContactPage() {
+  const { t } = useI18n()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -58,13 +60,12 @@ export default function ContactPage() {
           <div className="mb-6">
             <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-100 to-green-100 dark:from-blue-900/50 dark:to-green-900/50 rounded-full border border-blue-200 dark:border-blue-700 mb-4">
               <MessageCircle className="h-4 w-4 text-blue-600 dark:text-blue-400 mr-2" />
-              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Get in Touch</span>
+              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">{t("contact.badge")}</span>
             </div>
           </div>
-          <h1 className="text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">Contact Us</h1>
+          <h1 className="text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">{t("contact.title")}</h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Have questions about our products or supply chain solutions? We'd love to hear from you.
-            Our team is here to help you with any inquiries.
+            {t("contact.subtitle")}
           </p>
         </div>
 
@@ -77,7 +78,7 @@ export default function ContactPage() {
                   <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-green-500 rounded-lg flex items-center justify-center mr-3">
                     <MessageCircle className="h-4 w-4 text-white" />
                   </div>
-                  Get in Touch
+                  {t("contact.getintouch")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -86,7 +87,7 @@ export default function ContactPage() {
                     <MapPin className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <p className="font-semibold text-blue-800 dark:text-blue-300 mb-1">Address</p>
+                    <p className="font-semibold text-blue-800 dark:text-blue-300 mb-1">{t("contact.address.label")}</p>
                     <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
                       Rue de la République, 16000
                       <br />
@@ -102,7 +103,7 @@ export default function ContactPage() {
                     <Phone className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <p className="font-semibold text-green-800 dark:text-green-300 mb-1">Phone</p>
+                    <p className="font-semibold text-green-800 dark:text-green-300 mb-1">{t("contact.phone.label")}</p>
                     <p className="text-gray-700 dark:text-gray-300">+213 (0) 21 23 45 67</p>
                   </div>
                 </div>
@@ -112,7 +113,7 @@ export default function ContactPage() {
                     <Mail className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <p className="font-semibold text-blue-800 dark:text-blue-300 mb-1">Email</p>
+                    <p className="font-semibold text-blue-800 dark:text-blue-300 mb-1">{t("contact.email.label")}</p>
                     <p className="text-gray-700 dark:text-gray-300">contact@brijuice.com</p>
                   </div>
                 </div>
@@ -122,13 +123,13 @@ export default function ContactPage() {
                     <Clock className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <p className="font-semibold text-green-800 dark:text-green-300 mb-1">Business Hours</p>
+                    <p className="font-semibold text-green-800 dark:text-green-300 mb-1">{t("contact.hours.label")}</p>
                     <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                      Sunday - Thursday: 8:00 AM - 6:00 PM
+                      {t("contact.hours.weekday")}
                       <br />
-                      Friday: 8:00 AM - 12:00 PM
+                      {t("contact.hours.friday")}
                       <br />
-                      Saturday: Closed
+                      {t("contact.hours.saturday")}
                     </p>
                   </div>
                 </div>
@@ -142,7 +143,7 @@ export default function ContactPage() {
                   <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-green-500 rounded-lg flex items-center justify-center mr-3">
                     <MessageCircle className="h-4 w-4 text-white" />
                   </div>
-                  Follow Us
+                  {t("contact.follow")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -157,7 +158,7 @@ export default function ContactPage() {
                   <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center mr-3">
                     <MapPin className="h-4 w-4 text-white" />
                   </div>
-                  Our Location
+                  {t("contact.location.title")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
@@ -174,7 +175,7 @@ export default function ContactPage() {
                   <div className="absolute top-4 right-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center space-x-2">
                       <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-green-500 rounded-full"></div>
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">BRIJUICE Office</span>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("contact.location.office")}</span>
                     </div>
                   </div>
                 </div>
@@ -190,7 +191,7 @@ export default function ContactPage() {
                   <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center mr-3">
                     <Send className="h-4 w-4 text-white" />
                   </div>
-                  Send us a Message
+                  {t("contact.form.title")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -199,23 +200,23 @@ export default function ContactPage() {
                     <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                       <CheckCircle className="h-10 w-10 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Message Sent!</h3>
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">{t("contact.form.success.title")}</h3>
                     <p className="text-gray-600 dark:text-gray-300 text-lg mb-6 max-w-md mx-auto">
-                      Thank you for contacting us. We'll get back to you within 24 hours.
+                      {t("contact.form.success.message")}
                     </p>
                     <Button 
                       onClick={() => setIsSubmitted(false)} 
                       variant="outline"
                       className="border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300"
                     >
-                      Send Another Message
+                      {t("contact.form.success.button")}
                     </Button>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <Label htmlFor="name" className="text-gray-700 dark:text-gray-300 font-medium">Name *</Label>
+                        <Label htmlFor="name" className="text-gray-700 dark:text-gray-300 font-medium">{t("contact.form.name")} {t("contact.form.required")}</Label>
                         <Input 
                           id="name" 
                           name="name" 
@@ -226,7 +227,7 @@ export default function ContactPage() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="email" className="text-gray-700 dark:text-gray-300 font-medium">Email *</Label>
+                        <Label htmlFor="email" className="text-gray-700 dark:text-gray-300 font-medium">{t("contact.form.email")} {t("contact.form.required")}</Label>
                         <Input
                           id="email"
                           name="email"
@@ -240,7 +241,7 @@ export default function ContactPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="subject" className="text-gray-700 dark:text-gray-300 font-medium">Subject *</Label>
+                      <Label htmlFor="subject" className="text-gray-700 dark:text-gray-300 font-medium">{t("contact.form.subject")} {t("contact.form.required")}</Label>
                       <Input
                         id="subject"
                         name="subject"
@@ -252,7 +253,7 @@ export default function ContactPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="message" className="text-gray-700 dark:text-gray-300 font-medium">Message *</Label>
+                      <Label htmlFor="message" className="text-gray-700 dark:text-gray-300 font-medium">{t("contact.form.message")} {t("contact.form.required")}</Label>
                       <Textarea
                         id="message"
                         name="message"
@@ -272,12 +273,12 @@ export default function ContactPage() {
                       {isSubmitting ? (
                         <div className="flex items-center">
                           <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                          Sending...
+                          {t("contact.form.sending")}
                         </div>
                       ) : (
                         <div className="flex items-center">
                           <Send className="h-5 w-5 mr-2" />
-                          Send Message
+                          {t("contact.form.submit")}
                         </div>
                       )}
                     </Button>
@@ -291,56 +292,52 @@ export default function ContactPage() {
         {/* FAQ Section */}
         <div className="mt-20 animate-fade-in-up">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">Frequently Asked Questions</h2>
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">{t("contact.faq.title")}</h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Find answers to common questions about our products and services
+              {t("contact.faq.subtitle")}
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             <Card className="border-0 shadow-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover-lift transition-all duration-500 animate-fade-in-up">
               <CardHeader>
-                <CardTitle className="text-xl text-gray-900 dark:text-gray-100">How does product traceability work?</CardTitle>
+                <CardTitle className="text-xl text-gray-900 dark:text-gray-100">{t("contact.faq.q1")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                  Our blockchain-based traceability system tracks every step of your product's journey from farm to
-                  table. Simply scan the QR code on any product to see its complete history.
+                  {t("contact.faq.a1")}
                 </p>
               </CardContent>
             </Card>
 
             <Card className="border-0 shadow-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover-lift transition-all duration-500 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
               <CardHeader>
-                <CardTitle className="text-xl text-gray-900 dark:text-gray-100">Are your products organic?</CardTitle>
+                <CardTitle className="text-xl text-gray-900 dark:text-gray-100">{t("contact.faq.q2")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                  Many of our products are certified organic. Look for the organic certification badge on product pages
-                  or check the product details for specific certifications.
+                  {t("contact.faq.a2")}
                 </p>
               </CardContent>
             </Card>
 
             <Card className="border-0 shadow-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover-lift transition-all duration-500 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
               <CardHeader>
-                <CardTitle className="text-xl text-gray-900 dark:text-gray-100">What is your return policy?</CardTitle>
+                <CardTitle className="text-xl text-gray-900 dark:text-gray-100">{t("contact.faq.q3")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                  We offer a 30-day return policy for unopened products. If you're not satisfied with your purchase,
-                  contact us within 30 days for a full refund or exchange.
+                  {t("contact.faq.a3")}
                 </p>
               </CardContent>
             </Card>
 
             <Card className="border-0 shadow-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover-lift transition-all duration-500 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
               <CardHeader>
-                <CardTitle className="text-xl text-gray-900 dark:text-gray-100">Do you offer bulk ordering?</CardTitle>
+                <CardTitle className="text-xl text-gray-900 dark:text-gray-100">{t("contact.faq.q4")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                  Yes! We offer special pricing for bulk orders. Contact our sales team for custom quotes and volume
-                  discounts for restaurants, retailers, and institutions.
+                  {t("contact.faq.a4")}
                 </p>
               </CardContent>
             </Card>
