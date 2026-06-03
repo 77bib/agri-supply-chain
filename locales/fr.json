@@ -1,223 +1,223 @@
 {
-  "site.title": "BRIJUICE - Gestion intelligente de la chaîne d'approvisionnement",
-  "site.description": "Optimisation complète de la chaîne agroalimentaire",
-  "hero.tag": "Plateforme intelligente de chaîne d'approvisionnement",
-  "hero.welcome": "Bon retour, {name}! 👋",
-  "hero.title.line1": "Chaîne d'approvisionnement intelligente pour",
-  "hero.title.line2": "Produits frais",
-  "hero.paragraph": "De la ferme à la table, nous garantissons qualité, traçabilité et efficacité à chaque étape grâce à l'IoT, la blockchain et l'analytique prédictive.",
-  "hero.logged.shop": "Voir les produits",
-  "hero.logged.cart": "Voir le panier",
-  "hero.guest.browse": "Parcourir les produits",
-  "hero.guest.trace": "Tracer les produits",
-  "stats.waste": "Réduction du gaspillage",
-  "stats.farmers": "Agriculteurs partenaires",
-  "stats.delivery": "Livraisons à temps",
-  "stats.traceability": "Traçabilité",
-  "switcher.fr": "Français",
+  "site.title": "BRIJUICE - Smart Supply Chain Management",
+  "site.description": "Complete agri-food supply chain optimization",
+  "hero.tag": "Smart supply chain platform",
+  "hero.welcome": "Welcome back, {name}! 👋",
+  "hero.title.line1": "Smart supply chain for",
+  "hero.title.line2": "Fresh products",
+  "hero.paragraph": "From farm to table, we guarantee quality, traceability, and efficiency at every step with IoT, blockchain, and predictive analytics.",
+  "hero.logged.shop": "View products",
+  "hero.logged.cart": "View cart",
+  "hero.guest.browse": "Browse products",
+  "hero.guest.trace": "Trace products",
+  "stats.waste": "Waste reduction",
+  "stats.farmers": "Partner farmers",
+  "stats.delivery": "On-time deliveries",
+  "stats.traceability": "Traceability",
+  "switcher.fr": "English",
   "switcher.ar": "العربية",
-  "switcher.label": "Langue"
-  ,"nav.home": "Accueil"
-  ,"nav.products": "Produits"
-  ,"nav.trace": "Traçabilité"
-  ,"nav.contact": "Contact"
-  ,"nav.cart": "Panier"
-  ,"nav.login": "Connexion"
-  ,"nav.register": "Inscription"
-  ,"nav.dashboard": "Tableau de bord"
-  ,"nav.myCart": "Ma Panier"
-  ,"nav.savedInfo": "Infos sauvegardées"
-  ,"nav.adminPanel": "Panneau Admin"
-  ,"nav.admin": "Admin"
-  ,"nav.logout": "Déconnexion"
-  ,"nav.welcome": "Bienvenue, {name}!"
-  ,"admin.nav.dashboard": "Tableau de Bord"
-  ,"admin.nav.logistics": "Transports et Logistique"
-  ,"admin.nav.farmers": "Gestion des Agriculteurs"
-  ,"admin.nav.inventory": "Inventaire et Lots"
-  ,"admin.nav.forecasting": "Prévisions"
-  ,"admin.nav.blockchain": "Traçabilité Blockchain"
-  ,"admin.nav.orders": "Gestion des Commandes"
-  ,"admin.nav.products": "Aperçu des Produits"
-  ,"admin.nav.clients": "Gestion des Clients"
-  ,"admin.nav.notifications": "Notifications et Contact"
-  ,"admin.layout.profile.initials": "A"
-  ,"admin.layout.profile.name": "Utilisateur Admin"
-  ,"admin.layout.profile.email": "admin@brijuice.com"
-  ,"admin.layout.settings": "Paramètres"
-  ,"admin.layout.logout": "Se déconnecter"
-  ,"admin.layout.publicSite": "Site Public"
-  ,"admin.layout.themeToggle": "Basculer le thème"
-  ,"admin.layout.notifications.title": "Notifications"
-  ,"admin.layout.notifications.temperature.title": "Alerte de Température"
-  ,"admin.layout.notifications.temperature.description": "Température du camion TR-003 au-dessus du seuil"
-  ,"admin.layout.notifications.stock.title": "Avertissement de Stock Faible"
-  ,"admin.layout.notifications.stock.description": "Stock de confiture de fraise sous le niveau minimum"
-  ,"admin.layout.notifications.order.title": "Nouvelle Commande"
-  ,"admin.layout.notifications.order.description": "Commande #ORD-004 reçue du client"
-  ,"admin.dashboard.refreshSuccess": "Données du tableau de bord actualisées avec succès !"
-  ,"admin.status.active": "Actif"
-  ,"admin.status.inactive": "Inactif"
-  ,"admin.status.delayed": "Retardé"
-  ,"admin.status.processing": "En traitement"
-  ,"admin.status.completed": "Terminé"
-  ,"admin.severity.low": "Faible"
-  ,"admin.severity.medium": "Modérée"
-  ,"admin.severity.high": "Élevée"
-  ,"admin.severity.critical": "Critique"
-  ,"common.months.short.jan": "Janv."
-  ,"common.months.short.feb": "Févr."
-  ,"common.months.short.mar": "Mars"
-  ,"common.months.short.apr": "Avr."
-  ,"common.months.short.may": "Mai"
-  ,"common.months.short.jun": "Juin"
-  ,"admin.charts.series.production": "Production"
-  ,"admin.charts.series.objective": "Objectif"
-  ,"admin.charts.quantityLabel": "Quantité"
-  ,"admin.inventory.category.grains": "Céréales"
-  ,"admin.inventory.category.vegetables": "Légumes"
-  ,"admin.inventory.category.fruits": "Fruits"
-  ,"admin.logistics.alerts.temperatureMessage": "Écart de température dans Camion-023"
-  ,"admin.logistics.alerts.delayMessage": "Livraison retardée de 2 heures"
-  ,"admin.forecasting.trend.up": "en hausse"
-  ,"admin.forecasting.recommendations.increaseWheat": "Augmenter la production de blé de 15 %"
-  ,"admin.forecasting.recommendations.optimizeStorage": "Optimiser le stockage des cultures saisonnières"
-  ,"admin.forecasting.recommendations.prepareRamadan": "Préparer la hausse de la demande pendant le Ramadan"
-  ,"admin.dashboard.title": "BRIJUICE Algérie - Tableau de bord de la chaîne d'approvisionnement"
-  ,"admin.dashboard.subtitle": "Système complet de gestion de la chaîne agroalimentaire"
-  ,"admin.common.export": "Exporter le rapport"
-  ,"admin.common.refresh": "Rafraîchir"
-  ,"admin.common.view": "Voir"
-  ,"admin.common.add": "Ajouter"
-  ,"admin.common.close": "Fermer"
-  ,"admin.common.edit": "Modifier"
-  ,"admin.common.delete": "Supprimer"
-  ,"admin.common.yes": "Oui"
-  ,"admin.common.no": "Non"
-  ,"admin.tabs.overview": "Aperçu"
-  ,"admin.tabs.farmers": "Agriculteurs"
-  ,"admin.tabs.logistics": "Logistique"
-  ,"admin.tabs.inventory": "Inventaire"
-  ,"admin.tabs.forecasting": "Prévisions"
-  ,"admin.tabs.traceability": "Traçabilité"
-  ,"admin.kpi.activeFarmers": "Agriculteurs actifs"
-  ,"admin.kpi.newThisMonth": "+{count} nouveaux ce mois"
-  ,"admin.kpi.activeShipments": "Expéditions actives"
-  ,"admin.kpi.delayed": "{count} retardées"
-  ,"admin.kpi.inventoryValue": "Valeur des stocks"
-  ,"admin.kpi.lowStockAlerts": "{count} alertes de stock bas"
-  ,"admin.kpi.forecastAccuracy": "Précision des prévisions"
-  ,"admin.kpi.trend": "tendance"
-  ,"admin.charts.monthlyProduction": "Tendances de production mensuelles"
-  ,"admin.charts.categories": "Répartition des catégories de produits"
-  ,"admin.charts.stockMinimum": "Stock minimum"
-  ,"admin.charts.series.stock": "Stock"
-  ,"admin.charts.series.minimum": "Minimum"
-  ,"admin.alerts.title": "Alertes actives"
-  ,"admin.alerts.logistics": "Alerte logistique"
-  ,"admin.farmers.title": "Gestion des agriculteurs"
-  ,"admin.farmers.subtitle": "Gérer les profils, performances et certifications des agriculteurs"
-  ,"admin.farmers.add": "Ajouter un agriculteur"
-  ,"admin.farmers.yield": "Rendement"
-  ,"admin.farmers.quality": "Qualité"
-  ,"admin.logistics.title": "Transport et logistique"
-  ,"admin.logistics.subtitle": "Suivre les expéditions, véhicules et statuts de livraison"
-  ,"admin.logistics.newShipment": "Nouvelle expédition"
-  ,"admin.logistics.activeShipments": "Expéditions actives"
-  ,"admin.logistics.deliveredToday": "Livrées aujourd'hui"
-  ,"admin.logistics.delayed": "Retardées"
-  ,"admin.logistics.fleetStatus": "État de la flotte"
-  ,"admin.logistics.available": "Disponibles"
-  ,"admin.logistics.inTransit": "En transit"
-  ,"admin.logistics.coldChain": "Chaîne du froid"
-  ,"admin.logistics.compliance": "Conformité"
-  ,"admin.logistics.alerts": "Alertes"
-  ,"admin.inventory.title": "Gestion des stocks et lots"
-  ,"admin.inventory.subtitle": "Suivre les niveaux de stock, la qualité des lots et les conditions de stockage"
-  ,"admin.inventory.addBatch": "Ajouter un lot"
-  ,"admin.inventory.totalBatches": "Total des lots"
-  ,"admin.inventory.lowStock": "Stock faible"
-  ,"admin.inventory.expiringSoon": "Expire bientôt"
-  ,"admin.inventory.totalValue": "Valeur totale"
-  ,"admin.forecasting.title": "Analytique prédictive et prévisions"
-  ,"admin.forecasting.subtitle": "Prévision de la demande et planification de la production"
-  ,"admin.forecasting.newForecast": "Nouvelle prévision"
-  ,"admin.forecasting.accuracy": "Précision des prévisions"
-  ,"admin.forecasting.overallAccuracy": "Taux de précision global"
-  ,"admin.forecasting.nextMonthPrediction": "Prévision du mois prochain"
-  ,"admin.forecasting.expectedRevenue": "Revenu attendu"
-  ,"admin.forecasting.recommendations": "Recommandations"
-  ,"admin.traceability.title": "Traçabilité blockchain"
-  ,"admin.traceability.subtitle": "Suivi et vérification du parcours produit"
-  ,"admin.traceability.newProduct": "Nouveau produit"
-  ,"admin.traceability.activeProducts": "Produits actifs"
-  ,"admin.traceability.verifiedToday": "Vérifiés aujourd'hui"
-  ,"admin.traceability.blockchainTx": "Transactions blockchain"
-  ,"admin.traceability.qrScans": "Scans QR"
-  ,"admin.clients.title": "Gestion des clients"
-  ,"admin.clients.subtitle": "Gérer les comptes et relations utilisateurs"
-  ,"admin.clients.addUser": "Ajouter un utilisateur"
-  ,"admin.clients.addUser.title": "Ajouter un nouvel utilisateur"
-  ,"admin.clients.addUser.desc": "Créer un nouveau compte utilisateur"
-  ,"admin.form.fullName": "Nom complet"
-  ,"admin.form.email": "Email"
-  ,"admin.form.password": "Mot de passe"
-  ,"admin.form.role": "Rôle"
-  ,"admin.role.user": "Utilisateur"
-  ,"admin.role.admin": "Administrateur"
-  ,"admin.clients.addUser.submit": "Ajouter l'utilisateur"
-  ,"admin.stats.totalUsers": "Utilisateurs totaux"
-  ,"admin.stats.admins": "Administrateurs"
-  ,"admin.stats.regularUsers": "Utilisateurs réguliers"
-  ,"admin.stats.recentRegistrations": "Inscriptions récentes"
-  ,"admin.filters.searchUsers": "Rechercher des utilisateurs..."
-  ,"admin.filters.filterByRole": "Filtrer par rôle"
-  ,"admin.filters.allRoles": "Tous les rôles"
-  ,"admin.table.userDirectory": "Annuaire des utilisateurs"
-  ,"admin.table.userDirectory.desc": "Gérer tous les comptes et informations utilisateurs"
-  ,"admin.loading.users": "Chargement des utilisateurs..."
-  ,"admin.empty.noUsers": "Aucun utilisateur ne correspond à vos critères."
-  ,"admin.user.userId": "ID utilisateur"
-  ,"admin.user.joinedOn": "Inscrit le {date}"
-  ,"admin.view.details.title": "Détails du client - {name}"
-  ,"admin.view.details.desc": "Informations complètes du client et détails du compte"
-  ,"admin.loading.clientDetails": "Chargement des détails du client..."
-  ,"admin.client.memberSince": "Membre depuis"
-  ,"admin.client.basicInfo": "Informations de base"
-  ,"admin.client.emailAddress": "Adresse email"
-  ,"admin.client.userRole": "Rôle utilisateur"
-  ,"admin.client.accountStatus": "Statut du compte"
-  ,"admin.status.active": "Actif"
-  ,"admin.client.userId": "ID utilisateur"
-  ,"admin.client.registrationDate": "Date d'inscription"
-  ,"admin.client.registrationTime": "Heure d'inscription"
-  ,"admin.client.lastUpdated": "Dernière mise à jour"
-  ,"admin.client.accountStats": "Statistiques du compte"
-  ,"admin.client.daysAsMember": "Jours en tant que membre"
-  ,"admin.client.accountType": "Type de compte"
-  ,"admin.client.totalOrders": "Commandes totales"
-  ,"admin.client.totalSpent": "Total dépensé"
-  ,"admin.client.recentOrders": "Commandes récentes ({count})"
-  ,"admin.client.noOrders": "Aucune commande trouvée pour ce client."
-  ,"admin.client.currentCart": "Panier actuel ({count} articles)"
-  ,"admin.client.inCart": "Dans le panier"
-  ,"admin.client.cartTotal": "Total du panier"
-  ,"admin.client.noCartItems": "Aucun article dans le panier pour ce client."
-  ,"admin.client.securityInfo": "Informations de sécurité"
-  ,"admin.client.passwordStatus": "État du mot de passe"
-  ,"admin.client.emailVerified": "Email vérifié"
-  ,"admin.client.lastLogin": "Dernière connexion"
-  ,"admin.client.accountLocked": "Compte verrouillé"
-  ,"admin.view.close": "Fermer"
-  ,"admin.view.editClient": "Modifier le client"
-  ,"admin.edit.title": "Modifier l'utilisateur"
-  ,"admin.edit.desc": "Mettre à jour les informations de l'utilisateur"
-  ,"admin.edit.updateUser": "Mettre à jour l'utilisateur"
-  ,"status.delivered": "livré"
-  ,"status.confirmed": "confirmé"
-  ,"status.shipped": "expédié"
-  ,"status.pending": "en attente"
-  ,"status.canceled": "annulé"
-  ,"admin.security.secure": "Sécurisé"
-  ,"admin.security.recently": "Récemment"
+  "switcher.label": "Language",
+  "nav.home": "Home",
+  "nav.products": "Products",
+  "nav.trace": "Traceability",
+  "nav.contact": "Contact",
+  "nav.cart": "Cart",
+  "nav.login": "Sign In",
+  "nav.register": "Sign Up",
+  "nav.dashboard": "Dashboard",
+  "nav.myCart": "My Cart",
+  "nav.savedInfo": "Saved Information",
+  "nav.adminPanel": "Admin Panel",
+  "nav.admin": "Admin",
+  "nav.logout": "Log Out",
+  "nav.welcome": "Welcome, {name}!",
+  "admin.nav.dashboard": "Dashboard",
+  "admin.nav.logistics": "Transport and Logistics",
+  "admin.nav.farmers": "Farmer Management",
+  "admin.nav.inventory": "Inventory and Batches",
+  "admin.nav.forecasting": "Forecasts",
+  "admin.nav.blockchain": "Blockchain Traceability",
+  "admin.nav.orders": "Order Management",
+  "admin.nav.products": "Product Overview",
+  "admin.nav.clients": "Client Management",
+  "admin.nav.notifications": "Notifications and Contact",
+  "admin.layout.profile.initials": "A",
+  "admin.layout.profile.name": "Admin User",
+  "admin.layout.profile.email": "admin@brijuice.com",
+  "admin.layout.settings": "Settings",
+  "admin.layout.logout": "Log Out",
+  "admin.layout.publicSite": "Public Site",
+  "admin.layout.themeToggle": "Toggle Theme",
+  "admin.layout.notifications.title": "Notifications",
+  "admin.layout.notifications.temperature.title": "Temperature Alert",
+  "admin.layout.notifications.temperature.description": "Truck TR-003 temperature is above the threshold",
+  "admin.layout.notifications.stock.title": "Low Stock Warning",
+  "admin.layout.notifications.stock.description": "Strawberry jam stock is below the minimum level",
+  "admin.layout.notifications.order.title": "New Order",
+  "admin.layout.notifications.order.description": "Order #ORD-004 received from the customer",
+  "admin.dashboard.refreshSuccess": "Dashboard data refreshed successfully!",
+  "admin.status.active": "Active",
+  "admin.status.inactive": "Inactive",
+  "admin.status.delayed": "Delayed",
+  "admin.status.processing": "Processing",
+  "admin.status.completed": "Completed",
+  "admin.severity.low": "Low",
+  "admin.severity.medium": "Medium",
+  "admin.severity.high": "High",
+  "admin.severity.critical": "Critical",
+  "common.months.short.jan": "Jan.",
+  "common.months.short.feb": "Feb.",
+  "common.months.short.mar": "Mar.",
+  "common.months.short.apr": "Apr.",
+  "common.months.short.may": "May",
+  "common.months.short.jun": "Jun.",
+  "admin.charts.series.production": "Production",
+  "admin.charts.series.objective": "Target",
+  "admin.charts.quantityLabel": "Quantity",
+  "admin.inventory.category.grains": "Grains",
+  "admin.inventory.category.vegetables": "Vegetables",
+  "admin.inventory.category.fruits": "Fruits",
+  "admin.logistics.alerts.temperatureMessage": "Temperature deviation in Truck-023",
+  "admin.logistics.alerts.delayMessage": "Delivery delayed by 2 hours",
+  "admin.forecasting.trend.up": "up",
+  "admin.forecasting.recommendations.increaseWheat": "Increase wheat production by 15%",
+  "admin.forecasting.recommendations.optimizeStorage": "Optimize storage for seasonal crops",
+  "admin.forecasting.recommendations.prepareRamadan": "Prepare for higher demand during Ramadan",
+  "admin.dashboard.title": "BRIJUICE Algeria - Supply Chain Dashboard",
+  "admin.dashboard.subtitle": "Complete agri-food supply chain management system",
+  "admin.common.export": "Export Report",
+  "admin.common.refresh": "Refresh",
+  "admin.common.view": "View",
+  "admin.common.add": "Add",
+  "admin.common.close": "Close",
+  "admin.common.edit": "Edit",
+  "admin.common.delete": "Delete",
+  "admin.common.yes": "Yes",
+  "admin.common.no": "No",
+  "admin.tabs.overview": "Overview",
+  "admin.tabs.farmers": "Farmers",
+  "admin.tabs.logistics": "Logistics",
+  "admin.tabs.inventory": "Inventory",
+  "admin.tabs.forecasting": "Forecasts",
+  "admin.tabs.traceability": "Traceability",
+  "admin.kpi.activeFarmers": "Active farmers",
+  "admin.kpi.newThisMonth": "+{count} new this month",
+  "admin.kpi.activeShipments": "Active shipments",
+  "admin.kpi.delayed": "{count} delayed",
+  "admin.kpi.inventoryValue": "Inventory value",
+  "admin.kpi.lowStockAlerts": "{count} low stock alerts",
+  "admin.kpi.forecastAccuracy": "Forecast accuracy",
+  "admin.kpi.trend": "trend",
+  "admin.charts.monthlyProduction": "Monthly production trends",
+  "admin.charts.categories": "Product category breakdown",
+  "admin.charts.stockMinimum": "Minimum stock",
+  "admin.charts.series.stock": "Stock",
+  "admin.charts.series.minimum": "Minimum",
+  "admin.alerts.title": "Active alerts",
+  "admin.alerts.logistics": "Logistics alert",
+  "admin.farmers.title": "Farmer Management",
+  "admin.farmers.subtitle": "Manage farmer profiles, performance, and certifications",
+  "admin.farmers.add": "Add a farmer",
+  "admin.farmers.yield": "Yield",
+  "admin.farmers.quality": "Quality",
+  "admin.logistics.title": "Transport and Logistics",
+  "admin.logistics.subtitle": "Track shipments, vehicles, and delivery statuses",
+  "admin.logistics.newShipment": "New shipment",
+  "admin.logistics.activeShipments": "Active shipments",
+  "admin.logistics.deliveredToday": "Delivered today",
+  "admin.logistics.delayed": "Delayed",
+  "admin.logistics.fleetStatus": "Fleet status",
+  "admin.logistics.available": "Available",
+  "admin.logistics.inTransit": "In transit",
+  "admin.logistics.coldChain": "Cold chain",
+  "admin.logistics.compliance": "Compliance",
+  "admin.logistics.alerts": "Alerts",
+  "admin.inventory.title": "Inventory and Batches",
+  "admin.inventory.subtitle": "Track stock levels, batch quality, and storage conditions",
+  "admin.inventory.addBatch": "Add a batch",
+  "admin.inventory.totalBatches": "Total batches",
+  "admin.inventory.lowStock": "Low stock",
+  "admin.inventory.expiringSoon": "Expiring soon",
+  "admin.inventory.totalValue": "Total value",
+  "admin.forecasting.title": "Predictive analytics and forecasts",
+  "admin.forecasting.subtitle": "Demand forecasting and production planning",
+  "admin.forecasting.newForecast": "New forecast",
+  "admin.forecasting.accuracy": "Forecast accuracy",
+  "admin.forecasting.overallAccuracy": "Overall accuracy rate",
+  "admin.forecasting.nextMonthPrediction": "Next month prediction",
+  "admin.forecasting.expectedRevenue": "Expected revenue",
+  "admin.forecasting.recommendations": "Recommendations",
+  "admin.traceability.title": "Blockchain traceability",
+  "admin.traceability.subtitle": "Track and verify the product journey",
+  "admin.traceability.newProduct": "New product",
+  "admin.traceability.activeProducts": "Active products",
+  "admin.traceability.verifiedToday": "Verified today",
+  "admin.traceability.blockchainTx": "Blockchain transactions",
+  "admin.traceability.qrScans": "QR scans",
+  "admin.clients.title": "Client Management",
+  "admin.clients.subtitle": "Manage user accounts and relationships",
+  "admin.clients.addUser": "Add a user",
+  "admin.clients.addUser.title": "Add a new user",
+  "admin.clients.addUser.desc": "Create a new user account",
+  "admin.form.fullName": "Full name",
+  "admin.form.email": "Email",
+  "admin.form.password": "Password",
+  "admin.form.role": "Role",
+  "admin.role.user": "User",
+  "admin.role.admin": "Administrator",
+  "admin.clients.addUser.submit": "Add user",
+  "admin.stats.totalUsers": "Total users",
+  "admin.stats.admins": "Administrators",
+  "admin.stats.regularUsers": "Regular users",
+  "admin.stats.recentRegistrations": "Recent registrations",
+  "admin.filters.searchUsers": "Search users...",
+  "admin.filters.filterByRole": "Filter by role",
+  "admin.filters.allRoles": "All roles",
+  "admin.table.userDirectory": "User directory",
+  "admin.table.userDirectory.desc": "Manage all user accounts and information",
+  "admin.loading.users": "Loading users...",
+  "admin.empty.noUsers": "No users match your criteria.",
+  "admin.user.userId": "User ID",
+  "admin.user.joinedOn": "Joined on {date}",
+  "admin.view.details.title": "Client details - {name}",
+  "admin.view.details.desc": "Complete client information and account details",
+  "admin.loading.clientDetails": "Loading client details...",
+  "admin.client.memberSince": "Member since",
+  "admin.client.basicInfo": "Basic information",
+  "admin.client.emailAddress": "Email address",
+  "admin.client.userRole": "User role",
+  "admin.client.accountStatus": "Account status",
+  "admin.status.active": "Active",
+  "admin.client.userId": "User ID",
+  "admin.client.registrationDate": "Registration date",
+  "admin.client.registrationTime": "Registration time",
+  "admin.client.lastUpdated": "Last updated",
+  "admin.client.accountStats": "Account statistics",
+  "admin.client.daysAsMember": "Days as member",
+  "admin.client.accountType": "Account type",
+  "admin.client.totalOrders": "Total orders",
+  "admin.client.totalSpent": "Total spent",
+  "admin.client.recentOrders": "Recent orders ({count})",
+  "admin.client.noOrders": "No orders found for this client.",
+  "admin.client.currentCart": "Current cart ({count} items)",
+  "admin.client.inCart": "In cart",
+  "admin.client.cartTotal": "Cart total",
+  "admin.client.noCartItems": "No items in the cart for this client.",
+  "admin.client.securityInfo": "Security information",
+  "admin.client.passwordStatus": "Password status",
+  "admin.client.emailVerified": "Email verified",
+  "admin.client.lastLogin": "Last login",
+  "admin.client.accountLocked": "Account locked",
+  "admin.view.close": "Close",
+  "admin.view.editClient": "Edit client",
+  "admin.edit.title": "Edit user",
+  "admin.edit.desc": "Update the user's information",
+  "admin.edit.updateUser": "Update user",
+  "status.delivered": "delivered",
+  "status.confirmed": "confirmed",
+  "status.shipped": "shipped",
+  "status.pending": "pending",
+  "status.canceled": "canceled",
+  "admin.security.secure": "Secure",
+  "admin.security.recently": "Recently"
 }

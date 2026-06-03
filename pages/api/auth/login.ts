@@ -22,35 +22,6 @@ export default async function handler(
 
   try {
     console.log('🔄 Starting login process...');
-
-    // الاتصال بقاعدة البيانات
-    // ملاحظة: لا نستخدم `setTimeout` مع `throw` لأنه يسبب `uncaughtException`
-    // ويوقف سيرفر التطوير. بدلاً من ذلك نرجّع 503 عند فشل الاتصال.
-    try {
-      await dbConnect();
-      console.log('✅ Database connected');
-    } catch (dbError) {
-      console.error('❌ Database connection failed during login:', dbError);
-
-      if (dbError instanceof MongoConnectionError) {
-        return res.status(503).json({
-          success: false,
-          message: 'قاعدة البيانات غير متاحة حالياً. يرجى المحاولة لاحقاً بعد التأكد من إعدادات MongoDB Atlas.'
-        });
-      }
-
-      return res.status(500).json({
-        success: false,
-        message: 'خطأ في الاتصال بقاعدة البيانات',
-        error:
-          process.env.NODE_ENV === 'development'
-            ? dbError instanceof Error
-              ? dbError.message
-              : 'خطأ غير معروف'
-            : undefined
-      });
-    }
-
     // التحقق من صحة البيانات المرسلة
     const validation = validateLoginData(req.body);
     
@@ -63,6 +34,28 @@ export default async function handler(
     }
 
     const { email, password } = validation.data;
+
+    try {
+      await dbConnect();
+      console.log('✅ Database connected');
+    } catch (dbError) {
+      console.error('❌ Database connection failed during login:', dbError);
+
+      const isConnectionFailure = dbError instanceof MongoConnectionError;
+
+      return res.status(isConnectionFailure ? 503 : 500).json({
+        success: false,
+        message: isConnectionFailure
+          ? 'قاعدة البيانات غير متاحة حالياً. يرجى إعادة المحاولة بعد قليل.'
+          : 'خطأ في الاتصال بقاعدة البيانات',
+        error:
+          process.env.NODE_ENV === 'development'
+            ? dbError instanceof Error
+              ? dbError.message
+              : 'خطأ غير معروف'
+            : undefined
+      });
+    }
 
     // البحث عن المستخدم
     console.log('🔍 Searching for user:', email.toLowerCase());
