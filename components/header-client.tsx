@@ -204,34 +204,6 @@ export function Header() {
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center space-x-2">
-            {/* Mobile Language Switcher */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  size="icon"
-                  className="hover:bg-blue-50 dark:hover:bg-blue-950 transition-all duration-300"
-                  title={t("switcher.label")}
-                >
-                  <Globe className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={() => setLocale("fr")}
-                  className={locale === "fr" ? "bg-blue-50 dark:bg-blue-900" : ""}
-                >
-                  🇬🇧 English
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => setLocale("ar")}
-                  className={locale === "ar" ? "bg-blue-50 dark:bg-blue-900" : ""}
-                >
-                  🇲🇦 العربية
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
             <ThemeToggle />
             <Button 
               variant="ghost" 
